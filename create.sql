@@ -27,6 +27,13 @@ CREATE TABLE tags (
 	FOREIGN KEY (tid) REFERENCES tasks(tid)
 );
 
+CREATE TABLE has_tags(
+	aid INTEGER,
+	tag VARCHAR(255),
+	PRIMARY KEY (aid, tag),
+	FOREIGN KEY (tag) REFERENCES tags(name)
+);
+
 CREATE TABLE ratings (
 	name VARCHAR(255),
 	rid INTEGER,
