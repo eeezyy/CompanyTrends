@@ -51,6 +51,3 @@ CREATE TABLE tasks_taken_by (
 	FOREIGN KEY (tid) REFERENCES tasks(tid),
 	FOREIGN KEY (wid) REFERENCES workers(wid)
 );
-
-CREATE TABLE (
-);
