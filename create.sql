@@ -1,53 +1,52 @@
 CREATE TABLE articles (
-	aid INTEGER AUTOINCREMENT,
+	url TEXT PRIMARY KEY,
 	date DATETIME,
-	PRIMARY KEY (aid)
-);
-
-CREATE TABLE workers (
-	wid INTEGER AUTOINCREMENT,
-	rating FLOAT,
-	PRIMARY KEY (wid)
-);
-
-CREATE TABLE tasks (
-	tid INTEGER AUTOINCREMENT,
-	description VARCHAR(255),
-	callbacklink VARCHAR(255),
-	price FLOAT,
-	aid INTEGER,
-	PRIMARY KEY (tid),
-	FOREIGN KEY (aid) REFERENCES articles(aid)
+	text TEXT,
+	usable BOOLEAN
 );
 
 CREATE TABLE tags (
-	name VARCHAR(255),
-	tid INTEGER,
-	PRIMARY KEY (name),
-	FOREIGN KEY (tid) REFERENCES tasks(tid)
+	name TEXT PRIMARY KEY
 );
 
-CREATE TABLE has_tags(
-	aid INTEGER,
-	tag VARCHAR(255),
-	PRIMARY KEY (aid, tag),
-	FOREIGN KEY (tag) REFERENCES tags(name)
+CREATE TABLE workers (
+	wid INTEGER PRIMARY KEY AUTOINCREMENT,
+	rating FLOAT
+);
+
+CREATE TABLE tasks (
+	tid INTEGER PRIMARY KEY AUTOINCREMENT,
+	description TEXT,
+	callbacklink TEXT,
+	price FLOAT,
+	url TEXT,
+	wid FLOAT,
+	FOREIGN KEY (wid) REFERENCES workers(wid),
+	FOREIGN KEY (url) REFERENCES articles(url)
 );
 
 CREATE TABLE ratings (
-	name VARCHAR(255),
-	rid INTEGER,
+	rid INTEGER PRIMARY KEY AUTOINCREMENT,
 	value FLOAT,
 	tid INTEGER,
-	PRIMARY KEY (name, rid),
-	FOREIGN KEY (name) REFERENCES tags(name),
-	FOREIGN KEY (tid) REFERENCES tasks(tid)
+	tag TEXT,
+	FOREIGN KEY (tid) REFERENCES tasks(tid),
+	FOREIGN KEY (tag) REFERENCES tags(name)	
 );
 
-CREATE TABLE tasks_taken_by (
-	tid INTEGER,
-	wid INTEGER,
-	PRIMARY KEY (tid, wid),
-	FOREIGN KEY (tid) REFERENCES tasks(tid),
-	FOREIGN KEY (wid) REFERENCES workers(wid)
+CREATE TABLE has_tags (
+	url TEXT,
+	tag TEXT,
+	PRIMARY KEY (url, tag),
+	FOREIGN KEY (url) REFERENCES articles(url),
+	FOREIGN KEY (tag) REFERENCES tags(name)
 );
+
+CREATE TABLE belong_to (
+	tid INTEGER,
+	tag TEXT,
+	PRIMARY KEY (tid, tag),
+	FOREIGN KEY (tid) REFERENCES tasks(tid),
+	FOREIGN KEY (tag) REFERENCES tags(name)
+);
+
