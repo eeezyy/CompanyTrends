@@ -20,7 +20,7 @@ CREATE TABLE tasks (
 	callbacklink TEXT,
 	price FLOAT,
 	url TEXT,
-	wid FLOAT,
+	wid INTEGER,
 	FOREIGN KEY (wid) REFERENCES workers(wid),
 	FOREIGN KEY (url) REFERENCES articles(url)
 );

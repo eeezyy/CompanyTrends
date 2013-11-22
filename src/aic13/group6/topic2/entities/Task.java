@@ -9,46 +9,114 @@ public class Task {
 	private String callBackLink;
 	private float price;
 	private Article article;
-	private Set<Worker> workers;
+	private Worker worker;
+	private Set<Tag> tags;
 	
-	public Task(int tid, String description, Article article, Set<Worker> workers) {
-		this.tid = tid;
-		this.description = description;
-		this.article = article;
-		this.workers = workers;
-		
+	public Task() {
+		setTid(-1);
+		setDescription(null);
+		setCallBackLink(null);
 		setPrice(-1);
-		callBackLink = "not set";
+		setArticle(null);
+		setWorker(null);
+		setTags(null);
 	}
-	
+
+	/**
+	 * @return the tid
+	 */
 	public int getTid() {
 		return tid;
 	}
-	
+
+	/**
+	 * @param tid the tid to set
+	 */
+	public void setTid(int tid) {
+		this.tid = tid;
+	}
+
+	/**
+	 * @return the description
+	 */
 	public String getDescription() {
 		return description;
 	}
-	
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @return the callBackLink
+	 */
 	public String getCallBackLink() {
 		return callBackLink;
 	}
-	
-	public Article getArticle() {
-		return article;
+
+	/**
+	 * @param callBackLink the callBackLink to set
+	 */
+	public void setCallBackLink(String callBackLink) {
+		this.callBackLink = callBackLink;
 	}
 
+	/**
+	 * @return the price
+	 */
 	public float getPrice() {
 		return price;
 	}
 
+	/**
+	 * @param price the price to set
+	 */
 	public void setPrice(float price) {
 		this.price = price;
 	}
-	
-	public Set<Worker> getWorkers() {
-		return workers;
-	}
-	
-	
 
+	/**
+	 * @return the article
+	 */
+	public Article getArticle() {
+		return article;
+	}
+
+	/**
+	 * @param article the article to set
+	 */
+	public void setArticle(Article article) {
+		this.article = article;
+	}
+
+	/**
+	 * @return the worker
+	 */
+	public Worker getWorker() {
+		return worker;
+	}
+
+	/**
+	 * @param worker the worker to set
+	 */
+	public void setWorker(Worker worker) {
+		this.worker = worker;
+	}
+
+	/**
+	 * @return the tags
+	 */
+	public Set<Tag> getTags() {
+		return tags;
+	}
+
+	/**
+	 * @param tags the tags to set
+	 */
+	public void setTags(Set<Tag> tags) {
+		this.tags = tags;
+	}
 }
