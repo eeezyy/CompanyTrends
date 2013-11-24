@@ -1,6 +1,7 @@
 CREATE TABLE articles (
 	url TEXT PRIMARY KEY,
 	date DATETIME,
+	title TEXT,
 	text TEXT,
 	usable BOOLEAN
 );

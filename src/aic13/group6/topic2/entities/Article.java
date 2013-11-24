@@ -7,6 +7,7 @@ public class Article {
 	
 	private String url;
 	private Calendar date;
+	private String title;
 	private String text;
 	private Boolean usable;
 	private Set<Tag> tags;
@@ -14,6 +15,7 @@ public class Article {
 	public Article () {
 		setUrl(null);
 		setDate(null);
+		setTitle(null);
 		setText(null);
 		setUsable(true);
 		setTags(null);
@@ -45,6 +47,20 @@ public class Article {
 	 */
 	public void setDate(Calendar date) {
 		this.date = date;
+	}
+	
+	/**
+	 * @return the title
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * @param title the title of the article to set
+	 */
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	/**

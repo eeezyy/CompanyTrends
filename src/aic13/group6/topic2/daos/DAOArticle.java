@@ -18,7 +18,7 @@ public class DAOArticle implements DAO<Article> {
 	public Article create(Article obj) throws SQLException {
 		Connection c = DBConnectionManager.getInstance().getConnection();
 		
-		PreparedStatement ps = c.prepareStatement("INSERT INTO articles VALUES (?, ?, ?, ?);");
+		PreparedStatement ps = c.prepareStatement("INSERT INTO articles VALUES (?, ?, ?, ?, ?);");
 		
 		if (obj.getUrl() == null) {
 			throw new SQLException("URL required! Entry would have no key otherwise.");
@@ -32,8 +32,9 @@ public class DAOArticle implements DAO<Article> {
 			ps.setLong(2, obj.getDate().getTime().getTime());
 		}
 		
-		ps.setString(3, obj.getText());
-		ps.setBoolean(4, obj.getUsable());
+		ps.setString(3, obj.getTitle());
+		ps.setString(4, obj.getText());
+		ps.setBoolean(5, obj.getUsable());
 		
 		int s = ps.executeUpdate();
 		if (s != 1) {
@@ -66,6 +67,7 @@ public class DAOArticle implements DAO<Article> {
 		cal.setTimeInMillis(rs.getLong("date"));
 		obj.setDate(cal);
 		
+		obj.setTitle(rs.getString("title"));
 		obj.setText(rs.getString("text"));
 		obj.setUsable(rs.getBoolean("usable"));
 		
