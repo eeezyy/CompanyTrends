@@ -2,7 +2,10 @@ package aic13.group6.topic2.entities;
 
 import java.util.Calendar;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name="article")
 public class Article {
 	
 	private String url;
@@ -24,6 +27,7 @@ public class Article {
 	/**
 	 * @return the url
 	 */
+	@XmlElement
 	public String getUrl() {
 		return url;
 	}
@@ -38,6 +42,7 @@ public class Article {
 	/**
 	 * @return the date
 	 */
+	@XmlElement
 	public Calendar getDate() {
 		return date;
 	}
@@ -66,6 +71,7 @@ public class Article {
 	/**
 	 * @return the text
 	 */
+	@XmlElement
 	public String getText() {
 		return text;
 	}
@@ -94,6 +100,7 @@ public class Article {
 	/**
 	 * @return the usable
 	 */
+	@XmlElement
 	public Boolean getUsable() {
 		return usable;
 	}

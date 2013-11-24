@@ -1,7 +1,10 @@
 package aic13.group6.topic2.entities;
 
 import java.util.Set;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name="task")
 public class Task {
 	
 	private int tid;
@@ -25,6 +28,7 @@ public class Task {
 	/**
 	 * @return the tid
 	 */
+	@XmlElement
 	public int getTid() {
 		return tid;
 	}
@@ -39,6 +43,7 @@ public class Task {
 	/**
 	 * @return the description
 	 */
+	@XmlElement
 	public String getDescription() {
 		return description;
 	}
@@ -53,6 +58,7 @@ public class Task {
 	/**
 	 * @return the callBackLink
 	 */
+	@XmlElement
 	public String getCallBackLink() {
 		return callBackLink;
 	}
@@ -67,6 +73,7 @@ public class Task {
 	/**
 	 * @return the price
 	 */
+	@XmlElement
 	public float getPrice() {
 		return price;
 	}
@@ -95,6 +102,7 @@ public class Task {
 	/**
 	 * @return the worker
 	 */
+	@XmlElement
 	public Worker getWorker() {
 		return worker;
 	}
