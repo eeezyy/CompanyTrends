@@ -1,7 +1,10 @@
 package aic13.group6.topic2.entities;
 
 import java.util.Set;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name="tag")
 public class Tag {
 	
 	private String name;
@@ -17,6 +20,7 @@ public class Tag {
 	/**
 	 * @return the name
 	 */
+	@XmlElement
 	public String getName() {
 		return name;
 	}
@@ -31,6 +35,7 @@ public class Tag {
 	/**
 	 * @return the articles
 	 */
+	@XmlElement
 	public Set<Article> getArticles() {
 		return articles;
 	}
@@ -45,6 +50,7 @@ public class Tag {
 	/**
 	 * @return the tasks
 	 */
+	@XmlElement
 	public Set<Task> getTasks() {
 		return tasks;
 	}

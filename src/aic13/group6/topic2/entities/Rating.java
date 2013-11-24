@@ -1,5 +1,9 @@
 package aic13.group6.topic2.entities;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name="rating")
 public class Rating {
 	
 	private int rid;
@@ -17,6 +21,7 @@ public class Rating {
 	/**
 	 * @return the rid
 	 */
+	@XmlElement
 	public int getRid() {
 		return rid;
 	}
@@ -31,6 +36,7 @@ public class Rating {
 	/**
 	 * @return the value
 	 */
+	@XmlElement
 	public float getValue() {
 		return value;
 	}

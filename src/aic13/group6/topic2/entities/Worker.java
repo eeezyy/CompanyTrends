@@ -1,7 +1,10 @@
 package aic13.group6.topic2.entities;
 
 import java.util.Set;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name="worker")
 public class Worker {
 	
 	private int wid;
@@ -17,6 +20,7 @@ public class Worker {
 	/**
 	 * @return the wid
 	 */
+	@XmlElement
 	public int getWid() {
 		return wid;
 	}
@@ -31,6 +35,7 @@ public class Worker {
 	/**
 	 * @return the rating
 	 */
+	@XmlElement
 	public float getRating() {
 		return rating;
 	}
