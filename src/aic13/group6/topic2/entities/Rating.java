@@ -1,7 +1,12 @@
 package aic13.group6.topic2.entities;
 
+import java.sql.SQLException;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import aic13.group6.topic2.daos.DAO;
+import aic13.group6.topic2.daos.DAORating;
 
 @XmlRootElement(name="rating")
 public class Rating {
@@ -13,7 +18,7 @@ public class Rating {
 	
 	public Rating() {
 		setRid(-1);
-		setValue(-10);
+		setValue(0);
 		setTask(null);
 		setTag(null);
 	}
@@ -50,8 +55,10 @@ public class Rating {
 
 	/**
 	 * @return the task
+	 * @throws SQLException 
 	 */
-	public Task getTask() {
+	public Task getTask() throws SQLException {
+		updateRelations();
 		return task;
 	}
 
@@ -64,8 +71,10 @@ public class Rating {
 
 	/**
 	 * @return the tag
+	 * @throws SQLException 
 	 */
-	public Tag getTag() {
+	public Tag getTag() throws SQLException {
+		updateRelations();
 		return tag;
 	}
 
@@ -74,5 +83,10 @@ public class Rating {
 	 */
 	public void setTag(Tag tag) {
 		this.tag = tag;
+	}
+	
+	private void updateRelations() throws SQLException {
+		DAO<Rating> daoRating = new DAORating();
+		daoRating.getRelations(this);
 	}
 }

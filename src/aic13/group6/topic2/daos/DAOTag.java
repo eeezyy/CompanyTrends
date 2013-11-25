@@ -20,6 +20,14 @@ public class DAOTag implements DAO<Tag>{
 			throw new SQLException("Object has no key.");
 		}
 		
+		if (obj.getArticles() == null || obj.getArticles().size() != 1) {
+			throw new SQLException("Tag has no or more than one article - cannot create table entry.");
+		}
+		
+		if (obj.getTasks() == null || obj.getTasks().size() != 1) {
+			throw new SQLException("Tag has no task or more than one - cannot create table entry.");
+		}
+		
 		Connection c = DBConnectionManager.getInstance().getConnection();
 		PreparedStatement ps = c.prepareStatement("INSERT INTO tags VALUES (?);");
 		
@@ -28,10 +36,6 @@ public class DAOTag implements DAO<Tag>{
 		ps.executeUpdate();
 		
 		ps = c.prepareStatement("INSERT INTO has_tags VALUES (?, ?);");
-		
-		if (obj.getArticles() == null || obj.getArticles().size() != 1) {
-			throw new SQLException("Tag has no article - cannot create table entry.");
-		}
 		
 		Article a = null;
 		for (Article e : obj.getArticles()) {
@@ -42,10 +46,6 @@ public class DAOTag implements DAO<Tag>{
 		ps.setString(2, obj.getName());
 		
 		ps.executeUpdate();
-		
-		if (obj.getTasks() == null || obj.getTasks().size() != 1) {
-			throw new SQLException("Tag has no task - cannot create table entry.");
-		}
 		
 		ps = c.prepareStatement("INSERT INTO belong_to VALUES (?, ?);");
 		
@@ -83,9 +83,34 @@ public class DAOTag implements DAO<Tag>{
 			return null;
 		}
 		
-		ps = c.prepareStatement("SELECT * FROM has_tags WHERE tag=?;");
+		// actually this doesn't make any sense since a tag has only one attribute.
+		
+		return obj;
+	}
+
+	@Override
+	public Set<Tag> findAll(Tag obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void update(Tag obj) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Tag getRelations(Tag obj) throws SQLException {
+		
+		if (obj.getName() == null) {
+			throw new SQLException("Tag has no key!");
+		}
+		
+		Connection c = DBConnectionManager.getInstance().getConnection();
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM has_tags WHERE tag=?;");
 		ps.setString(1, obj.getName());
-		rs = ps.executeQuery();
+		ResultSet rs = ps.executeQuery();
 		
 		Set<Article> articles = new HashSet<Article>();
 		DAO<Article> daoArticle = new DAOArticle();
@@ -120,18 +145,6 @@ public class DAOTag implements DAO<Tag>{
 		c.close();
 		
 		return obj;
-	}
-
-	@Override
-	public Set<Tag> findAll(Tag obj) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void update(Tag obj) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

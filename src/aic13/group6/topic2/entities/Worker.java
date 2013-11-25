@@ -1,8 +1,13 @@
 package aic13.group6.topic2.entities;
 
+import java.sql.SQLException;
 import java.util.Set;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import aic13.group6.topic2.daos.DAO;
+import aic13.group6.topic2.daos.DAOWorker;
 
 @XmlRootElement(name="worker")
 public class Worker {
@@ -13,7 +18,7 @@ public class Worker {
 	
 	public Worker() {
 		setWid(-1);
-		setRating(-10);
+		setRating(0);
 		setTasks(null);		
 	}
 
@@ -49,8 +54,11 @@ public class Worker {
 
 	/**
 	 * @return the tasks
+	 * @throws SQLException 
 	 */
-	public Set<Task> getTasks() {
+	public Set<Task> getTasks() throws SQLException {
+		DAO<Worker> daoWorker = new DAOWorker();
+		daoWorker.getRelations(this);
 		return tasks;
 	}
 

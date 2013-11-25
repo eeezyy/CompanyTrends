@@ -16,7 +16,8 @@ public class DAOWorker implements DAO<Worker> {
 	public Worker create(Worker obj) throws SQLException {
 		Worker w = new Worker();
 		Connection c = DBConnectionManager.getInstance().getConnection();
-		PreparedStatement ps = c.prepareStatement("INSERT INTO workers VALUES(NULL, 0);");
+		PreparedStatement ps = c.prepareStatement("INSERT INTO workers VALUES(NULL, ?);");
+		ps.setFloat(1, obj.getRating());
 		ps.executeUpdate();
 		w.setWid(ps.getGeneratedKeys().getInt("wid"));
 		
@@ -38,9 +39,28 @@ public class DAOWorker implements DAO<Worker> {
 		
 		obj.setRating(rs.getFloat("rating"));
 		
-		ps = c.prepareStatement("SELECT * FROM tasks WHERE wid=?;");
+		return obj;
+	
+	}
+
+	@Override
+	public Set<Worker> findAll(Worker obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void update(Worker obj) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Worker getRelations(Worker obj) throws SQLException {
+		Connection c = DBConnectionManager.getInstance().getConnection();
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM tasks WHERE wid=?;");
 		ps.setInt(1, obj.getWid());
-		rs = ps.executeQuery();
+		ResultSet rs = ps.executeQuery();
 		
 		DAO<Task> daoTask = new DAOTask();
 		Set<Task> tasks = new HashSet<Task>();
@@ -57,21 +77,6 @@ public class DAOWorker implements DAO<Worker> {
 		obj.setTasks(tasks);
 		
 		return obj;
-		
-		
-		
-	}
-
-	@Override
-	public Set<Worker> findAll(Worker obj) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void update(Worker obj) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

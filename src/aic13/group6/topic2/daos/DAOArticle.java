@@ -74,8 +74,30 @@ public class DAOArticle implements DAO<Article> {
 		rs.close();
 		ps.close();
 		
-		ps = c.prepareStatement("SELECT * FROM has_tags WHERE url=?;");
-		rs = ps.executeQuery();
+		return obj;
+	}
+
+	@Override
+	public Set<Article> findAll(Article obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void update(Article obj) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Article getRelations(Article obj) throws SQLException {
+		if (obj.getUrl() == null) {
+			throw new SQLException("Cannot find an article without key.");
+		}
+		
+		Connection c = DBConnectionManager.getInstance().getConnection();
+		PreparedStatement ps = c.prepareStatement("SELECT * FROM has_tags WHERE url=?;");
+		ResultSet rs = ps.executeQuery();
 		
 		Set<Tag> tags = new HashSet<Tag>();
 		DAO<Tag> daoTag = new DAOTag();
@@ -94,18 +116,6 @@ public class DAOArticle implements DAO<Article> {
 		obj.setTags(tags);
 		
 		return obj;
-	}
-
-	@Override
-	public Set<Article> findAll(Article obj) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void update(Article obj) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

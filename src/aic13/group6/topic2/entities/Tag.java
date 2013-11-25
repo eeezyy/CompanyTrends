@@ -1,8 +1,13 @@
 package aic13.group6.topic2.entities;
 
+import java.sql.SQLException;
 import java.util.Set;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import aic13.group6.topic2.daos.DAO;
+import aic13.group6.topic2.daos.DAOTag;
 
 @XmlRootElement(name="tag")
 public class Tag {
@@ -34,9 +39,11 @@ public class Tag {
 
 	/**
 	 * @return the articles
+	 * @throws SQLException 
 	 */
 	@XmlElement
-	public Set<Article> getArticles() {
+	public Set<Article> getArticles() throws SQLException {
+		updateRelations();
 		return articles;
 	}
 
@@ -49,9 +56,11 @@ public class Tag {
 
 	/**
 	 * @return the tasks
+	 * @throws SQLException 
 	 */
 	@XmlElement
-	public Set<Task> getTasks() {
+	public Set<Task> getTasks() throws SQLException {
+		updateRelations();
 		return tasks;
 	}
 
@@ -60,6 +69,11 @@ public class Tag {
 	 */
 	public void setTasks(Set<Task> tasks) {
 		this.tasks = tasks;
+	}
+	
+	private void updateRelations() throws SQLException {
+		DAO<Tag> daoTag = new DAOTag();
+		daoTag.getRelations(this);		
 	}
 
 }

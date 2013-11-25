@@ -33,5 +33,13 @@ public interface DAO<T> {
 	 * @param obj An object with the ID field set. Completely overwrites this database entry.
 	 */
 	public void update(T obj);
+	
+	/**
+	 * Gets the relations for the object.
+	 * @param obj An object with the ID field set.
+	 * @return An object that has the relations set.
+	 * @throws SQLException 
+	 */
+	public T getRelations(T obj) throws SQLException;
 
 }
