@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Set;
 
 import aic13.group6.topic2.entities.Article;
 import aic13.group6.topic2.entities.Task;
@@ -51,18 +50,6 @@ public class DAOTask implements DAO<Task> {
 		obj.setPrice(rs.getFloat("tprice"));
 		
 		return obj;
-	}
-
-	@Override
-	public Set<Task> findAll(Task obj) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void update(Task obj) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

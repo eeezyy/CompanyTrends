@@ -89,18 +89,6 @@ public class DAOTag implements DAO<Tag>{
 	}
 
 	@Override
-	public Set<Tag> findAll(Tag obj) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void update(Tag obj) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public Tag getRelations(Tag obj) throws SQLException {
 		
 		if (obj.getName() == null) {
