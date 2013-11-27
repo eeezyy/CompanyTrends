@@ -29,5 +29,23 @@ public class TagResource {
         }
     }
 	
+	@Path("/answer/")
+	@GET
+	@Produces({"application/xml", "application/json"})
+    public Task getCallback(@QueryParam("id") String id,
+    		               @QueryParam("answer") String answer,
+    		               @QueryParam("user") String user,
+                           @Context final UriInfo uriInfo) {
+        try {
+            DAOTask daoTask = new DAOTask();
+            Task t = new Task();
+            t.setTid(Integer.parseInt(id));
+
+            return t;
+        } catch (Exception ex) {
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+	
 
 }
