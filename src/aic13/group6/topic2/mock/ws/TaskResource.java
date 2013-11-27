@@ -88,18 +88,16 @@ public class TaskResource {
 		trans.begin();
 		em.merge(t);
 		trans.commit();
-		em.close();
-	    factory.close();
-	    if (!(t.getAnswer().equals(""))){
-	    	if (!(t.getUser().equals(""))){
-	    		if (!(t.getCallbackLink().equals(""))){
+	    if (t.getAnswer()!=null && !(t.getAnswer().equals(""))){
+	    	if (t.getUser()!=null &&!(t.getUser().equals(""))){
+	    		if (t.getCallbackLink()!=null &&!(t.getCallbackLink().equals(""))){
 	    			String url = t.getCallbackLink() + "?id=" + t.getId() + "&answer=" + t.getAnswer() + "&user=" + t.getUser();
 	    			sendToServer(url, "");
 	    		}
 	    	}
 	    }
-	    
-	    
+	    em.close();
+	    factory.close();
 		final ResponseBuilder response = Response.status(Status.OK);
 	    return response.build();
 	}
