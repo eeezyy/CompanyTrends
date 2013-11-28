@@ -51,17 +51,11 @@ public class DAOArticleJPA implements DAO<Article> {
 		return obj;
 	}
 
-	public List<Article> findAllUsable() {
+	public List<Article> findAllNew() {
 		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
-    	
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Article> cq = cb.createQuery(Article.class);
-		Root<Article> article = cq.from(Article.class);
-		cq.where(cb.equal(article.get("usable"), true));
-		TypedQuery<Article> q = em.createQuery(cq);
 		
-		List<Article> ret = q.getResultList();
+		List<Article> ret = em.createQuery("SELECT a FROM articles a WHERE a.url NOT IN (SELECT a.url FROM tasks t LEFT JOIN t.article a))").getResultList();
 		
 		em.close();
 		emf.close();
