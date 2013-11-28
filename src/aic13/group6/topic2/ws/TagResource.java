@@ -23,7 +23,7 @@ public class TagResource {
     public Tag get(@QueryParam("name") String name,
                    @Context final UriInfo uriInfo) {
         try {
-            DAOTag daoTag = new DAOTag();
+            DAOTagJPA daoTag = new DAOTagJPA();
             Tag temp = new Tag();
             temp.setName(name);
             Tag t = daoTag.findByID(temp);
@@ -47,7 +47,7 @@ public class TagResource {
         		String tag = tagValue[0];
         		String value = tagValue[1];
         		Tag t = new Tag();
-        		DAOTag dt = new DAOTag();
+        		DAOTagJPA dt = new DAOTagJPA();
         		t.setName(tag);
         		t = dt.findByID(t);
         		if (t == null) {
@@ -58,14 +58,14 @@ public class TagResource {
         			t = dt.create(t);
         		}
         		Rating r = new Rating();
-        		DAORating dr = new DAORating();
+        		DAORatingJPA dr = new DAORatingJPA();
         		r.setTag(t);
-        		r.setTask(new Task());
+        		r.setTask(new Task()); //?
         		r.setValue(Float.parseFloat(value));
         		dr.create(r);
         	}
         	
-            DAOTask daoTask = new DAOTask();
+            DAOTaskJPA daoTask = new DAOTaskJPA();
             Task t = new Task();
             t.setTid(Integer.parseInt(id));
 

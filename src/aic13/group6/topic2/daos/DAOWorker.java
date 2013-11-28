@@ -66,16 +66,4 @@ public class DAOWorker implements DAO<Worker> {
 		return obj;
 	}
 
-	@Override
-	public Set<Worker> findAll(Worker obj) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void update(Worker obj) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
