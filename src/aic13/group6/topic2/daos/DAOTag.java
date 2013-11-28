@@ -88,7 +88,6 @@ public class DAOTag implements DAO<Tag>{
 		return obj;
 	}
 
-	@Override
 	public Tag getRelations(Tag obj) throws SQLException {
 		
 		if (obj.getName() == null) {
@@ -133,6 +132,18 @@ public class DAOTag implements DAO<Tag>{
 		c.close();
 		
 		return obj;
+	}
+
+	@Override
+	public Set<Tag> findAll(Tag obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void update(Tag obj) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -77,7 +77,6 @@ public class DAOArticle implements DAO<Article> {
 		return obj;
 	}
 
-	@Override
 	public Article getRelations(Article obj) throws SQLException {
 		if (obj.getUrl() == null) {
 			throw new SQLException("Cannot find an article without key.");
@@ -104,6 +103,18 @@ public class DAOArticle implements DAO<Article> {
 		obj.setTags(tags);
 		
 		return obj;
+	}
+
+	@Override
+	public Set<Article> findAll(Article obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void update(Article obj) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

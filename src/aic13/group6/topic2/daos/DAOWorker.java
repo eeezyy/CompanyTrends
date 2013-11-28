@@ -43,7 +43,6 @@ public class DAOWorker implements DAO<Worker> {
 	
 	}
 
-	@Override
 	public Worker getRelations(Worker obj) throws SQLException {
 		Connection c = DBConnectionManager.getInstance().getConnection();
 		PreparedStatement ps = c.prepareStatement("SELECT * FROM tasks WHERE wid=?;");
@@ -65,6 +64,18 @@ public class DAOWorker implements DAO<Worker> {
 		obj.setTasks(tasks);
 		
 		return obj;
+	}
+
+	@Override
+	public Set<Worker> findAll(Worker obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void update(Worker obj) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
