@@ -12,4 +12,18 @@
         <property name="eclipselink.logging.level" value="ALL" />
       </properties>
     </persistence-unit>
+     <persistence-unit name="aic" transaction-type="RESOURCE_LOCAL">
+      <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+      <class>aic13.group6.topic2.entities.Article</class>
+      <class>aic13.group6.topic2.entities.Rating</class>
+      <class>aic13.group6.topic2.entities.Tag</class>
+      <class>aic13.group6.topic2.entities.Task</class>
+      <class>aic13.group6.topic2.entities.Worker</class>
+      
+      <properties>
+        <property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC" />
+        <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:aic.db" />
+        <property name="eclipselink.logging.level" value="ALL" />
+      </properties>
+    </persistence-unit>
  </persistence>

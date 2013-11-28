@@ -25,11 +25,12 @@ public class ProcessResource {
     public Task get(@QueryParam("url") String url,
     		       @Context final UriInfo uriInfo) {
         try {
-        	DAOArticle da = new DAOArticle();
+        	DAOArticleJPA da = new DAOArticleJPA();
         	Article a = new Article();
         	a.setUrl(url);
         	a = da.findByID(a);
-        	DAOTask dt = new DAOTask();
+        	
+        	DAOTaskJPA dt = new DAOTaskJPA();
         	Task t = new Task();
         	t.setArticle(a);
         	t.setCallBackLink("abc");
@@ -39,6 +40,7 @@ public class ProcessResource {
         	t.setTags(new HashSet<Tag>());
         	t.setTid(-1);
         	t = dt.create(t);
+        	
         	int r = generator.nextInt();
         	String mockTask = "<task><id>" + r +"</id><user>peter</user><callbackLink>http://localhost:8080/crowd/rest/tag/answer</callbackLink></task>";
         	sendToServer ("http://localhost:8080/mock/rest/task", mockTask);
