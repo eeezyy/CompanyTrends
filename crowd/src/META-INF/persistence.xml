@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+      version="2.0"
+      xmlns="http://java.sun.com/xml/ns/persistence">
+    <persistence-unit name="crowd" transaction-type="RESOURCE_LOCAL">
+      <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+      <class>aic13.group6.topic2.entities.Article</class>
+      <class>aic13.group6.topic2.entities.Rating</class>
+      <class>aic13.group6.topic2.entities.Tag</class>
+      <class>aic13.group6.topic2.entities.Task</class>
+      <class>aic13.group6.topic2.entities.Worker</class>
+      <properties>
+        <property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC" />
+        <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:D:/aic.db" />
+        <property name="eclipselink.logging.level" value="ALL" />
+        <property name="eclipselink.ddl-generation" value="create-tables" />
+      </properties>
+    </persistence-unit>
+ </persistence>
