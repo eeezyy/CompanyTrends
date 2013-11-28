@@ -105,16 +105,4 @@ public class DAOArticle implements DAO<Article> {
 		return obj;
 	}
 
-	@Override
-	public Set<Article> findAll(Article obj) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void update(Article obj) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

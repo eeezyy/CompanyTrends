@@ -134,16 +134,4 @@ public class DAOTag implements DAO<Tag>{
 		return obj;
 	}
 
-	@Override
-	public Set<Tag> findAll(Tag obj) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void update(Tag obj) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

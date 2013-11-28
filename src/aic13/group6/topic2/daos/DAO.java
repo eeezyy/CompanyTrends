@@ -1,7 +1,6 @@
 package aic13.group6.topic2.daos;
 
 import java.sql.SQLException;
-import java.util.Set;
 
 public interface DAO<T> {
 	
@@ -20,9 +19,6 @@ public interface DAO<T> {
 	 * @throws SQLException 
 	 */
 	public T findByID(T obj) throws SQLException;
-	
-	public Set<T> findAll(T obj);
-	
-	public void update(T obj);
+
 
 }

@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Set;
 
 import aic13.group6.topic2.entities.Rating;
 import aic13.group6.topic2.entities.Tag;
@@ -85,18 +84,6 @@ public class DAORating implements DAO<Rating> {
 		c.close();
 		
 		return obj;
-	}
-
-	@Override
-	public Set<Rating> findAll(Rating obj) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void update(Rating obj) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
