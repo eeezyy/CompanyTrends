@@ -3,6 +3,11 @@ package aic13.group6.topic2.entities;
 import java.sql.SQLException;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -10,10 +15,15 @@ import aic13.group6.topic2.daos.DAO;
 import aic13.group6.topic2.daos.DAOTag;
 
 @XmlRootElement(name="tag")
+@Entity
+@Table(name = "tags")
 public class Tag {
 	
+	@Id
 	private String name;
+	@ManyToMany(cascade=CascadeType.ALL, mappedBy = "tags")
 	private Set<Article> articles;
+	@ManyToMany(cascade=CascadeType.ALL, mappedBy = "tags")
 	private Set<Task> tasks;
 	
 	public Tag() {

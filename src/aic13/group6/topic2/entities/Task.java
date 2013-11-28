@@ -3,6 +3,14 @@ package aic13.group6.topic2.entities;
 import java.sql.SQLException;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -10,14 +18,21 @@ import aic13.group6.topic2.daos.DAO;
 import aic13.group6.topic2.daos.DAOTask;
 
 @XmlRootElement(name="task")
+@Entity
+@Table(name = "tasks")
 public class Task {
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int tid;
 	private String description;
 	private String callBackLink;
 	private float price;
+	@ManyToOne(cascade=CascadeType.ALL)
 	private Article article;
+	@ManyToOne(cascade=CascadeType.ALL)
 	private Worker worker;
+	@ManyToMany(cascade=CascadeType.ALL)
 	private Set<Tag> tags;
 	
 	public Task() {

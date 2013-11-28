@@ -1,23 +1,38 @@
 package aic13.group6.topic2.entities;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 import aic13.group6.topic2.daos.DAO;
 import aic13.group6.topic2.daos.DAOArticle;
 
 @XmlRootElement(name="article")
-public class Article {
-	
+@Entity
+@Table(name = "articles")
+public class Article implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 49266136511814730L;
+
+	@Id
 	private String url;
 	private Calendar date;
 	private String title;
 	private String text;
 	private Boolean usable;
+	@ManyToMany(cascade=CascadeType.ALL)
 	private Set<Tag> tags;
 	
 	public Article () {

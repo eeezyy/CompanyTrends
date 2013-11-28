@@ -2,6 +2,13 @@ package aic13.group6.topic2.entities;
 
 import java.sql.SQLException;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -9,11 +16,17 @@ import aic13.group6.topic2.daos.DAO;
 import aic13.group6.topic2.daos.DAORating;
 
 @XmlRootElement(name="rating")
+@Entity
+@Table(name = "ratings")
 public class Rating {
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int rid;
 	private float value;
+	@ManyToOne(cascade=CascadeType.ALL)
 	private Task task;
+	@ManyToOne(cascade=CascadeType.ALL)
 	private Tag tag;
 	
 	public Rating() {

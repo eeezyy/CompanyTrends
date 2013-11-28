@@ -1,6 +1,7 @@
 package aic13.group6.topic2.daos;
 
 import java.sql.SQLException;
+import java.util.Set;
 
 public interface DAO<T> {
 	
@@ -20,12 +21,8 @@ public interface DAO<T> {
 	 */
 	public T findByID(T obj) throws SQLException;
 	
-	/**
-	 * Gets the relations for the object.
-	 * @param obj An object with the ID field set.
-	 * @return An object that has the relations set.
-	 * @throws SQLException 
-	 */
-	public T getRelations(T obj) throws SQLException;
+	public Set<T> findAll(T obj);
+	
+	public void update(T obj);
 
 }
