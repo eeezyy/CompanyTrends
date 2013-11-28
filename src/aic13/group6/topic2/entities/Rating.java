@@ -12,9 +12,6 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import aic13.group6.topic2.daos.DAO;
-import aic13.group6.topic2.daos.DAORating;
-
 @XmlRootElement(name="rating")
 @Entity
 @Table(name = "ratings")
@@ -71,7 +68,6 @@ public class Rating {
 	 * @throws SQLException 
 	 */
 	public Task getTask() throws SQLException {
-		updateRelations();
 		return task;
 	}
 
@@ -87,7 +83,6 @@ public class Rating {
 	 * @throws SQLException 
 	 */
 	public Tag getTag() throws SQLException {
-		updateRelations();
 		return tag;
 	}
 
@@ -98,8 +93,4 @@ public class Rating {
 		this.tag = tag;
 	}
 	
-	private void updateRelations() throws SQLException {
-		DAO<Rating> daoRating = new DAORating();
-		daoRating.getRelations(this);
-	}
 }

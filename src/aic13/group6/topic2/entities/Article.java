@@ -13,9 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import aic13.group6.topic2.daos.DAO;
-import aic13.group6.topic2.daos.DAOArticle;
-
 @XmlRootElement(name="article")
 @Entity
 @Table(name = "articles")
@@ -108,8 +105,6 @@ public class Article implements Serializable {
 	 * @throws SQLException 
 	 */
 	public Set<Tag> getTags() throws SQLException {
-		DAO<Article> daoArticle = new DAOArticle();
-		daoArticle.getRelations(this);
 		return tags;
 	}
 

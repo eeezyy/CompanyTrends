@@ -11,9 +11,6 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import aic13.group6.topic2.daos.DAO;
-import aic13.group6.topic2.daos.DAOTag;
-
 @XmlRootElement(name="tag")
 @Entity
 @Table(name = "tags")
@@ -53,7 +50,6 @@ public class Tag {
 	 */
 	@XmlElement
 	public Set<Article> getArticles() throws SQLException {
-		updateRelations();
 		return articles;
 	}
 
@@ -70,7 +66,6 @@ public class Tag {
 	 */
 	@XmlElement
 	public Set<Task> getTasks() throws SQLException {
-		updateRelations();
 		return tasks;
 	}
 
@@ -80,10 +75,4 @@ public class Tag {
 	public void setTasks(Set<Task> tasks) {
 		this.tasks = tasks;
 	}
-	
-	private void updateRelations() throws SQLException {
-		DAO<Tag> daoTag = new DAOTag();
-		daoTag.getRelations(this);		
-	}
-
 }

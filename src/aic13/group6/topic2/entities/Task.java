@@ -14,9 +14,6 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import aic13.group6.topic2.daos.DAO;
-import aic13.group6.topic2.daos.DAOTask;
-
 @XmlRootElement(name="task")
 @Entity
 @Table(name = "tasks")
@@ -110,7 +107,6 @@ public class Task {
 	 * @throws SQLException 
 	 */
 	public Article getArticle() throws SQLException {
-		updateRelations();
 		return article;
 	}
 
@@ -127,7 +123,6 @@ public class Task {
 	 */
 	@XmlElement
 	public Worker getWorker() throws SQLException {
-		updateRelations();
 		return worker;
 	}
 
@@ -143,7 +138,6 @@ public class Task {
 	 * @throws SQLException 
 	 */
 	public Set<Tag> getTags() throws SQLException {
-		updateRelations();
 		return tags;
 	}
 
@@ -152,10 +146,5 @@ public class Task {
 	 */
 	public void setTags(Set<Tag> tags) {
 		this.tags = tags;
-	}
-	
-	private void updateRelations() throws SQLException {
-		DAO<Task> daoTask = new DAOTask();
-		daoTask.getRelations(this);
 	}
 }
