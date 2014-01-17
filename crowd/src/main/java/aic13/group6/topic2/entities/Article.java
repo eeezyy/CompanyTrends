@@ -14,31 +14,37 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 public class Article {
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long id;
+//	@Id
+//	@GeneratedValue(strategy=GenerationType.AUTO)
+//	private Long id;
 	
-
+	@Id
+//	@GeneratedValue(strategy=GenerationType.TABLE)
 	private String url;
 	private long date;
 	private String title;
 	private String text;
 	private Boolean usable;
-	@ManyToMany(mappedBy = "articles", targetEntity=Tag.class)
+	@ManyToMany(mappedBy = "articles", targetEntity=Tag.class, cascade = CascadeType.PERSIST)
+//	@JoinTable(
+//			   name = "TAG_ARTICLE", 
+//			   joinColumns = @JoinColumn(name = "article_URL"), 
+//			   inverseJoinColumns = @JoinColumn(name = "tag_NAME")
+//			 )
 	private List<Tag> tags;
 	
 	public Article () {
 		tags = new LinkedList<Tag>();
 	}
-	
-	@XmlElement
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
+//	
+//	@XmlElement
+//	public Long getId() {
+//		return id;
+//	}
+//
+//	public void setId(Long id) {
+//		this.id = id;
+//	}
 
 	/**
 	 * @return the url

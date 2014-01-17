@@ -26,7 +26,7 @@ public class DAOArticleJPA implements DAO<Article> {
     	EntityManager em = emf.createEntityManager();
     	
 		em.getTransaction().begin();
-		em.persist(obj);
+		em.merge(obj);
 		em.getTransaction().commit();
 		
 		em.close();
