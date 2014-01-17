@@ -26,47 +26,80 @@
         <script src="http://cdn.jsdelivr.net/underscorejs/1.5.1/underscore-min.js"></script>
         
         <script type="text/javascript">
-            var angularExample =angular.module('angularexample',["restangular"]);
-            angularExample.config(["RestangularProvider",function(RestangularProvider){
-                    RestangularProvider.setRestangularFields({
-                            id: "_id"
+            var rest =angular.module('angularexample',["restangular"]);
+            
+            // Global configuration
+            rest.config(["RestangularProvider",function(RestangularProvider){
+                RestangularProvider.setRestangularFields({
+                        id: "_id"
+                });
+        	}]);
+            
+            // Configuration for Cloud REST-API
+            rest.factory('CloudRestangular', function(Restangular) {
+            	return Restangular.withConfig(function(RestangularConfigurer) {
+            		RestangularConfigurer.setBaseUrl('rest')
+            	});
+            });
+            
+            // Configuraiton for DBPedia API
+			rest.factory('DBPediaRestangular', function(Restangular) {
+            	return Restangular.withConfig(function(RestangularConfigurer) {
+            		RestangularConfigurer.setBaseUrl('http://lookup.dbpedia.org/api/search.asmx')
+            	});
+            });
+            
+			rest.controller("MainCtrl",["CloudRestangular","DBPediaRestangular","$scope",function(CloudRestangular,DBPediaRestangular,$scope){
+	            // Interceptors
+	            CloudRestangular.setRequestInterceptor(function(elem, operation, what) {
+	            	// remove error message if exists
+	            	$scope.errorMessageRequest = false;
+	            	// to show loading icon
+	            	$scope.requestList = true;	
+	            });
+	            
+	            CloudRestangular.setErrorInterceptor(function(elem, operation, what) {
+	            	// show error panel
+	            	$scope.errorMessageRequest = elem.data;
+	            	$scope.requestList = false;	
+	            	for(a in elem)console.log(a);
+	            	console.log("op" + operation);
+	            	console.log("what" + what);
+	            });
+	            
+	            CloudRestangular.setResponseInterceptor(function(data, operation, what) {
+	            	$scope.requestList = false;
+	            });
+	            
+	         // Cloud REST-API
+				$scope.getArticles = function(input) {
+	            	var resource = CloudRestangular.all('article/' + input);
+	                resource.getList().then(function(articles){
+	                        $scope.articles = articles;
+	                        console.log(articles);
+	                });
+	            }
+	            
+	            // DBPedia Suggestions
+	            $scope.showSuggestions = function() {
+                	var searchItem = 'Thing';
+                	if ($scope.action == 'Company') {
+                		searchItem = 'Company';
+                	}
+                	
+                	var resource = DBPediaRestangular.all('KeywordSearch?QueryClass=' + searchItem + '&QueryString=' + $scope.searchName);
+                    resource.getList().then(function(results){
+                            $scope.suggestions = results;
+                            if(results.results.length > 0) {
+                            	$scope.suggestionError = undefined;
+                            } else {
+                            	$scope.suggestionError = true;
+                            }
+                            console.log(results);
                     });
-//                     RestangularProvider.setBaseUrl('rest');
-            }]);
-            angularExample.controller("MainCtrl",["Restangular","$scope",function(Restangular,$scope){
-                    
-                    $scope.getArticles = function() {
-                    	Restangular.setBaseUrl('rest');
-                    	var resource = Restangular.all('article/' + $scope.searchName);
-                        resource.getList().then(function(articles){
-                                $scope.articles = articles;
-                                console.log(articles);
-                        });
-                    }
-                    $scope.showSuggestions = function() {
-                    	var searchItem = 'Thing';
-                    	if ($scope.action == 'Company') {
-                    		searchItem = 'Company';
-                    	}
-                    	Restangular.setBaseUrl('http://lookup.dbpedia.org/api/search.asmx');
-                    	var resource = Restangular.all('KeywordSearch?QueryClass=' + searchItem + '&QueryString=' + $scope.searchName);
-                        resource.getList().then(function(results){
-                                $scope.suggestions = results;
-                                if(results.results.length > 0) {
-                                	$scope.suggestionError = undefined;
-                                } else {
-                                	$scope.suggestionError = true;
-                                }
-                                console.log(results);
-                        });
-                    }
-                    $scope.add = function() {
-                            resource.post($scope.newArticle).then(function(newResource){
-                                            $scope.articles.push(newResource);
-                            })
-                    }
-
-            }]);
+                }
+			}]);
+            
             
             
 
@@ -104,15 +137,6 @@
               </ul>
             </li>
           </ul>
-<!--          <form class="navbar-form navbar-right">
-            <div class="form-group">
-              <input type="text" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Sign in</button>
-          </form>-->
         </div><!--/.navbar-collapse -->
       </div>
     </div>
@@ -120,7 +144,7 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
-        <h1>Sentiment analysis for companies and products</h1>
+        <h1>Trends for companies and products</h1>
         <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
         <form>
             <div class="input-group input-group-lg">
@@ -134,13 +158,13 @@
                 <input type="text" placeholder="{{action}} name" class="form-control" ng-model="searchName">
                 <span class="input-group-btn">
 <!--                     <button class="btn btn-default" ng-click="getArticles()">Go!</button> -->
-					<button type="submit" class="btn btn-default" ng-click="showSuggestions()">Go!</button>
+					<button type="submit" class="btn btn-default" ng-click="showSuggestions()"><span class="glyphicon glyphicon-search"></span></button>
                 </span>
             </div>
         </form>
         <div class="list-group" ng-show="suggestions">
 		  <a href="#" class="list-group-item" ng-repeat="suggestion in suggestions.results">
-		 	<p class="list-group-item-text" ng-click="searchName='{{suggestion.label}}'; getArticles()">{{suggestion.label}}</p>
+		 	<p class="list-group-item-text" ng-click="getArticles(suggestion.label)">{{suggestion.label}}</p>
 		  </a>
 		</div>
 		<div ng-show="suggestionError" class="alert alert-warning">No company or product found! Please try again.</div>
@@ -150,6 +174,9 @@
     <div class="container">
       <!-- Example row of columns -->
 
+		<div class="text-center"><img src="images/loading.gif" ng-show="requestList" /></div>
+		<div class="alert alert-danger" ng-show="errorMessageRequest"><strong>Error:</strong> <span class="collapse">{{errorMessageRequest}}</span></div>
+		
 		<div class="panel panel-default" ng-show="articles">
 		  <!-- Default panel contents -->
 		  <div class="panel-heading">Articles</div>
