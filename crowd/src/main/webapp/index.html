@@ -50,6 +50,9 @@
             });
             
 			rest.controller("MainCtrl",["CloudRestangular","DBPediaRestangular","$scope",function(CloudRestangular,DBPediaRestangular,$scope){
+				// preset variables
+				$scope.selectedIndex = -1;
+				
 	            // Interceptors
 	            CloudRestangular.setRequestInterceptor(function(elem, operation, what) {
 	            	// remove error message if exists
@@ -62,18 +65,30 @@
 	            	// show error panel
 	            	$scope.errorMessageRequest = elem.data;
 	            	$scope.requestList = false;	
-	            	for(a in elem)console.log(a);
-	            	console.log("op" + operation);
-	            	console.log("what" + what);
+// 	            	for(a in elem)console.log(a);
+// 	            	console.log("op" + operation);
+// 	            	console.log("what" + what);
 	            });
 	            
 	            CloudRestangular.setResponseInterceptor(function(data, operation, what) {
 	            	$scope.requestList = false;
 	            });
 	            
+	            // if response list is empty, transform result so no error will be thrown
+	            CloudRestangular.setResponseExtractor(function(response, operation, what, url) {
+	            	$scope.requestList = false;
+	            	if (operation === "getList" && response === null) {
+	            		return "{ results: [] }";
+	            	}
+	            	return response;
+	            });
+	            
 	         // Cloud REST-API
-				$scope.getArticles = function(input) {
-	            	var resource = CloudRestangular.all('article/' + input);
+				$scope.getArticles = function(index) {
+	            	$scope.selectedIndex = index;
+// 	            	console.log('index: ' + index);
+// 	            	console.log(JSON.stringify($scope.suggestions.results[0]));
+	        	 	var resource = CloudRestangular.all('article/' + $scope.suggestions.results[index].label);
 	                resource.getList().then(function(articles){
 	                        $scope.articles = articles;
 	                        console.log(articles);
@@ -82,20 +97,24 @@
 	            
 	            // DBPedia Suggestions
 	            $scope.showSuggestions = function() {
+	            	$scope.selectedIndex = -1;
                 	var searchItem = 'Thing';
                 	if ($scope.action == 'Company') {
                 		searchItem = 'Company';
+                	} else if ($scope.action == 'Organisation'){
+                		searchItem = 'Organisation';
                 	}
                 	
                 	var resource = DBPediaRestangular.all('KeywordSearch?QueryClass=' + searchItem + '&QueryString=' + $scope.searchName);
                     resource.getList().then(function(results){
                             $scope.suggestions = results;
+//                             console.log(JSON.stringify($scope.suggestions.results));
                             if(results.results.length > 0) {
                             	$scope.suggestionError = undefined;
                             } else {
                             	$scope.suggestionError = true;
                             }
-                            console.log(results);
+//                             console.log(results);
                     });
                 }
 			}]);
@@ -152,6 +171,7 @@
 			        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-model="action" ng-init="action='Company'">{{action}} <span class="caret"></span></button>
 			        <ul class="dropdown-menu">
 			            <li><a href="#" ng-click="action='Company'">Company</a></li>
+			            <li><a href="#" ng-click="action='Organisation'">Organisation</a></li>
 			            <li><a href="#" ng-click="action='Product'">Product</a></li>
 			        </ul>
 			    </div><!-- /btn-group -->
@@ -163,8 +183,9 @@
             </div>
         </form>
         <div class="list-group" ng-show="suggestions">
-		  <a href="#" class="list-group-item" ng-repeat="suggestion in suggestions.results">
-		 	<p class="list-group-item-text" ng-click="getArticles(suggestion.label)">{{suggestion.label}}</p>
+		  <a href="#" class="list-group-item" ng-repeat="suggestion in suggestions.results track by $index"
+		  	 ng-class="{ 'active': $index == selectedIndex }" ng-click="getArticles($index)">
+		 	<p class="list-group-item-text">{{suggestion.label}}</p>
 		  </a>
 		</div>
 		<div ng-show="suggestionError" class="alert alert-warning">No company or product found! Please try again.</div>
@@ -175,7 +196,7 @@
       <!-- Example row of columns -->
 
 		<div class="text-center"><img src="images/loading.gif" ng-show="requestList" /></div>
-		<div class="alert alert-danger" ng-show="errorMessageRequest"><strong>Error:</strong> <span class="collapse">{{errorMessageRequest}}</span></div>
+		<div class="alert alert-danger" ng-show="errorMessageRequest"><strong>Error:</strong> {{errorMessageRequest}}</div>
 		
 		<div class="panel panel-default" ng-show="articles">
 		  <!-- Default panel contents -->
