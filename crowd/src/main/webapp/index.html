@@ -2,7 +2,7 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" ng-app="angularexample"> <!--<![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" ng-app="crowdsourcing"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -25,104 +25,6 @@
         <script src="http://cdn.jsdelivr.net/restangular/1.1.3/restangular.min.js"></script>
         <script src="http://cdn.jsdelivr.net/underscorejs/1.5.1/underscore-min.js"></script>
         
-        <script type="text/javascript">
-            var rest =angular.module('angularexample',["restangular"]);
-            
-            // Global configuration
-            rest.config(["RestangularProvider",function(RestangularProvider){
-                RestangularProvider.setRestangularFields({
-                        id: "_id"
-                });
-        	}]);
-            
-            // Configuration for Cloud REST-API
-            rest.factory('CloudRestangular', function(Restangular) {
-            	return Restangular.withConfig(function(RestangularConfigurer) {
-            		RestangularConfigurer.setBaseUrl('rest')
-            	});
-            });
-            
-            // Configuraiton for DBPedia API
-			rest.factory('DBPediaRestangular', function(Restangular) {
-            	return Restangular.withConfig(function(RestangularConfigurer) {
-            		RestangularConfigurer.setBaseUrl('http://lookup.dbpedia.org/api/search.asmx')
-            	});
-            });
-            
-			rest.controller("MainCtrl",["CloudRestangular","DBPediaRestangular","$scope",function(CloudRestangular,DBPediaRestangular,$scope){
-				// preset variables
-				$scope.selectedIndex = -1;
-				
-	            // Interceptors
-	            CloudRestangular.setRequestInterceptor(function(elem, operation, what) {
-	            	// remove error message if exists
-	            	$scope.errorMessageRequest = false;
-	            	// to show loading icon
-	            	$scope.requestList = true;	
-	            });
-	            
-	            CloudRestangular.setErrorInterceptor(function(elem, operation, what) {
-	            	// show error panel
-	            	$scope.errorMessageRequest = elem.data;
-	            	$scope.requestList = false;	
-// 	            	for(a in elem)console.log(a);
-// 	            	console.log("op" + operation);
-// 	            	console.log("what" + what);
-	            });
-	            
-	            CloudRestangular.setResponseInterceptor(function(data, operation, what) {
-	            	$scope.requestList = false;
-	            });
-	            
-	            // if response list is empty, transform result so no error will be thrown
-	            CloudRestangular.setResponseExtractor(function(response, operation, what, url) {
-	            	$scope.requestList = false;
-	            	if (operation === "getList" && response === null) {
-	            		return "{ results: [] }";
-	            	}
-	            	return response;
-	            });
-	            
-	         // Cloud REST-API
-				$scope.getArticles = function(index) {
-	            	$scope.selectedIndex = index;
-// 	            	console.log('index: ' + index);
-// 	            	console.log(JSON.stringify($scope.suggestions.results[0]));
-	        	 	var resource = CloudRestangular.all('article/' + $scope.suggestions.results[index].label);
-	                resource.getList().then(function(articles){
-	                        $scope.articles = articles;
-	                        console.log(articles);
-	                });
-	            }
-	            
-	            // DBPedia Suggestions
-	            $scope.showSuggestions = function() {
-	            	$scope.selectedIndex = -1;
-                	var searchItem = 'Thing';
-                	if ($scope.action == 'Company') {
-                		searchItem = 'Company';
-                	} else if ($scope.action == 'Organisation'){
-                		searchItem = 'Organisation';
-                	}
-                	
-                	var resource = DBPediaRestangular.all('KeywordSearch?QueryClass=' + searchItem + '&QueryString=' + $scope.searchName);
-                    resource.getList().then(function(results){
-                            $scope.suggestions = results;
-//                             console.log(JSON.stringify($scope.suggestions.results));
-                            if(results.results.length > 0) {
-                            	$scope.suggestionError = undefined;
-                            } else {
-                            	$scope.suggestionError = true;
-                            }
-//                             console.log(results);
-                    });
-                }
-			}]);
-            
-            
-            
-
-    </script>
     </head>
     <body ng-controller="MainCtrl">
         <!--[if lt IE 7]>
@@ -178,14 +80,15 @@
                 <input type="text" placeholder="{{action}} name" class="form-control" ng-model="searchName">
                 <span class="input-group-btn">
 <!--                     <button class="btn btn-default" ng-click="getArticles()">Go!</button> -->
-					<button type="submit" class="btn btn-default" ng-click="showSuggestions()"><span class="glyphicon glyphicon-search"></span></button>
+					<button class="btn btn-default" ng-click="alertInProgress()" ng-show="requestList"><img src="images/loading.gif" /></button>
+					<button type="submit" class="btn btn-default" ng-click="showSuggestions()" ng-hide="requestList"><span class="glyphicon glyphicon-search"></span></button>
                 </span>
             </div>
         </form>
         <div class="list-group" ng-show="suggestions">
-		  <a href="#" class="list-group-item" ng-repeat="suggestion in suggestions.results track by $index"
+		  <a class="list-group-item" ng-repeat="suggestion in suggestions.results track by $index"
 		  	 ng-class="{ 'active': $index == selectedIndex }" ng-click="getArticles($index)">
-		 	<p class="list-group-item-text">{{suggestion.label}}</p>
+		 	<p class="list-group-item-text">{{suggestion.label}} <img src="images/loading-itemlist.gif" ng-show="showLoading($index)" /></p>
 		  </a>
 		</div>
 		<div ng-show="suggestionError" class="alert alert-warning">No company or product found! Please try again.</div>
@@ -195,25 +98,26 @@
     <div class="container">
       <!-- Example row of columns -->
 
-		<div class="text-center"><img src="images/loading.gif" ng-show="requestList" /></div>
+<!-- 		<div class="text-center"><img src="images/loading.gif" ng-show="requestList" /></div> -->
 		<div class="alert alert-danger" ng-show="errorMessageRequest"><strong>Error:</strong> {{errorMessageRequest}}</div>
-		
-		<div class="panel panel-default" ng-show="articles">
-		  <!-- Default panel contents -->
-		  <div class="panel-heading">Articles</div>
-	      <table class="table table-hover table-striped">
-	          <th>Date</th>
-	          <th>Url</th>
-	          <th>Tags</th>
 	          
-	          <tr ng-repeat="article in articles.article">
-	              <td>{{article.date}}</td>
-	              <td>{{article.url}}</td>
-	              <td><span ng-repeat="tag in article.tags track by $id">{{tag}}, </span></td>
-	          </tr>
-	      </table>
-      </div>
-      
+          <div ng-repeat="article in articles.article" ng-show="articles">
+          	<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title"><a href="{{article.url}}" target="_blank">{{article.title}}</a></h3>
+				</div>
+				<div class="panel-body">
+					<div class="articleTextContainer">
+						<textarea type='text' class="articleText" rows=15 disabled>
+{{article.text}}
+						</textarea>
+					</div>
+				</div>
+				<div class="panel-footer">{{formatDate(article.date)}}</div>
+			</div>
+<!--           </div> -->
+	          
+      	</div>
       <hr>
 
       <footer>
@@ -226,11 +130,5 @@
 
         <script src="js/main.js"></script>
 
-        <script>
-            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-            g.src='//www.google-analytics.com/ga.js';
-            s.parentNode.insertBefore(g,s)}(document,'script'));
-        </script>
     </body>
 </html>
