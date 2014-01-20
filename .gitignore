@@ -4,3 +4,11 @@
 .project
 .classpath
 *.class
+crowd/.gitignore
+crowd/.settings/org.eclipse.core.resources.prefs
+crowd/.settings/org.eclipse.jdt.core.prefs
+crowd/.settings/org.eclipse.m2e.core.prefs
+crowd/.settings/org.eclipse.wst.common.component
+crowd/.settings/org.eclipse.wst.common.project.facet.core.prefs.xml
+crowd/.settings/org.eclipse.wst.common.project.facet.core.xml
+crowd/.settings/org.eclipse.wst.validation.prefs
