@@ -91,7 +91,7 @@ public class YFinancePageScrapperJava {
 	        article.setUrl(url);
 			article.setDate(calendar.getTimeInMillis());
 			article.setTitle(title);
-			article.setText(text);
+			article.setText(text.trim());
 			
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
