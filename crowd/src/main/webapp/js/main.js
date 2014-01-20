@@ -29,6 +29,7 @@ var rest =angular.module('crowdsourcing',["restangular"]);
 	            CloudRestangular.setRequestInterceptor(function(elem, operation, what) {
 	            	// remove error message if exists
 	            	$scope.errorMessageRequest = false;
+	            	$scope.noArticlesFound = false;
 	            	// to show loading icon
 	            	$scope.requestList = true;	
 	            });
@@ -49,7 +50,8 @@ var rest =angular.module('crowdsourcing',["restangular"]);
 	            // if response list is empty, transform result so no error will be thrown
 	            CloudRestangular.setResponseExtractor(function(response, operation, what, url) {
 	            	$scope.requestList = false;
-	            	if (operation === "getList" && response === null) {
+	            	if (operation === "getList" && (response === null || response === "null")) {
+	            		$scope.noArticlesFound = true;
 	            		return "{ results: [] }";
 	            	}
 	            	return response;
