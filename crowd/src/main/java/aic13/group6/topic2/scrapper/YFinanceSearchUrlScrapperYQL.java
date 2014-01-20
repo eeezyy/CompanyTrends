@@ -35,7 +35,7 @@ import aic13.group6.topic2.entities.Article;
 /**
  *	Scrappes the finance news article issued by Yahoo!
  */
-public class YFinanceUrlScrapperYQL {
+public class YFinanceSearchUrlScrapperYQL {
     
 	private final String yqlBaseUrl = "http://query.yahooapis.com/v1/public/yql?q=";
 	private final String validUrlPattern = "^http://finance.yahoo.com/(news|blogs).*";
