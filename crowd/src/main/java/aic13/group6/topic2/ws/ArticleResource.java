@@ -19,9 +19,10 @@ import aic13.group6.topic2.daos.DAOArticleJPA;
 import aic13.group6.topic2.daos.DAOTagJPA;
 import aic13.group6.topic2.entities.Article;
 import aic13.group6.topic2.entities.Tag;
+import aic13.group6.topic2.scrapper.YFinancePageScrapperJava;
 import aic13.group6.topic2.scrapper.YFinanceScrapperPhantomJS;
-import aic13.group6.topic2.scrapper.YFinanceScrapperYQL;
-import aic13.group6.topic2.scrapper.YFinanceUrlScrapperYQL;
+import aic13.group6.topic2.scrapper.YFinancePageScrapperYQL;
+import aic13.group6.topic2.scrapper.YFinanceSearchUrlScrapperYQL;
 
 @Path("/article")
 public class ArticleResource {
@@ -35,8 +36,9 @@ public class ArticleResource {
     public List<Article> get(@PathParam("name") String name) {
 		
 //		YFinanceScrapper grabber = new YFinanceScrapper();
-		YFinanceUrlScrapperYQL urlScrapper = new YFinanceUrlScrapperYQL();
-		YFinanceScrapperYQL pageScrapper = new YFinanceScrapperYQL();
+		YFinanceSearchUrlScrapperYQL urlScrapper = new YFinanceSearchUrlScrapperYQL();
+//		YFinancePageScrapperYQL pageScrapper = new YFinancePageScrapperYQL();
+		YFinancePageScrapperJava pageScrapper = new YFinancePageScrapperJava();
         DAOArticleJPA daoArticle = new DAOArticleJPA();
 
 //        ArrayList<String> list = grabber.getURLs();
@@ -50,7 +52,7 @@ public class ArticleResource {
             	Article article = new Article();
             	article.setUrl(url);
             	
-            	if(daoArticle.findByUrl(article) == null) {
+            	if(daoArticle.findByID(article) == null) {
 //                	article = grabber.getPage(url);
             		article = pageScrapper.getPage(url);
             		Tag tag = new Tag();
