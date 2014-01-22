@@ -17,6 +17,8 @@ public class Rating {
 	private double value;
 	@ManyToOne(targetEntity=Tag.class, optional=false)
 	private Tag tag;
+	@ManyToOne(targetEntity=Job.class, optional=false)
+	private Job job;
 	
 	public Rating() {
 

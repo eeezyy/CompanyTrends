@@ -8,10 +8,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="job")
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 public class Job {
 	
@@ -25,7 +28,7 @@ public class Job {
 	@OneToMany(targetEntity=Rating.class, mappedBy = "job")
 	private List<Rating> ratings;
 	
-	@XmlElement
+//	@XmlElement
 	public Long getId() {
 		return id;
 	}
@@ -34,7 +37,7 @@ public class Job {
 		this.id = id;
 	}
 	
-	@XmlElement
+//	@XmlElement
 	public String getName() {
 		return name;
 	}
@@ -43,7 +46,7 @@ public class Job {
 		this.name = name;
 	}
 	
-	@XmlElement
+//	@XmlElement
 	public State getState() {
 		return state;
 	}
@@ -52,7 +55,7 @@ public class Job {
 		this.state = state;
 	}
 	
-	@XmlElement
+//	@XmlElement
 	public List<Article> getArticles() {
 		return articles;
 	}
@@ -61,7 +64,7 @@ public class Job {
 		this.articles = articles;
 	}
 	
-	@XmlElement
+//	@XmlElement
 	public List<Rating> getRatings() {
 		return ratings;
 	}
