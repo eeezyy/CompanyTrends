@@ -100,11 +100,11 @@
     <div class="container">
       <!-- Example row of columns -->
 		<div class="alert alert-danger" ng-show="errorMessageRequest"><strong>Error:</strong> {{errorMessageRequest}}</div>
-		<div class="alert alert-info" ng-show="job.state=='CREATED'"><strong>Info:</strong> Job for '{{name}}' created!</div>
-		<div class="alert alert-info" ng-show="job.state=='PREPARED'"><strong>Info:</strong> Job '{{name}}' is prepared for workers!</div>
-		<div class="alert alert-info" ng-show="job.state=='ASSIGNED'"><strong>Info:</strong> Job '{{name}}' is assigned to workers!</div>
-		<div class="alert alert-info" ng-show="job.state=='FINISHED'"><strong>Info:</strong> Job '{{name}}' is finished!</div>
-		<div class="alert alert-info" ng-show="noArticlesFound"><strong>Info:</strong> No articles found to analyze!</div>
+		<div class="alert alert-info" ng-show="showState('CREATED')"><strong>Info:</strong> Job for '{{name}}' created!</div>
+		<div class="alert alert-info" ng-show="showState('PREPARED')"><strong>Info:</strong> Job '{{name}}' is prepared for workers!</div>
+		<div class="alert alert-info" ng-show="showState('ASSIGNED')"><strong>Info:</strong> Job '{{name}}' is assigned to workers!</div>
+		<div class="alert alert-info" ng-show="showState('FINISHED')"><strong>Info:</strong> Job '{{name}}' is finished!</div>
+		<div class="alert alert-warning" ng-show="noArticlesFound"><strong>Info:</strong> No articles found to analyze!</div>
 	          
           <div ng-repeat="article in job.articles" ng-show="job.articles">
           	<div class="panel panel-default">

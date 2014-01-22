@@ -97,16 +97,24 @@ rest.controller("MainCtrl", ["CrowdRestangular", "DBPediaRestangular", "$scope",
 			};
 			
 			$scope.loadJob = function(id) {
+				$scope.requestList = true;
+				$scope.noArticlesFound = false;
 				CrowdRestangular.one('job', id).get().then(function(job) {
 					$scope.requestList = false;
 					console.log(job);
 					$scope.job = job;
-					if($scope.job.articles.length == 0 && $scope.job.state=='FINISHED') {
-						$scope.noArticlesFound = true;
-					}
+					
 					// to prevent changing view while changing search input
 					$scope.name = $scope.job.name; 
+					// show warning if no articles are found for the keyword
+					if($scope.job.articles.length == 0 && $scope.job.state != 'CREATED') {
+						$scope.noArticlesFound = true;
+					}
 				});
+			};
+			
+			$scope.showState = function(state) {
+				return $scope.job.state == state && !$scope.noArticlesFound;
 			};
 
 			$scope.alertInProgress = function() {
