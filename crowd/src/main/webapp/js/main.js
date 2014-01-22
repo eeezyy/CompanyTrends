@@ -88,7 +88,7 @@ rest.controller("MainCtrl", ["CrowdRestangular", "DBPediaRestangular", "$scope",
 				
 				// TODO check if angularjs request is compatible (e.g. interceptors) with restangular
 				// restangular-post seems broken, doesn't send body
-				$http.post("http://localhost:8080/crowd/rest/job", body).then(function(job) {
+				$http.post("./rest/job", body).then(function(job) {
 					$scope.job = job.data;
 					// don't use html5-history, causes endless loop
 					window.location.href="#/"+$scope.job.id;
