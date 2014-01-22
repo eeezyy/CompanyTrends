@@ -21,9 +21,10 @@
         <link rel="stylesheet" href="css/main.css">
 
         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
-        <script src="http://cdn.jsdelivr.net/restangular/1.1.3/restangular.min.js"></script>
-        <script src="http://cdn.jsdelivr.net/underscorejs/1.5.1/underscore-min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.js"></script>
+    	<script src="http://code.angularjs.org/1.2.4/angular-route.js"></script>
+    	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+        <script src="http://cdn.jsdelivr.net/restangular/1.2.0/restangular.min.js"></script>
         
     </head>
     <body ng-controller="MainCtrl">
@@ -66,7 +67,7 @@
     <div class="jumbotron">
       <div class="container">
         <h1>Trends for companies and products</h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+        <p>Is there a company or product you want to know the current opinion about? Search for the name and request the result. Real people in the crowd will be assigned to read the recent Yahoo! Finance New about your topic and will determine the sentiment. You will be notified about the progress and the result.</p>
         <form>
             <div class="input-group input-group-lg">
 	            <div class="input-group-btn">
@@ -77,32 +78,35 @@
 			            <li><a href="#" ng-click="action='Product'">Product</a></li>
 			        </ul>
 			    </div><!-- /btn-group -->
-                <input type="text" placeholder="{{action}} name" class="form-control" ng-model="searchName">
+                <input type="text" placeholder="{{action}} name" class="form-control" ng-model="job.name">
                 <span class="input-group-btn">
 <!--                     <button class="btn btn-default" ng-click="getArticles()">Go!</button> -->
 					<button class="btn btn-default" ng-click="alertInProgress()" ng-show="requestList"><img src="images/loading.gif" /></button>
 					<button type="submit" class="btn btn-default" ng-click="showSuggestions()" ng-hide="requestList"><span class="glyphicon glyphicon-search"></span></button>
+					<button type="submit" class="btn btn-default" ng-click="createJob()">assign job</button>
                 </span>
             </div>
         </form>
         <div class="list-group" ng-show="suggestions">
 		  <a class="list-group-item" ng-repeat="suggestion in suggestions.results track by $index"
-		  	 ng-class="{ 'active': $index == selectedIndex }" ng-click="getArticles($index)">
-		 	<p class="list-group-item-text">{{suggestion.label}} <img src="images/loading-itemlist.gif" ng-show="showLoading($index)" /></p>
+		  	 ng-class="{ 'active': $index == selectedIndex }" ng-click="selectSuggestion($index)" style="cursor:pointer;">
+		 	<p class="list-group-item-text">{{suggestion.label}}</p>
 		  </a>
 		</div>
-		<div ng-show="suggestionError" class="alert alert-warning">No company or product found! Please try again.</div>
+		<div ng-show="suggestionError" class="alert alert-warning">No company or product found! Please try new keyword.</div>
       </div>
     </div>
 
     <div class="container">
       <!-- Example row of columns -->
-
-<!-- 		<div class="text-center"><img src="images/loading.gif" ng-show="requestList" /></div> -->
 		<div class="alert alert-danger" ng-show="errorMessageRequest"><strong>Error:</strong> {{errorMessageRequest}}</div>
+		<div class="alert alert-info" ng-show="job.state=='CREATED'"><strong>Info:</strong> Job for '{{name}}' created!</div>
+		<div class="alert alert-info" ng-show="job.state=='PREPARED'"><strong>Info:</strong> Job '{{name}}' is prepared for workers!</div>
+		<div class="alert alert-info" ng-show="job.state=='ASSIGNED'"><strong>Info:</strong> Job '{{name}}' is assigned to workers!</div>
+		<div class="alert alert-info" ng-show="job.state=='FINISHED'"><strong>Info:</strong> Job '{{name}}' is finished!</div>
 		<div class="alert alert-info" ng-show="noArticlesFound"><strong>Info:</strong> No articles found to analyze!</div>
 	          
-          <div ng-repeat="article in articles.article" ng-show="articles">
+          <div ng-repeat="article in job.articles" ng-show="job.articles">
           	<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title"><a href="{{article.url}}" target="_blank">{{article.title}}</a></h3>
@@ -124,12 +128,17 @@
       <footer>
         <p>&copy; AIC WS2013</p>
       </footer>
-    </div> <!-- /container -->        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.js"><\/script>')</script>
+    </div> 
+    <div ng-view></div>
+	<script type="text/ng-template" id="index.html">
+    </script>
+    	
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.js"><\/script>')</script>
 
-        <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
 
-        <script src="js/main.js"></script>
+    <script src="js/main.js"></script>
 
     </body>
 </html>

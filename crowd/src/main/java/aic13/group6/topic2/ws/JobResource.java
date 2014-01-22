@@ -2,6 +2,7 @@ package aic13.group6.topic2.ws;
 
 import java.sql.SQLException;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -24,11 +25,8 @@ public class JobResource {
 
 	@POST
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Job create(@FormParam("name") String name) {
-		Job job = new Job();
-		job.setName(name);
+	public Job create(Job job) {
 		job.setState(State.CREATED);
-		
 		DAOJobJPA daoJob = new DAOJobJPA();
 		try {
 			job = daoJob.create(job);
