@@ -52,39 +52,16 @@ public class DAOArticleJPA implements DAO<Article> {
 		return obj;
 	}
 	
-	public Article findByUrl(Article obj) throws SQLException {
-		if (obj.getUrl() == null) {
-			throw new SQLException("No URL!");
-		}
-		
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-    	EntityManager em = emf.createEntityManager();
-    	
-		Query q = em.createQuery("SELECT a FROM Article a WHERE a.url = :url");
-		q.setParameter("url", obj.getUrl());
-		List<Article> list = (List<Article>) q.getResultList();
-		if(list.size() > 0) 
-			obj = list.get(0);
-		else 
-			obj = null;
-//		obj = (q.getSingleResult() instanceof Article) ? (Article) q.getSingleResult() : null;
-		
-		em.close();
-		emf.close();
-		
-		return obj;
-	}
-
-	public List<Article> findAllNew() {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-    	EntityManager em = emf.createEntityManager();
-		
-		List<Article> ret = em.createQuery("SELECT a FROM articles a WHERE a.url NOT IN (SELECT a.url FROM tasks t LEFT JOIN t.article a))").getResultList();
-		
-		em.close();
-		emf.close();
-		
-		return ret;
-	}
+//	public List<Article> findAllNew() {
+//		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+//    	EntityManager em = emf.createEntityManager();
+//		
+//		List<Article> ret = em.createQuery("SELECT a FROM articles a WHERE a.url NOT IN (SELECT a.url FROM tasks t LEFT JOIN t.article a))").getResultList();
+//		
+//		em.close();
+//		emf.close();
+//		
+//		return ret;
+//	}
 
 }
