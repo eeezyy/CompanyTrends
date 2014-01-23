@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" ng-app="crowdsourcing"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.js"></script>
+    	<script src="http://code.angularjs.org/1.2.4/angular-route.js"></script>
+    	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+        <script src="http://cdn.jsdelivr.net/restangular/1.2.0/restangular.min.js"></script>
+        
+    </head>
+    <body ng-controller="MainCtrl">
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">AIC Crowd-Sourcing</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Trends for companies and products</h1>
+        <p>Is there a company or product you want to know the current opinion about? Search for the name and request the result. Real people in the crowd will be assigned to read the recent Yahoo! Finance News about your topic and will determine the sentiment. You will be notified about the progress and the result.</p>
+        <form>
+            <div class="input-group input-group-lg">
+	            <div class="input-group-btn">
+			        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-model="action" ng-init="action='Company'">{{action}} <span class="caret"></span></button>
+			        <ul class="dropdown-menu">
+			            <li><a href="#" ng-click="action='Company'">Company</a></li>
+			            <li><a href="#" ng-click="action='Organisation'">Organisation</a></li>
+			            <li><a href="#" ng-click="action='Product'">Product</a></li>
+			        </ul>
+			    </div><!-- /btn-group -->
+                <input type="text" placeholder="{{action}} name" class="form-control" ng-model="job.name">
+                <span class="input-group-btn">
+<!--                     <button class="btn btn-default" ng-click="getArticles()">Go!</button> -->
+					<button class="btn btn-default" ng-click="alertInProgress()" ng-show="requestList"><img src="images/loading.gif" /></button>
+					<button type="submit" class="btn btn-default" ng-click="showSuggestions()" ng-hide="requestList"><span class="glyphicon glyphicon-search"></span></button>
+					<button type="submit" class="btn btn-default" ng-click="createJob()">assign job</button>
+                </span>
+            </div>
+        </form>
+        <div class="list-group" ng-show="suggestions">
+		  <a class="list-group-item" ng-repeat="suggestion in suggestions.results track by $index"
+		  	 ng-class="{ 'active': $index == selectedIndex }" ng-click="selectSuggestion($index)" style="cursor:pointer;">
+		 	<p class="list-group-item-text">{{suggestion.label}}</p>
+		  </a>
+		</div>
+		<div ng-show="suggestionError" class="alert alert-warning">No company or product found! Please try new keyword.</div>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+		<div class="alert alert-danger" ng-show="errorMessageRequest"><strong>Error:</strong> {{errorMessageRequest}}</div>
+		<div class="alert alert-info" ng-show="showState('CREATED')"><strong>Info:</strong> Job for '{{name}}' created!</div>
+		<div class="alert alert-info" ng-show="showState('PREPARED')"><strong>Info:</strong> Job '{{name}}' is prepared for workers!</div>
+		<div class="alert alert-info" ng-show="showState('ASSIGNED')"><strong>Info:</strong> Job '{{name}}' is assigned to workers!</div>
+		<div class="alert alert-info" ng-show="showState('FINISHED')"><strong>Info:</strong> Job '{{name}}' is finished!</div>
+		<div class="alert alert-warning" ng-show="noArticlesFound"><strong>Info:</strong> No articles found to analyze!</div>
+	          
+          <div ng-repeat="article in job.articles" ng-show="job.articles">
+          	<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title"><a href="{{article.url}}" target="_blank">{{article.title}}</a></h3>
+				</div>
+				<div class="panel-body">
+					<div class="articleTextContainer">
+						<textarea type='text' class="articleText" rows=15 disabled>
+{{article.text}}
+						</textarea>
+					</div>
+				</div>
+				<div class="panel-footer">{{formatDate(article.date)}}</div>
+			</div>
+<!--           </div> -->
+	          
+      	</div>
+      <hr>
+
+      <footer>
+        <p>&copy; AIC WS2013</p>
+      </footer>
+    </div> 
+    <div ng-view></div>
+	<script type="text/ng-template" id="index.html">
+    </script>
+    	
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.js"><\/script>')</script>
+
+    <script src="js/vendor/bootstrap.min.js"></script>
+
+    <script src="js/main.js"></script>
+
+    </body>
+</html>
