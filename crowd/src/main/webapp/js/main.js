@@ -114,7 +114,7 @@ rest.controller("MainCtrl", ["CrowdRestangular", "DBPediaRestangular", "$scope",
 			};
 			
 			$scope.showState = function(state) {
-				return $scope.job.state == state && !$scope.noArticlesFound;
+				return $scope.job && ($scope.job.state == state && !$scope.noArticlesFound);
 			};
 
 			$scope.alertInProgress = function() {
