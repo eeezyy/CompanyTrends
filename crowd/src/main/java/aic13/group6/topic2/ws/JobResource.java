@@ -1,6 +1,7 @@
 package aic13.group6.topic2.ws;
 
 import java.sql.SQLException;
+import java.util.Date;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -25,11 +26,14 @@ public class JobResource {
 
 	@POST
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Job create(Job job) {
+	public Job create(final Job job) {
+		job.setDate((new Date()).getTime());
 		job.setState(State.CREATED);
 		DAOJobJPA daoJob = new DAOJobJPA();
+		Job savedJob = null;
 		try {
-			job = daoJob.create(job);
+			savedJob = daoJob.create(job);
+			job.setId(savedJob.getId());
 		} catch (SQLException e) {
 			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
 		}
@@ -42,7 +46,7 @@ public class JobResource {
 	@GET
 	@Path("{id}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Job get(@PathParam("id") Long id) {
+	public Job get(@PathParam("id") final Long id) {
 		Job job = new Job();
 		job.setId(id);
 		
