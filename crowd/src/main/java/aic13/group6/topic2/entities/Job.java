@@ -22,6 +22,7 @@ public class Job {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	private String name;
+	private long date;
 	private State state;
 	@ManyToMany(targetEntity=Article.class)
 	private List<Article> articles;
@@ -42,6 +43,14 @@ public class Job {
 		return name;
 	}
 	
+	public long getDate() {
+		return date;
+	}
+
+	public void setDate(long date) {
+		this.date = date;
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
