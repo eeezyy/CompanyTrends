@@ -93,12 +93,15 @@ function MainCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope, $
 			$scope.job = job.data;
 			// don't use html5-history, causes endless loop
 			window.location.href="#/"+$scope.job.id;
+		}, function(response) {
+			$scope.errorMessageRequest = "Error with status code: " + response.status;
 		});
 		
 	};
 	
 	$scope.loadJob = function(id) {
 		$scope.requestList = true;
+		$scope.errorMessageRequest = false;
 //		$scope.noArticlesFound = false;
 		CrowdRestangular.one('job', id).get().then(function(job) {
 			$scope.requestList = false;
@@ -106,10 +109,8 @@ function MainCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope, $
 			
 			// to prevent changing view while changing search input
 			$scope.name = $scope.job.name; 
-			// show warning if no articles are found for the keyword
-//			if($scope.job.articles.length == 0 && $scope.job.state != 'CREATED') {
-//				$scope.noArticlesFound = true;
-//			}
+		}, function(response) {
+			$scope.errorMessageRequest = "Error with status code: " + response.status;
 		});
 	};
 	
