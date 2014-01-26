@@ -2,12 +2,15 @@ package aic13.group6.topic2.entities;
 
 import java.sql.SQLException;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement(name="rating")
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 public class Rating {
 	
@@ -19,10 +22,6 @@ public class Rating {
 	private Tag tag;
 	@ManyToOne(targetEntity=Job.class, optional=false)
 	private Job job;
-	
-	public Rating() {
-
-	}
 
 	/**
 	 * @return the rid

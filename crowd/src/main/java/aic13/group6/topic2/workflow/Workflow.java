@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import aic13.group6.topic2.daos.DAOJobJPA;
+import aic13.group6.topic2.daos.DAOJob;
 import aic13.group6.topic2.entities.Article;
 import aic13.group6.topic2.entities.Job;
 import aic13.group6.topic2.scrapper.YFinanceSearchUrlScrapperYQL;
@@ -18,7 +18,7 @@ public class Workflow extends Thread {
 	}
 	
 	public void run() {
-		DAOJobJPA daoJob = new DAOJobJPA();
+		DAOJob daoJob = new DAOJob();
 		
 		List<Thread> articleThreads = new ArrayList<Thread>();
 		YFinanceSearchUrlScrapperYQL urlScrapper = new YFinanceSearchUrlScrapperYQL();

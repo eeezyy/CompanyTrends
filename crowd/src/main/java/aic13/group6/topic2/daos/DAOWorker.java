@@ -8,7 +8,7 @@ import javax.persistence.Persistence;
 
 import aic13.group6.topic2.entities.Worker;
 
-public class DAOWorkerJPA implements DAO<Worker> {
+public class DAOWorker implements DAO<Worker> {
 
 	@Override
 	public Worker create(Worker obj) throws SQLException {

@@ -8,7 +8,7 @@ import javax.persistence.Persistence;
 
 import aic13.group6.topic2.entities.Tag;
 
-public class DAOTagJPA implements DAO<Tag> {
+public class DAOTag implements DAO<Tag> {
 
 	@Override
 	public Tag create(Tag obj) throws SQLException {

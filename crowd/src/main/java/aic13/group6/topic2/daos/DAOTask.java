@@ -11,13 +11,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import aic13.group6.topic2.entities.Rating;
-import aic13.group6.topic2.entities.Tag;
+import aic13.group6.topic2.entities.Article;
+import aic13.group6.topic2.entities.Task;
 
-public class DAORatingJPA implements DAO<Rating> {
-
+public class DAOTask implements DAO<Task> {
+	
 	@Override
-	public Rating create(Rating obj) throws SQLException {
+	public Task create(Task obj) throws SQLException {
 		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
     	
@@ -25,36 +25,33 @@ public class DAORatingJPA implements DAO<Rating> {
 		em.persist(obj);
 		em.getTransaction().commit();
 		
-		em.close();
-		emf.close();
-		
 		return obj;
 	}
 
 	@Override
-	public Rating findByID(Rating obj) throws SQLException {
+	public Task findByID(Task obj) throws SQLException {
 		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
     	
-    	Rating r = em.find(Rating.class, obj.getRid());
+    	Task ret = em.find(Task.class, obj.getTid());
     	
     	em.close();
     	emf.close();
     	
-    	return r;
+    	return ret;
 	}
 	
-	public List<Rating> findAllByTag(Tag t) {
+	public List<Task> findByArticle(Article a) {
 		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
     	
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Rating> cq = cb.createQuery(Rating.class);
-		Root<Rating> rating = cq.from(Rating.class);
-		cq.where(cb.equal(rating.get("tag"), t.getName()));
-		TypedQuery<Rating> q = em.createQuery(cq);
+		CriteriaQuery<Task> cq = cb.createQuery(Task.class);
+		Root<Task> task = cq.from(Task.class);
+		cq.where(cb.equal(task.get("article"), a.getUrl()));
+		TypedQuery<Task> q = em.createQuery(cq);
 		
-		List<Rating> ret = q.getResultList();
+		List<Task> ret = q.getResultList();
 		
 		em.close();
 		emf.close();

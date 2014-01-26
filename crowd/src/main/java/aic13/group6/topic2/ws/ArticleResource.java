@@ -15,8 +15,8 @@ import javax.ws.rs.core.MediaType;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 
-import aic13.group6.topic2.daos.DAOArticleJPA;
-import aic13.group6.topic2.daos.DAOTagJPA;
+import aic13.group6.topic2.daos.DAOArticle;
+import aic13.group6.topic2.daos.DAOTag;
 import aic13.group6.topic2.entities.Article;
 import aic13.group6.topic2.entities.Tag;
 import aic13.group6.topic2.scrapper.YFinancePageScrapperJava;
@@ -39,7 +39,7 @@ public class ArticleResource {
 		YFinanceSearchUrlScrapperYQL urlScrapper = new YFinanceSearchUrlScrapperYQL();
 //		YFinancePageScrapperYQL pageScrapper = new YFinancePageScrapperYQL();
 		YFinancePageScrapperJava pageScrapper = new YFinancePageScrapperJava();
-        DAOArticleJPA daoArticle = new DAOArticleJPA();
+        DAOArticle daoArticle = new DAOArticle();
 
 //        ArrayList<String> list = grabber.getURLs();
         ArrayList<String> list = urlScrapper.getArticleUrlsForCompany(name);
@@ -57,7 +57,7 @@ public class ArticleResource {
             		article = pageScrapper.getPage(url);
             		Tag tag = new Tag();
             		tag.setName(url);
-            		DAOTagJPA daoTag = new DAOTagJPA();
+            		DAOTag daoTag = new DAOTag();
             		tag = daoTag.create(tag);
             		article.getTags().add(tag);
                     article = daoArticle.create(article);
@@ -99,13 +99,13 @@ public class ArticleResource {
 		
 		Tag tag = new Tag();
 		tag.setName("tag" + number);
-		DAOTagJPA daoTag = new DAOTagJPA();
+		DAOTag daoTag = new DAOTag();
 //		tag = daoTag.create(tag);
 		tag.getArticles().add(article);
 		article.getTags().add(tag);
 //		tagList.add(tag);
 		
-		DAOArticleJPA daoArticle = new DAOArticleJPA();
+		DAOArticle daoArticle = new DAOArticle();
 		daoArticle.create(article);
 		
 		return article;

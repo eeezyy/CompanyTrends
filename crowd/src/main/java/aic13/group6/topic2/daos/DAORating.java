@@ -11,13 +11,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import aic13.group6.topic2.entities.Article;
-import aic13.group6.topic2.entities.Task;
+import aic13.group6.topic2.entities.Rating;
+import aic13.group6.topic2.entities.Tag;
 
-public class DAOTaskJPA implements DAO<Task> {
-	
+public class DAORating implements DAO<Rating> {
+
 	@Override
-	public Task create(Task obj) throws SQLException {
+	public Rating create(Rating obj) throws SQLException {
 		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
     	
@@ -25,33 +25,36 @@ public class DAOTaskJPA implements DAO<Task> {
 		em.persist(obj);
 		em.getTransaction().commit();
 		
+		em.close();
+		emf.close();
+		
 		return obj;
 	}
 
 	@Override
-	public Task findByID(Task obj) throws SQLException {
+	public Rating findByID(Rating obj) throws SQLException {
 		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
     	
-    	Task ret = em.find(Task.class, obj.getTid());
+    	Rating r = em.find(Rating.class, obj.getRid());
     	
     	em.close();
     	emf.close();
     	
-    	return ret;
+    	return r;
 	}
 	
-	public List<Task> findByArticle(Article a) {
+	public List<Rating> findAllByTag(Tag t) {
 		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
     	
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Task> cq = cb.createQuery(Task.class);
-		Root<Task> task = cq.from(Task.class);
-		cq.where(cb.equal(task.get("article"), a.getUrl()));
-		TypedQuery<Task> q = em.createQuery(cq);
+		CriteriaQuery<Rating> cq = cb.createQuery(Rating.class);
+		Root<Rating> rating = cq.from(Rating.class);
+		cq.where(cb.equal(rating.get("tag"), t.getName()));
+		TypedQuery<Rating> q = em.createQuery(cq);
 		
-		List<Task> ret = q.getResultList();
+		List<Rating> ret = q.getResultList();
 		
 		em.close();
 		emf.close();

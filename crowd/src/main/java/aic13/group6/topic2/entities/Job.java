@@ -29,7 +29,6 @@ public class Job {
 	@OneToMany(targetEntity=Rating.class, mappedBy = "job")
 	private List<Rating> ratings;
 	
-//	@XmlElement
 	public Long getId() {
 		return id;
 	}
@@ -38,7 +37,6 @@ public class Job {
 		this.id = id;
 	}
 	
-//	@XmlElement
 	public String getName() {
 		return name;
 	}
@@ -55,7 +53,6 @@ public class Job {
 		this.name = name;
 	}
 	
-//	@XmlElement
 	public State getState() {
 		return state;
 	}
@@ -64,7 +61,6 @@ public class Job {
 		this.state = state;
 	}
 	
-//	@XmlElement
 	public List<Article> getArticles() {
 		return articles;
 	}
@@ -73,7 +69,6 @@ public class Job {
 		this.articles = articles;
 	}
 	
-//	@XmlElement
 	public List<Rating> getRatings() {
 		return ratings;
 	}

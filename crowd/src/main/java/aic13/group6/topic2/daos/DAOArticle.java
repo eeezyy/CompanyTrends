@@ -1,20 +1,14 @@
 package aic13.group6.topic2.daos;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import aic13.group6.topic2.entities.Article;
 
-public class DAOArticleJPA implements DAO<Article> {
+public class DAOArticle implements DAO<Article> {
 
 	@Override
 	public Article create(Article obj) throws SQLException {

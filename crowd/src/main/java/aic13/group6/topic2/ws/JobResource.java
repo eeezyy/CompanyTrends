@@ -16,20 +16,19 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import aic13.group6.topic2.daos.DAOJobJPA;
+import aic13.group6.topic2.daos.DAOJob;
 import aic13.group6.topic2.entities.Job;
 import aic13.group6.topic2.entities.State;
 import aic13.group6.topic2.workflow.Workflow;
 
-@Path("/job")
+@Path("job")
 public class JobResource {
 
 	@POST
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Job create(final Job job) {
-		job.setDate((new Date()).getTime());
-		job.setState(State.CREATED);
-		DAOJobJPA daoJob = new DAOJobJPA();
+		DAOJob daoJob = new DAOJob();
+		
 		Job savedJob = null;
 		try {
 			savedJob = daoJob.create(job);
@@ -50,7 +49,7 @@ public class JobResource {
 		Job job = new Job();
 		job.setId(id);
 		
-		DAOJobJPA daoJob = new DAOJobJPA();
+		DAOJob daoJob = new DAOJob();
 		try {
 			job = daoJob.findByID(job);
 		} catch (SQLException e) {

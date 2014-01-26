@@ -25,12 +25,12 @@ public class ProcessResource {
     public Task get(@QueryParam("url") String url,
     		       @Context final UriInfo uriInfo) {
         try {
-        	DAOArticleJPA da = new DAOArticleJPA();
+        	DAOArticle da = new DAOArticle();
         	Article a = new Article();
         	a.setUrl(url);
         	a = da.findByID(a);
         	
-        	DAOTaskJPA dt = new DAOTaskJPA();
+        	DAOTask dt = new DAOTask();
         	Task t = new Task();
         	t.setArticle(a);
         	t.setCallBackLink("abc");
