@@ -13,6 +13,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import aic13.group6.topic2.mock.daos.DAOAnswer;
 import aic13.group6.topic2.mock.daos.DAOTask;
 import aic13.group6.topic2.mock.entities.Answer;
 import aic13.group6.topic2.mock.entities.Task;

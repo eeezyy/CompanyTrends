@@ -1,8 +1,7 @@
-package aic13.group6.topic2.mock.ws;
+package aic13.group6.topic2.mock.daos;
 
 import java.sql.SQLException;
 
-import aic13.group6.topic2.mock.daos.DAO;
 import aic13.group6.topic2.mock.entities.Answer;
 
 public class DAOAnswer implements DAO<Answer> {
