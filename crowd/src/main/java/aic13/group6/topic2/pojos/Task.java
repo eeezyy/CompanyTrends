@@ -1,4 +1,4 @@
-package aic13.group6.topic2.mock.entities;
+package aic13.group6.topic2.pojos;
 
 import java.util.List;
 
@@ -22,7 +22,6 @@ public class Task {
 	private String text;
 	
 	private String description;
-	@ElementCollection
 	private List<String> answerPossibilities;
 	private String callbackUrl;
 	private double price;

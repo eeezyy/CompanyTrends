@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import aic13.group6.topic2.daos.DAOJobJPA;
+import aic13.group6.topic2.daos.DAOJob;
 import aic13.group6.topic2.entities.Article;
 import aic13.group6.topic2.entities.Job;
 import aic13.group6.topic2.scrapper.YFinanceSearchUrlScrapperYQL;
@@ -12,13 +12,15 @@ import aic13.group6.topic2.scrapper.YFinanceSearchUrlScrapperYQL;
 public class Workflow extends Thread {
 	
 	private final Job job;
+	private final String baseUrl;
 	
-	public Workflow(Job job) {
+	public Workflow(Job job, String baseUrl) {
 		this.job = job;
+		this.baseUrl = baseUrl;
 	}
 	
 	public void run() {
-		DAOJobJPA daoJob = new DAOJobJPA();
+		DAOJob daoJob = new DAOJob();
 		
 		List<Thread> articleThreads = new ArrayList<Thread>();
 		YFinanceSearchUrlScrapperYQL urlScrapper = new YFinanceSearchUrlScrapperYQL();
@@ -54,7 +56,7 @@ public class Workflow extends Thread {
 		
 		List<Article> articles = job.getArticles();
 		for(Article article:articles) {
-			Thread thread = new Thread(new AssignTask(job, article));
+			Thread thread = new Thread(new AssignTask(job, article, baseUrl));
 			thread.start();
 			assignThreads.add(thread);
 		}

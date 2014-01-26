@@ -44,30 +44,18 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
+            <li><a href="../mock/">Crowdsourcing-Platform</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
           </ul>
         </div><!--/.navbar-collapse -->
       </div>
     </div>
 
-    <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
         <h1>Trends for companies and products</h1>
-        <p>Is there a company or product you want to know the current opinion about? Search for the name and request the result. Real people in the crowd will be assigned to read the recent Yahoo! Finance News about your topic and will determine the sentiment. You will be notified about the progress and the result.</p>
+        <p>Is there a company or product you want to know the current opinion about? Search for the name and request the result. Real people in the <a href="../mock/">Mock Crowdsourcing-Platform</a> will be assigned to read the recent Yahoo! Finance News about your topic and determine the sentiment. You will be notified about the progress and the result.</p>
         <form>
             <div class="input-group input-group-lg">
 	            <div class="input-group-btn">
@@ -80,7 +68,6 @@
 			    </div><!-- /btn-group -->
                 <input type="text" placeholder="{{action}} name" class="form-control" ng-model="job.name">
                 <span class="input-group-btn">
-<!--                     <button class="btn btn-default" ng-click="getArticles()">Go!</button> -->
 					<button class="btn btn-default" ng-click="alertInProgress()" ng-show="requestList"><img src="images/loading.gif" /></button>
 					<button type="submit" class="btn btn-default" ng-click="showSuggestions()" ng-hide="requestList"><span class="glyphicon glyphicon-search"></span></button>
 					<button type="submit" class="btn btn-default" ng-click="createJob()">assign job</button>
@@ -98,13 +85,12 @@
     </div>
 
     <div class="container">
-      <!-- Example row of columns -->
+		<div class="alert alert-warning" ng-show="noArticlesFound()"><strong>Info:</strong> No articles found to analyze!</div>
 		<div class="alert alert-danger" ng-show="errorMessageRequest"><strong>Error:</strong> {{errorMessageRequest}}</div>
-		<div class="alert alert-info" ng-show="showState('CREATED')"><strong>Info:</strong> Job for '{{name}}' created!</div>
-		<div class="alert alert-info" ng-show="showState('PREPARED')"><strong>Info:</strong> Job '{{name}}' is prepared for workers!</div>
-		<div class="alert alert-info" ng-show="showState('ASSIGNED')"><strong>Info:</strong> Job '{{name}}' is assigned to workers!</div>
-		<div class="alert alert-info" ng-show="showState('FINISHED')"><strong>Info:</strong> Job '{{name}}' is finished!</div>
-		<div class="alert alert-warning" ng-show="noArticlesFound"><strong>Info:</strong> No articles found to analyze!</div>
+		<div class="alert alert-info" ng-show="showState('CREATED')"><strong>Info:</strong> Job for '<em>{{name}}</em>' from {{formatDate(job.date)}} is created!</div>
+		<div class="alert alert-info" ng-show="showState('PREPARED')"><strong>Info:</strong> Job '<em>{{name}}</em>' from {{formatDate(job.date)}} is prepared for workers!</div>
+		<div class="alert alert-info" ng-show="showState('ASSIGNED')"><strong>Info:</strong> Job '<em>{{name}}</em>' from {{formatDate(job.date)}} is assigned to workers!</div>
+		<div class="alert alert-info" ng-show="showState('FINISHED')"><strong>Info:</strong> Job '<em>{{name}}</em>' from {{formatDate(job.date)}} is finished!</div>
 	          
           <div ng-repeat="article in job.articles" ng-show="job.articles">
           	<div class="panel panel-default">
@@ -120,7 +106,6 @@
 				</div>
 				<div class="panel-footer">{{formatDate(article.date)}}</div>
 			</div>
-<!--           </div> -->
 	          
       	</div>
       <hr>
@@ -128,10 +113,13 @@
       <footer>
         <p>&copy; AIC WS2013</p>
       </footer>
-    </div> 
-    <div ng-view></div>
+    </div>
+    
+    <!-- not used here -->
+	<div ng-view></div>
+	<!-- line break is nessesary -->
 	<script type="text/ng-template" id="index.html">
-    </script>
+	</script>
     	
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
     <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.js"><\/script>')</script>

@@ -24,12 +24,9 @@ public class Job {
 	private String name;
 	private long date;
 	private State state;
-	@ManyToMany(targetEntity=Article.class)
+	@ManyToMany
 	private List<Article> articles;
-	@OneToMany(targetEntity=Rating.class, mappedBy = "job")
-	private List<Rating> ratings;
 	
-//	@XmlElement
 	public Long getId() {
 		return id;
 	}
@@ -38,7 +35,6 @@ public class Job {
 		this.id = id;
 	}
 	
-//	@XmlElement
 	public String getName() {
 		return name;
 	}
@@ -55,7 +51,6 @@ public class Job {
 		this.name = name;
 	}
 	
-//	@XmlElement
 	public State getState() {
 		return state;
 	}
@@ -64,22 +59,12 @@ public class Job {
 		this.state = state;
 	}
 	
-//	@XmlElement
 	public List<Article> getArticles() {
 		return articles;
 	}
 	
 	public void setArticles(List<Article> articles) {
 		this.articles = articles;
-	}
-	
-//	@XmlElement
-	public List<Rating> getRatings() {
-		return ratings;
-	}
-	
-	public void setRatings(List<Rating> ratings) {
-		this.ratings = ratings;
 	}
 	
 }

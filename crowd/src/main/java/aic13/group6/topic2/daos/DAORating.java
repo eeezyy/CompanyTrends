@@ -6,12 +6,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import aic13.group6.topic2.entities.Tag;
+import aic13.group6.topic2.entities.Rating;
 
-public class DAOTagJPA implements DAO<Tag> {
+public class DAORating implements DAO<Rating> {
 
 	@Override
-	public Tag create(Tag obj) throws SQLException {
+	public Rating create(Rating obj) throws SQLException {
 		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
     	
@@ -26,16 +26,16 @@ public class DAOTagJPA implements DAO<Tag> {
 	}
 
 	@Override
-	public Tag findByID(Tag obj) throws SQLException {
+	public Rating findByID(Rating obj) throws SQLException {
 		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
     	
-		Tag ret = em.find(Tag.class, obj.getName());
-		
-		em.close();
-		emf.close();
-		
-		return ret;
+    	Rating r = em.find(Rating.class, obj.getId());
+    	
+    	em.close();
+    	emf.close();
+    	
+    	return r;
 	}
-
+	
 }

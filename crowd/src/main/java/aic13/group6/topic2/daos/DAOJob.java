@@ -1,17 +1,22 @@
 package aic13.group6.topic2.daos;
 
 import java.sql.SQLException;
+import java.util.Date;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import aic13.group6.topic2.entities.Job;
+import aic13.group6.topic2.entities.State;
 
-public class DAOJobJPA implements DAO<Job> {
+public class DAOJob implements DAO<Job> {
 	
 	@Override
 	public Job create(Job obj) throws SQLException {
+		obj.setDate((new Date()).getTime());
+		obj.setState(State.CREATED);
+		
 		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
     	

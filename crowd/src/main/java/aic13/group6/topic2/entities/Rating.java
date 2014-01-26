@@ -2,47 +2,43 @@ package aic13.group6.topic2.entities;
 
 import java.sql.SQLException;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement(name="rating")
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 public class Rating {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long rid;
+	private long id;
 	private double value;
-	@ManyToOne(targetEntity=Tag.class, optional=false)
-	private Tag tag;
-	@ManyToOne(targetEntity=Job.class, optional=false)
-	private Job job;
-	
-	public Rating() {
-
-	}
+	@XmlTransient
+	@ManyToOne(targetEntity=Article.class, optional=false)
+	private Article article;
 
 	/**
 	 * @return the rid
 	 */
-	@XmlElement
-	public Long getRid() {
-		return rid;
+	public long getId() {
+		return id;
 	}
 
 	/**
 	 * @param rid the rid to set
 	 */
-	public void setRid(long rid) {
-		this.rid = rid;
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	/**
 	 * @return the value
 	 */
-	@XmlElement
 	public double getValue() {
 		return value;
 	}
@@ -55,19 +51,19 @@ public class Rating {
 	}
 
 	/**
-	 * @return the tag
+	 * @return the article
 	 * @throws SQLException 
 	 */
 	@XmlTransient
-	public Tag getTag() throws SQLException {
-		return tag;
+	public Article getArticle() throws SQLException {
+		return article;
 	}
 
 	/**
-	 * @param tag the tag to set
+	 * @param article the article to set
 	 */
-	public void setTag(Tag tag) {
-		this.tag = tag;
+	public void setArticle(Article article) {
+		this.article = article;
 	}
 	
 }
