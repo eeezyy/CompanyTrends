@@ -1,32 +1,31 @@
 package aic13.group6.topic2.ws;
 
 import java.sql.SQLException;
-import java.util.Date;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import aic13.group6.topic2.daos.DAOJob;
 import aic13.group6.topic2.entities.Job;
-import aic13.group6.topic2.entities.State;
+import aic13.group6.topic2.pojos.Answer;
 import aic13.group6.topic2.workflow.Workflow;
 
 @Path("job")
+@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 public class JobResource {
 
 	@POST
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Job create(final Job job) {
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Job create(final Job job, @Context UriInfo uriInfo) {
 		DAOJob daoJob = new DAOJob();
 		
 		Job savedJob = null;
@@ -37,14 +36,15 @@ public class JobResource {
 			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
 		}
 		
-		new Workflow(job).start();
+		String baseUrl = uriInfo.getAbsolutePath().toString().replace("crowd/rest/job", "");
+		
+		new Workflow(job, baseUrl).start();
 		
 		return job;
 	}
 	
 	@GET
 	@Path("{id}")
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Job get(@PathParam("id") final Long id) {
 		Job job = new Job();
 		job.setId(id);
@@ -58,4 +58,13 @@ public class JobResource {
 		
 		return job;
 	}
+	
+	@POST
+	@Path("callback/{id}")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Answer callback(final Answer answer) {
+		
+		return null;
+	}
+	
 }

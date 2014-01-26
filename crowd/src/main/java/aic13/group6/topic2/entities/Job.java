@@ -24,10 +24,8 @@ public class Job {
 	private String name;
 	private long date;
 	private State state;
-	@ManyToMany(targetEntity=Article.class)
+	@ManyToMany
 	private List<Article> articles;
-	@OneToMany(targetEntity=Rating.class, mappedBy = "job")
-	private List<Rating> ratings;
 	
 	public Long getId() {
 		return id;
@@ -67,14 +65,6 @@ public class Job {
 	
 	public void setArticles(List<Article> articles) {
 		this.articles = articles;
-	}
-	
-	public List<Rating> getRatings() {
-		return ratings;
-	}
-	
-	public void setRatings(List<Rating> ratings) {
-		this.ratings = ratings;
 	}
 	
 }

@@ -16,7 +16,13 @@ public class Task {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	
+	// Article attributes
+	private String url;
+	private String title;
+	private String text;
+	
 	private String description;
+	@ElementCollection
 	private List<String> answerPossibilities;
 	private String callbackUrl;
 	private double price;
@@ -34,6 +40,30 @@ public class Task {
 		this.id = id;
 	}
 	
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
 	public String getDescription() {
 		return description;
 	}

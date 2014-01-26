@@ -47,7 +47,7 @@ public class TaskResource {
 	
 	@POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Task post(final Task task) {
+	public Task create(final Task task) {
 		DAOTask daoTask = new DAOTask();
 		
 		Task savedTask = null;

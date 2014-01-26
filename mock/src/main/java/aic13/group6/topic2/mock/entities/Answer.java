@@ -8,6 +8,9 @@ import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+
 
 @Entity
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -18,6 +21,7 @@ public class Answer {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	
+	@XmlTransient
 	@ManyToOne(targetEntity=Task.class, optional=false)
 	private Task task;
 	private long userId;

@@ -12,9 +12,11 @@ import aic13.group6.topic2.scrapper.YFinanceSearchUrlScrapperYQL;
 public class Workflow extends Thread {
 	
 	private final Job job;
+	private final String baseUrl;
 	
-	public Workflow(Job job) {
+	public Workflow(Job job, String baseUrl) {
 		this.job = job;
+		this.baseUrl = baseUrl;
 	}
 	
 	public void run() {
@@ -54,7 +56,7 @@ public class Workflow extends Thread {
 		
 		List<Article> articles = job.getArticles();
 		for(Article article:articles) {
-			Thread thread = new Thread(new AssignTask(job, article));
+			Thread thread = new Thread(new AssignTask(job, article, baseUrl));
 			thread.start();
 			assignThreads.add(thread);
 		}
