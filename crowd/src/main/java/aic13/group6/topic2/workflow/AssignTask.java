@@ -50,7 +50,7 @@ public class AssignTask implements Runnable {
 		task.setDescription(DESCRIPTION + job.getName());
 		task.setAnswerPossibilities(ANSWER_LIST);
 		task.setPrice(1);
-		task.setCallbackUrl(baseUrl + CALLBACK_RESOURCE + job.getId());
+		task.setCallbackUrl(baseUrl + CALLBACK_RESOURCE);
 
 		Task responseTask = postToWebService(baseUrl + MOCK_BASE_API + TASK_RESOURCE, task);
 		// TODO on error

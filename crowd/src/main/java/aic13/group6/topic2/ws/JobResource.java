@@ -60,7 +60,7 @@ public class JobResource {
 	}
 	
 	@POST
-	@Path("callback/{id}")
+	@Path("callback")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Answer callback(final Answer answer) {
 		
