@@ -56,7 +56,7 @@ function TaskListCtrl(MockRestangular, $scope, $http, $routeParams) {
 		$scope.requestLoading = true;
 		var resource = MockRestangular.all('task/open');
 		resource.getList().then(function(tasks) {
-			console.log(tasks);
+			$scope.tasks = tasks;
 			$scope.waitForRequest = false;
 		});
 		
@@ -80,8 +80,30 @@ function TaskCtrl(MockRestangular, CommonService, $scope, $http, $routeParams) {
 		MockRestangular.one('task', id).get().then(function(task) {
 			$scope.requestList = false;
 			$scope.task = task;
-			
+			console.log(task);
 		});
 	};
+	
+	$scope.loadTask($routeParams.id);
+	
+	$scope.submitTask = function() {
+		var body = {
+				userId: $scope.userId,
+				answer: $scope.answer,
+				task: {
+					id: $scope.task.id,
+					url: $scope.task.url
+				}
+		};
+		
+		// restangular-post seems broken, doesn't send body
+		$http.post("./rest/task/submitTask", body).then(function(job) {
+			$scope.job = job.data;
+			window.location.href="#";
+			// show info message
+		}, function(response) {
+			$scope.errorMessageRequest = "Error with status code: " + response.status;
+		});
+	}
 }
 

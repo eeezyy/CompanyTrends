@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -21,6 +22,7 @@ public class Task {
 	private String title;
 	private String text;
 	
+	private long date;
 	private String description;
 	@ElementCollection
 	private List<String> answerPossibilities;
@@ -29,6 +31,7 @@ public class Task {
 	// to how many workers, this task should be assigned
 	private int workerCounter;
 	// results of finished Tasks
+	@XmlTransient
 	@OneToMany(targetEntity=Answer.class, mappedBy = "task")
 	private List<Answer> answers;
 	
@@ -62,6 +65,14 @@ public class Task {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	public long getDate() {
+		return date;
+	}
+
+	public void setDate(long date) {
+		this.date = date;
 	}
 
 	public String getDescription() {
@@ -104,6 +115,7 @@ public class Task {
 		this.workerCounter = workerCounter;
 	}
 
+	@XmlTransient
 	public List<Answer> getAnswers() {
 		return answers;
 	}

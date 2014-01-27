@@ -1,6 +1,7 @@
 package aic13.group6.topic2.mock.ws;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -37,7 +38,7 @@ public class TaskResource {
     	task.setId(id);
     	
 		try {
-        	daoTask.findByID(task);
+        	task = daoTask.findByID(task);
         } catch (SQLException e) {
 			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
 		}
@@ -49,6 +50,8 @@ public class TaskResource {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Task create(final Task task) {
 		DAOTask daoTask = new DAOTask();
+		
+		task.setDate((new Date()).getTime());
 		
 		Task savedTask = null;
 		
@@ -75,25 +78,30 @@ public class TaskResource {
 	@Path("submitTask")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Answer submitTask(final Answer answer) {
-		DAOTask daoTask = new DAOTask();
 		DAOAnswer daoAnswer = new DAOAnswer();
+		DAOTask daoTask = new DAOTask();
 		
-		Answer loadAnswer = null;
+		Task loadTask = null;
 		try {
-			loadAnswer = daoAnswer.findByID(answer);
+			loadTask = daoTask.findByID(answer.getTask());
 		} catch (SQLException e1) {
 			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
 		}
 		
-		if(loadAnswer == null) {
-			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		if(loadTask == null) {
+			throw new WebApplicationException(Response.Status.CONFLICT);
 		}
 		
 		Answer savedAnswer = null;
 
-		Answer answerResponse = postToWebService(loadAnswer.getTask().getCallbackUrl(), null);
+		answer.setTask(loadTask);
 		
+		Answer answerResponse = postToWebService(answer.getTask().getCallbackUrl(), answer);
+		// TODO on error 
+		
+		loadTask.setWorkerCounter(loadTask.getWorkerCounter()-1);
 		try {
+			daoTask.update(loadTask);
 			savedAnswer = daoAnswer.create(answer);
 		} catch (SQLException e) {
 			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);

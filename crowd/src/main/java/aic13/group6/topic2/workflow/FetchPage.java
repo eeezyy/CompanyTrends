@@ -12,10 +12,12 @@ public class FetchPage implements Runnable {
 	
 	private final Job job;
 	private final String url;
+	private final int workerCount;
 	
-	public FetchPage(Job job, String url) {
+	public FetchPage(Job job, String url, int workerCount) {
 		this.job = job;
 		this.url = url;
+		this.workerCount = workerCount;
 	}
 
 	@Override
@@ -23,12 +25,14 @@ public class FetchPage implements Runnable {
 		YFinancePageScrapperJava pageScrapper = new YFinancePageScrapperJava();
 		Article article = new Article();
 		article.setUrl(url);
+		
 		DAOArticle daoArticle = new DAOArticle();
 		DAOJob daoJob = new DAOJob();
 		Article tempArticle;
 		try {
 			if((tempArticle = daoArticle.findByID(article)) == null) {
 				article = pageScrapper.getPage(url);
+				article.setWorkerCounter(workerCount);
 				tempArticle = daoArticle.create(article);
 			}
 			synchronized(job) {

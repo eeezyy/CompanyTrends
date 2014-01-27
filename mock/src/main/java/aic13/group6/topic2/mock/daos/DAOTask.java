@@ -42,6 +42,20 @@ public class DAOTask implements DAO<Task> {
 		
 		return obj;
 	}
+	
+	public Task update(Task obj) throws SQLException {
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
+    	EntityManager em = emf.createEntityManager();
+    	
+    	em.getTransaction().begin();
+		obj = em.merge(obj);
+		em.getTransaction().commit();
+		
+		em.close();
+		emf.close();
+		
+		return obj;
+	}
 
 	public List<Task> getOpenTasks() {
 		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
@@ -54,6 +68,7 @@ public class DAOTask implements DAO<Task> {
 		criteria.select(taskRoot);
 		Path<Integer> counter = taskRoot.get("workerCounter");
 		criteria.where(builder.gt(counter, 0));
+		criteria.orderBy(builder.desc(taskRoot.get("date")));
 		List<Task> list = em.createQuery(criteria).getResultList();
 		
 		return list;

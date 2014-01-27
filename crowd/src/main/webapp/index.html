@@ -97,13 +97,20 @@
 				<div class="panel-heading">
 					<h3 class="panel-title"><a href="{{article.url}}" target="_blank">{{article.title}}</a></h3>
 				</div>
-				<div class="panel-body">
-					<div class="articleTextContainer">
-						<textarea type='text' class="articleText" rows=15 disabled>
-{{article.text}}
-						</textarea>
-					</div>
-				</div>
+				<table class="table" ng-show="article.ratings">
+					<thead>
+						<tr>
+							<th class="col-sm-2">#</th>
+							<th class="col-sm-4">User ID</th>
+							<th class="col-sm-4">Rating</th>
+						</tr>
+					</thead>
+					<tr ng-repeat="rating in article.ratings">
+						<td>{{rating.id}}</td>
+						<td>{{rating.userId}}</td>
+						<td>{{rating.value}}</td>
+					</tr>
+				</table>
 				<div class="panel-footer">{{formatDate(article.date)}}</div>
 			</div>
 	          

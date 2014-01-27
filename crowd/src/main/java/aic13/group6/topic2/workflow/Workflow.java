@@ -13,10 +13,12 @@ public class Workflow extends Thread {
 	
 	private final Job job;
 	private final String baseUrl;
+	private final int workerCount;
 	
-	public Workflow(Job job, String baseUrl) {
+	public Workflow(Job job, String baseUrl, int workerCount) {
 		this.job = job;
 		this.baseUrl = baseUrl;
+		this.workerCount = workerCount;
 	}
 	
 	public void run() {
@@ -28,7 +30,7 @@ public class Workflow extends Thread {
 		
 		
 		for(String url:urls) {
-			Thread thread = new Thread(new FetchPage(job, url));
+			Thread thread = new Thread(new FetchPage(job, url, workerCount));
 			thread.start();
 			articleThreads.add(thread);
 		}

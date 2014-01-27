@@ -21,16 +21,16 @@ public class AssignTask implements Runnable {
 	private final Article article;
 	private final String baseUrl;
 	
-	private final static String CALLBACK_RESOURCE = "callback";
+	private final static String CROWD_BASE_API = "crowd/rest/";
+	private final static String CALLBACK_RESOURCE = "job/callback";
 	private final static String MOCK_BASE_API = "mock/rest/";
 	private final static String TASK_RESOURCE = "task";
-	private final static int WORKER_COUNTER = 1;
 	private final static String DESCRIPTION = "Please read the following article and rate the following topic with the options below: ";
 	private final static List<String> ANSWER_LIST = new ArrayList<String>();
 	static {
-		ANSWER_LIST.add("positiv");
+		ANSWER_LIST.add("positive");
 		ANSWER_LIST.add("neutral");
-		ANSWER_LIST.add("negativ");
+		ANSWER_LIST.add("negative");
 		ANSWER_LIST.add("irrelevant");
 	}
 	
@@ -46,11 +46,11 @@ public class AssignTask implements Runnable {
 		task.setUrl(article.getUrl());
 		task.setTitle(article.getTitle());
 		task.setText(article.getText());
-		task.setWorkerCounter(WORKER_COUNTER);
+		task.setWorkerCounter(article.getWorkerCounter());
 		task.setDescription(DESCRIPTION + job.getName());
 		task.setAnswerPossibilities(ANSWER_LIST);
 		task.setPrice(1);
-		task.setCallbackUrl(baseUrl + CALLBACK_RESOURCE);
+		task.setCallbackUrl(baseUrl + CROWD_BASE_API + CALLBACK_RESOURCE);
 
 		Task responseTask = postToWebService(baseUrl + MOCK_BASE_API + TASK_RESOURCE, task);
 		// TODO on error

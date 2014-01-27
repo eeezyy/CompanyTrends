@@ -20,7 +20,7 @@ public class DAOArticle implements DAO<Article> {
     	EntityManager em = emf.createEntityManager();
     	
 		em.getTransaction().begin();
-		em.merge(obj);
+		em.persist(obj);
 		em.getTransaction().commit();
 		
 		em.close();
@@ -39,6 +39,20 @@ public class DAOArticle implements DAO<Article> {
     	EntityManager em = emf.createEntityManager();
 		
 		obj = em.find(Article.class, obj.getUrl());
+		
+		em.close();
+		emf.close();
+		
+		return obj;
+	}
+
+	public Article update(Article obj) throws SQLException {
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+    	EntityManager em = emf.createEntityManager();
+    	
+		em.getTransaction().begin();
+		obj = em.merge(obj);
+		em.getTransaction().commit();
 		
 		em.close();
 		emf.close();

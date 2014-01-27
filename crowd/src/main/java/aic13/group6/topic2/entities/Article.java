@@ -8,6 +8,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -20,13 +21,15 @@ public class Article {
 	private String url;
 	private long date;
 	private String title;
+	@XmlTransient
 	private String text;
-	private Boolean usable;
 	@XmlTransient
 	@ManyToMany(mappedBy = "articles", targetEntity=Job.class, cascade = CascadeType.PERSIST)
 	private List<Job> jobs;
+	@XmlAnyAttribute
 	@OneToMany(targetEntity=Rating.class, mappedBy = "article")
 	private List<Rating> ratings;
+	private int workerCounter;
 	
 	/**
 	 * @return the url
@@ -92,26 +95,20 @@ public class Article {
 		this.jobs = jobs;
 	}
 
-	/**
-	 * @return the usable
-	 */
-	public Boolean getUsable() {
-		return usable;
-	}
-
-	/**
-	 * @param usable the usable to set
-	 */
-	public void setUsable(Boolean usable) {
-		this.usable = usable;
-	}
-
 	public List<Rating> getRatings() {
 		return ratings;
 	}
 
 	public void setRatings(List<Rating> ratings) {
 		this.ratings = ratings;
+	}
+
+	public int getWorkerCounter() {
+		return workerCounter;
+	}
+
+	public void setWorkerCounter(int workerCounter) {
+		this.workerCounter = workerCounter;
 	}
 
 	
