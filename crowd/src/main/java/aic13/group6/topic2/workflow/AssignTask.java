@@ -26,7 +26,7 @@ public class AssignTask implements Runnable {
 	private final static String CALLBACK_RESOURCE = "job/callback";
 	private final static String MOCK_BASE_API = "mock/rest/";
 	private final static String TASK_RESOURCE = "task";
-	private final static String DESCRIPTION = "Please read the following article and rate the following topic with the options below: ";
+	private final static String DESCRIPTION = "Please read the article and rate the following topic with the options below: ";
 	private final static List<String> ANSWER_LIST = new ArrayList<String>();
 	static {
 		ANSWER_LIST.add("positive");
