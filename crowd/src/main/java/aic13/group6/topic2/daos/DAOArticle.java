@@ -16,17 +16,15 @@ public class DAOArticle implements DAO<Article> {
 			throw new SQLException("No key!");
 		}
 		
-		synchronized(DAO.SYNC) {
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-	    	EntityManager em = emf.createEntityManager();
-	    	
-			em.getTransaction().begin();
-			em.persist(obj);
-			em.getTransaction().commit();
-			
-			em.close();
-			emf.close();
-		}
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+    	EntityManager em = emf.createEntityManager();
+    	
+		em.getTransaction().begin();
+		em.persist(obj);
+		em.getTransaction().commit();
+		
+		em.close();
+		emf.close();
 		
 		return obj;
 	}
@@ -49,17 +47,15 @@ public class DAOArticle implements DAO<Article> {
 	}
 
 	public Article update(Article obj) throws SQLException {
-		synchronized(DAO.SYNC) {
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-	    	EntityManager em = emf.createEntityManager();
-	    	
-			em.getTransaction().begin();
-			obj = em.merge(obj);
-			em.getTransaction().commit();
-			
-			em.close();
-			emf.close();
-		}
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+    	EntityManager em = emf.createEntityManager();
+    	
+		em.getTransaction().begin();
+		obj = em.merge(obj);
+		em.getTransaction().commit();
+		
+		em.close();
+		emf.close();
 		
 		return obj;
 	}

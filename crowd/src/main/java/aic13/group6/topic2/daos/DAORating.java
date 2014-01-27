@@ -12,17 +12,15 @@ public class DAORating implements DAO<Rating> {
 
 	@Override
 	public Rating create(Rating obj) throws SQLException {
-		synchronized(DAO.SYNC) {
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-	    	EntityManager em = emf.createEntityManager();
-	    	
-	    	em.getTransaction().begin();
-			em.persist(obj);
-			em.getTransaction().commit();
-			
-			em.close();
-			emf.close();
-		}
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+    	EntityManager em = emf.createEntityManager();
+    	
+    	em.getTransaction().begin();
+		em.persist(obj);
+		em.getTransaction().commit();
+		
+		em.close();
+		emf.close();
 		
 		return obj;
 	}

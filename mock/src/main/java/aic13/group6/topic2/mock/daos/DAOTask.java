@@ -17,19 +17,15 @@ public class DAOTask implements DAO<Task> {
 
 	@Override
 	public Task create(Task obj) throws SQLException {
-		// SQLite has problems with multiple connections, throws SQLite_BUSY exception
-		// TODO check how to do it right
-		synchronized(DAO.SYNC) {
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
-	    	EntityManager em = emf.createEntityManager();
-	    	
-			em.getTransaction().begin();
-			em.persist(obj);
-			em.getTransaction().commit();
-			
-			em.close();
-			emf.close();
-		}
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
+    	EntityManager em = emf.createEntityManager();
+    	
+		em.getTransaction().begin();
+		em.persist(obj);
+		em.getTransaction().commit();
+		
+		em.close();
+		emf.close();
 		
 		return obj;
 	}
@@ -48,17 +44,15 @@ public class DAOTask implements DAO<Task> {
 	}
 	
 	public Task update(Task obj) throws SQLException {
-		synchronized(DAO.SYNC) {
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
-			EntityManager em = emf.createEntityManager();
-			
-			em.getTransaction().begin();
-			obj = em.merge(obj);
-			em.getTransaction().commit();
-			
-			em.close();
-			emf.close();
-		}
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
+		EntityManager em = emf.createEntityManager();
+		
+		em.getTransaction().begin();
+		obj = em.merge(obj);
+		em.getTransaction().commit();
+		
+		em.close();
+		emf.close();
 		
 		return obj;
 	}
@@ -83,6 +77,9 @@ public class DAOTask implements DAO<Task> {
 		criteria.orderBy(builder.desc(taskRoot.get("date")));
 		List<Task> list = em.createQuery(criteria).setFirstResult(offset).setMaxResults(max).getResultList();
 		
+		em.close();
+		emf.close();
+		
 		return list;
 	}
 
@@ -99,6 +96,9 @@ public class DAOTask implements DAO<Task> {
 		criteria.where(builder.gt(counter, 0));
 		criteria.orderBy(builder.desc(taskRoot.get("date")));
 		List<Task> list = em.createQuery(criteria).getResultList();
+		
+		em.close();
+		emf.close();
 		
 		return list;
 	}
