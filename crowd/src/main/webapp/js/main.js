@@ -53,17 +53,20 @@ function SearchCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope,
 		return $scope.loading;
 	};
 	
-	// Interceptors
-	CrowdRestangular.setRequestInterceptor(function(elem, operation, what) {
+	$scope.showSuggestionLoading = function() {
+		return $scope.loadingSuggestion;
+	};
+	
+	DBPediaRestangular.setRequestInterceptor(function(elem, operation, what) {
 		// reset error
 		$scope.errorMessageRequest = false;
-		$scope.loading = true;
+		$scope.loadingSuggestion = true;
 	});
 
-	CrowdRestangular.setErrorInterceptor(function(elem, operation, what) {
+	DBPediaRestangular.setErrorInterceptor(function(elem, operation, what) {
 		// show error panel
 		$scope.errorMessageRequest = elem.data;
-		$scope.loading = false;
+		$scope.loadingSuggestion = false;
 		console.log("error interceptor");
 	});
 
@@ -86,11 +89,14 @@ function SearchCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope,
 				name: $scope.name
 		};
 		
+		// problems with request interceptor, so we put it here
+		$scope.loading = true;
+		$scope.errorMessageRequest = false;
+		
 		// restangular-post seems broken, doesn't send body
 		$http.post("./rest/job", body).then(function(job) {
-			// musst be data property, because its not restangular!
+			// must be data property, because its not restangular!
 			$scope.job = job.data;
-			console.log(job);
 			// don't use html5-history, causes endless loop
 			window.location.href="#/"+$scope.job.id;
 			$scope.loading = false;
@@ -128,8 +134,9 @@ function SearchCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope,
 			} else {
 				$scope.suggestionError = true;
 			}
+			$scope.loadingSuggestion = false;
 		}, function(response) {
-			$scope.loading = false;
+			$scope.loadingSuggestion = false;
 			$scope.errorMessageRequest = "Error with status code: " + response.status;
 		});
 	};
