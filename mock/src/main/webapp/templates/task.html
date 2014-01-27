@@ -1,0 +1,41 @@
+<div class="btn-group" style="padding-bottom: 10px">
+	<button type="button" class="btn btn-default btn-sm"
+		onclick="location.href='#'">
+		<span class="glyphicon glyphicon-list"></span> show task list
+	</button>
+</div>
+<form>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				<a href="{{task.url}}" target="_blank">{{task.title}}</a>
+			</h3>
+		</div>
+		<div class="panel-body">
+			<div class="articleTextContainer">
+				<textarea type='text' class="articleText" rows=15 disabled>
+{{task.text}}
+						</textarea>
+			</div>
+		</div>
+		<div class="panel-footer">
+			<div class="row">
+				<div class="col-lg-2 input-group">
+					<input type="text" class="form-control" placeholder="user ID" ng-model="userId" />
+				</div>
+				<div class="col-lg-2 input-group">
+					<select ng-model="answer" class="form-control"
+						placeholder="select rating">
+						<option value="" disabled selected>select rating</option>
+						<option ng-repeat="option in task.answerPossibilities"
+							value="{{option}}">{{option}}</option>
+					</select>
+				</div>
+				<div class="col-lg-2 input-group">
+					<button class="btn btn-default form-control"
+						ng-click="submitTask()">Submit Task</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

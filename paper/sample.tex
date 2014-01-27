@@ -1,0 +1,331 @@
+\documentstyle[epsf]{acmconf}
+
+%----------------- theorem definitions ----------
+\newtheorem{Theorem}{Theorem}[section]
+\newtheorem{Definition}[Theorem]{Definition}
+\newtheorem{Example}{\it Example}[section]
+
+%-------------------- environment definitions -----------------
+\newenvironment{example}[0]{\begin{Example} \it}{\end{Example}}
+\newenvironment{proof-of}[1]{{\em Proof of #1:}}{}
+
+%----------------- command definitions ----------
+\newcommand{\nnn}{{\tt \bf  not}}
+
+%The following was borrowed from the SIGMOD '96 website prepared by
+%Inderpal Singh Mumick, Bell Laboratories
+% .ps files prepared  in Europe and Asia are for different paper size.
+% These .ps files do not print well on paper in the US.  To be able to
+% print .ps files prepared in Europe and Asia, we need to shift the
+%printing area down by 0.65 inch.  The following command can be used to shift
+%the printing area down.  Uncomment the line
+%\eurasiatrue
+%when preparing the  .ps file to mail to the US.
+\newif\ifeurasia
+\eurasiafalse
+%\eurasiatrue
+\ifeurasia
+\voffset=.65in
+\fi
+%
+
+%%%%%%%%%%%%%%%%%%%%%%% END of LaTeX definitions %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\bibliographystyle{plain}
+\title{\LARGE \bf Coherence Approach to Logic Program Revision
+\thanks{
+This paper is based on the technical report 
+{\em Coherence Approach to Logic Program Revision},
+ISIS-RR-94-19E, Fujitsu Laboratories, 1994.
+A preliminary version of this paper appears in the
+Proc. of the 12th International Conference on Logic Programming, Page
+167-181, June 1995.
+The work of the first author was performed while visiting
+the ISIS, Fujitsu Labs, Numazu, Japan.}}
+\author{{\bf Li-Yan Yuan} \\
+{\small Computing Science} \\
+{\small University of Alberta}\\
+{\small Edmonton Canada T6G 2H1} \\
+{\small yuan@cs.ualberta.ca }\\
+\and {\bf Jia-Huai You} \\
+{\small Computing Science} \\
+{\small University of Alberta} \\
+{\small Edmonton Canada T6G 2H1} \\
+{\small you@cs.ualberta.ca} \\
+}
+\maketitle
+\begin{abstract} 
+We present a new approach to the problem of 
+revising extended programs, based on the {\em coherence theory}
+initially advocated by Gardenfors for belief revision.
+Our approach resolves contradiction by removing only conflicting
+information, not the believed source of it, and therefore, keeps
+information loss minimal. Furthermore, since there is
+no need of searching for problematic assumptions, as is done in the
+traditional assumption-removal approach, our approach provides a
+skeptical revision semantics that is tractable.
+
+We define the skeptical and credulous coherence semantics
+and show that both semantics can be characterized 
+in terms of the fixpoint semantics of a revised program using a 
+simple program revision technique. 
+These semantics provide a suitable framework for knowledge and belief
+revision in the context of logic programs.
+Semantical properties and advantages 
+of the proposed revision semantics are also analyzed.
+\end{abstract}
+
+\section{Introduction}
+The extension of logic programs with classical negation
+significantly  increases the
+expressive power of logic programs, but also presents new challenges
+\cite{gelfondlifschitz90}.
+Among other things, the contradiction problem brought up
+by classical negation has to be addressed.
+
+Unlike normal programs, an extended program with classical negation may
+not be consistent.
+For example, 
+$\Pi = \{ \neg a \leftarrow ; \ \
+a \leftarrow ; \ \ b \leftarrow\}$ is considered contradictory
+since both $a$ and $\neg a$ can be derived from it. 
+
+Many attempts have been made to resolve the contradiction problem.
+However, almost all proposals are based on one approach:
+Resolve the contradiction problem by removing some problematic 
+assumptions 
+\footnote{The assumptions here refer to the values of 
+the default negations. The term is used simply because 
+such values are usually determined by first assuming a value and
+then justifying the value.}
+, though different mechanisms may be used for the
+removal.
+Three notable examples are the contradiction removal semantics
+\cite{paa91a}, the argumentation semantics \cite{dung93a}, and
+the assumption denial semantics \cite{youyuan94}.
+The  assumption removal approach, though avoiding contradictory 
+conclusions caused by negation as failure, is not suitable for many 
+applications, such as knowledge and belief revision.
+
+An analysis of semantical properties shows that 
+the assumption removal approach 
+violates two important semantical principles in logic 
+programming and knowledge revision: 
+the principles of {\em conservatism} and {\em relevance}.
+
+One of the basic postulates in knowledge revision is that of 
+{\em conservatism} which requires that any conclusions derived from a
+revised system be derivable from the system prior to the revision
+\cite{gardenfors92}. 
+%For essentially the same purpose, 
+%Witteveen and Brewka formulate the notion of 
+%{\em minimal augmentation} in incremental belief revision 
+%in the context of reason maintenance systems \cite{WB93} and show that 
+%a violation of this principle may yield
+%{\em spurious} beliefs, i.e., the beliefs that cannot be justified,
+%in the process of adding additional clauses.
+%
+The assumption-removal approach, though avoiding contradiction, does not
+address the consequences of assumption removal. As such, conservatism may not hold. 
+\begin{example}\label{example conservatism}
+Consider $\Pi$ below
+\[
+\neg a \leftarrow \nnn b ; \ \
+a \leftarrow ; \ \
+c \leftarrow \nnn \neg a,
+\]
+and the credulous argumentation semantics {\rm \cite{dung93a}}.
+
+With each negative literal $\neg \alpha$ viewed as a named proposition
+$\bar{\alpha}$, the credulous argumentation semantics of $\Pi$ 
+does not imply $c$, which demonstrates that $c$ is not true with
+respect to the credulous argumentation semantics without involving any
+revision mechanism. Since $\Pi$ has a unique preferred extension
+$N = \{\nnn \neg a\}$,  the credulous argumentation semantics 
+of $\Pi$ does imply $a$ and $c$ which violates conservatism (see Section 5 for
+details). 
+\end{example}
+The principle of {\em relevance} requires that the values of the literals 
+in a set be determined by only those clauses that define them
+\cite{dix92,huyuan91}. Relevance  has been considered essential in 
+any goal-directed query evaluation \cite{ap93} while 
+the goal-directed theoretical characterization forms suitable bases for
+logic programming \cite{mnps91}.
+The following example demonstrates that the assumption removal approach
+may violate relevance.
+\begin{example} Assume $\Pi$ is defined by
+\[
+a \leftarrow \nnn b ; \ \
+\neg a \leftarrow \nnn b ; \ \
+d \leftarrow \nnn b.
+\]
+To resolve the conflict between $a$ and $\neg a$, the
+assumption-removal semantics 
+has to remove $\nnn b$. Consequently, $d$ cannot be derived.
+Note that the relevant program of $d$
+, i.e., the set of all clauses that define $d$, 
+is $\{d \leftarrow \nnn b\}$ which deduces $d$.
+\end{example}
+Furthermore, the assumption removal approach suffers computationally from
+finding a minimal set of problematic assumptions. This is the cause of 
+intractability in the contradiction removal semantics, as shown 
+in \cite{wit93a}, and in the grounded version of 
+the {\em ideal skeptical semantics}, as shown in \cite{youcart94}.
+Although Dung's grounded argumentation semantics \cite{dung93a}
+does not attempt to compute
+a minimal removal set, it is also NP-hard since 
+it is NP-complete to determine if an atom is derivable from a sound 
+argument \cite{youcart94}, an essential property in attack and 
+counterattack relationships.
+
+In this paper, we present an alternative approach, based on the
+coherence theory \cite{gardenfors92}, to removing contradiction
+from extended programs. This approach provides a suitable semantics for
+knowledge and belief revision in the framework of logic programs. 
+The idea is simple but very effective:
+\begin{quotation}
+\noindent
+Given an extended logic program $\Pi$ and a set $N$ of assumptions,
+the coherence revision semantics is determined by the disjunction of
+maximal consistent sets of literals 
+derivable from $\Pi^N$
+\footnote{$\Pi^N$ is the program obtained by GL-transformation}
+\end{quotation}
+Note that the assumption-removal approach is based on the assumption that
+inconsistency is caused by problematic assumptions while the coherence
+approach removes contradiction regardless the source of it.
+
+We investigate the coherence approach mainly because 
+(1) the coherence approach resolves contradiction by removing only
+conflicting 
+information, not the {\em believed source} of it, and therefore, 
+keeps information loss  minimal; and (2) in this approach
+there is no need
+of searching for minimal sets of problematic assumptions, and thus 
+it provides a skeptical revision semantics that is tractable.
+
+In the paper, we first define the notion of consistent-and-justified (CJ)
+partial models, based on a negation-as-failure 
+rule and the coherence theory, and then present the skeptical and credulous
+coherence semantics in terms of CJ partial models. 
+
+A remarkable fact about CJ partial models of a program $\Pi$
+is that they are fixpoints of a suitably defined operator for 
+program $\Pi_R$, which is obtained from $\Pi$
+by a simple program revision technique:
+semi-normalizing the {\em doubling} program \cite{wallace90}. 
+This program revision technique is simple but not trivial, and it gives
+a natural revision semantics based on the coherence theory.
+
+We also analyze the semantical properties of the proposed revision
+semantics and show that these semantics satisfy conservatism and 
+relevance, among a number of properties along the line similar to that of 
+Dix \cite{dix94b}.  
+
+
+\section{Conclusions}
+The coherence approach to logic program revision is based on the idea
+that contradiction may be resolved by removing only conflicting
+information, without searching for believed source of conflict.
+We have demonstrated that this approach satisfies many desirable
+properties,
+inclosing the conservatism and relevance. Furthermore, simply because
+of the fact that the revision can be achieved regardless of the source
+of conflict, the coherence approach provides a tractable
+skeptical revision semantics.
+
+Various coherence semantics provides an alternative  approach to logic program
+revision, and its applications are currently under investigation.
+
+\section*{Acknowledgements}
+The authors would like to thank J\"uergen Dix and anonymous reviewers
+for providing many constructive comments.  
+This work is partially supported by grants from the National
+Science and Engineering Research Council of Canada and by
+the ISIS, Fujitsu Labs, Numazu, Japan.
+
+
+%\bibliography{logic}
+
+\begin{thebibliography}{10}
+
+\bibitem{ap93}
+J.J. Alferes, C.~V. Damasio, and L.~M. Pereira.
+\newblock Top-down query evaluation for well-founded semantics with explicit
+  negation.
+\newblock In {\em Proc. ECAI '94}, pages 140--144, 1994.
+
+\bibitem{ap93a}
+J.J. Alferes, P.~Dung, and L.~Pereira.
+\newblock Scenario semantics of extended logic programs.
+
+\bibitem{dix92}
+J.~Dix.
+\newblock A framework for representing and characterizing semantics of logic
+  programs.
+\newblock In {\em Proceedings of the KR'92}, pages 591--602, 1992.
+
+\bibitem{dix94b}
+J.~Dix.
+\newblock A classification theory of semantics of normal logic programs: {II}.
+  weak properties.
+\newblock {\em to appear}, 1994.
+
+\bibitem{dung93a}
+P.~M. Dung.
+\newblock An argumentation semantics for logic programming with explicit
+  negation.
+\newblock In {\em Proc. the 10th ICLP % 10th International Conference on Logic
+  Programming}, pages 615--630. The MIT Press, 1993.
+
+\bibitem{gardenfors92}
+Peter Gardenfors, editor.
+\newblock {\em Belief Revision}.
+\newblock Cambridge University Press, 1992.
+
+\bibitem{gelfondlifschitz90}
+M.~Gelfond and V.~Lifschitz.
+\newblock Logical programs with classical negation.
+\newblock In {\em Proceedings of the 7th International Conference on Logic
+  Programming}, pages 579--597. The MIT Press, 1990.
+
+\bibitem{huyuan91}
+Y.~Hu and L.~Y. Yuan.
+\newblock Extended well founded semantics for logic programs with negations.
+\newblock In {\em Proceedings of the 8th International Conference on Logic
+  Programming}, pages 412--425. The MIT Press, 1991.
+
+\bibitem{mnps91}
+D.~Miller, G.~Nadathur, F.~Pfenning, and A.~Scedrov.
+\newblock Uniform proofs as a foundation for logic programming.
+\newblock {\em Annals of Pure and Applied Logic}, 51:125--157, 1991.
+
+\bibitem{paa91a}
+L.M. Pereira, J.J. Alferes, and J.N. Aparicio.
+\newblock Contradiction removal within well founded semantics.
+\newblock In {\em Proc. of the 1st International Workshop on Logic Programming
+  and Nonmonotonic Reasoning}, pages 106--119, 1991.
+
+\bibitem{wallace90}
+M.~Wallace.
+\newblock Unrestricted logic programs or if stratification is the cure, what is
+  the malady?
+\newblock In {\em Proc. of European Conference on AI}, pages 682--687, 1990.
+
+\bibitem{wit93a}
+C.~Witteveen and C.~M. Jonker.
+\newblock Revision by expansion in logic programs.
+
+\bibitem{youcart94}
+J.H. You and R.~Cartwright.
+\newblock Tractable argumentation semantics via iterative belief revision.
+\newblock In {\em Proc. of ILPS'94}, pages 239--254, 1994.
+
+\bibitem{youyuan94}
+J.H. You and L.Y. Yuan.
+\newblock Logic programming with assumption denials.
+\newblock In {\em Proc. of the Workshop 5, ICLP'94}, 1994.
+
+\end{thebibliography}
+\end{document}

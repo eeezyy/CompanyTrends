@@ -7,10 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="job")
@@ -22,13 +20,11 @@ public class Job {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	private String name;
+	private long date;
 	private State state;
-	@ManyToMany(targetEntity=Article.class)
+	@ManyToMany
 	private List<Article> articles;
-	@OneToMany(targetEntity=Rating.class, mappedBy = "job")
-	private List<Rating> ratings;
 	
-//	@XmlElement
 	public Long getId() {
 		return id;
 	}
@@ -37,16 +33,22 @@ public class Job {
 		this.id = id;
 	}
 	
-//	@XmlElement
 	public String getName() {
 		return name;
 	}
 	
+	public long getDate() {
+		return date;
+	}
+
+	public void setDate(long date) {
+		this.date = date;
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
 	
-//	@XmlElement
 	public State getState() {
 		return state;
 	}
@@ -55,22 +57,12 @@ public class Job {
 		this.state = state;
 	}
 	
-//	@XmlElement
 	public List<Article> getArticles() {
 		return articles;
 	}
 	
 	public void setArticles(List<Article> articles) {
 		this.articles = articles;
-	}
-	
-//	@XmlElement
-	public List<Rating> getRatings() {
-		return ratings;
-	}
-	
-	public void setRatings(List<Rating> ratings) {
-		this.ratings = ratings;
 	}
 	
 }

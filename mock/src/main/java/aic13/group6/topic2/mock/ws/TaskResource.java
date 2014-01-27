@@ -1,160 +1,141 @@
 package aic13.group6.topic2.mock.ws;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
-import javax.persistence.RollbackException;
-import javax.persistence.TypedQuery;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import org.eclipse.persistence.exceptions.DatabaseException;
-
+import aic13.group6.topic2.mock.daos.DAOAnswer;
+import aic13.group6.topic2.mock.daos.DAOTask;
+import aic13.group6.topic2.mock.entities.Answer;
 import aic13.group6.topic2.mock.entities.Task;
 
-@Path("/task")
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
+
+@Path("task")
+@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 public class TaskResource {
 	
 	@GET
-    @Produces({"application/xml", "application/json"})
-    public Task get(@QueryParam("id") String sid,
-                    @Context final UriInfo uriInfo) {
-        try {
-        	int id = Integer.parseInt(sid);
-        	EntityManagerFactory factory =   Persistence.createEntityManagerFactory("mock");
-        	EntityManager em = factory.createEntityManager();
-        	TypedQuery<Task> q = em.createQuery("select t from Task t WHERE t.id = :id", Task.class);
-        	q.setParameter("id", id);
-        	Task t = q.getSingleResult();
-        	em.close();
-        	factory.close();
-        	return t;
-        } catch (DatabaseException ex) {
-            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-        } catch (NoResultException ex) {
-        	throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
+	@Path("{id}")
+    public Task get(@PathParam("id") final long id) {
+		DAOTask daoTask = new DAOTask();
+    	
+    	Task task = new Task();
+    	task.setId(id);
+    	
+		try {
+        	task = daoTask.findByID(task);
+        } catch (SQLException e) {
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
+		return task;
     }
 	
 	@POST
-    @Consumes({"application/xml", "application/json"})
-	public Response post(final Task t,
-            @Context final UriInfo uriInfo) {
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Task create(final Task task) {
+		DAOTask daoTask = new DAOTask();
 		
-
-		EntityManagerFactory factory =   Persistence.createEntityManagerFactory("mock");
-		EntityManager em = factory.createEntityManager();
+		task.setDate((new Date()).getTime());
+		
+		Task savedTask = null;
+		
 		try {
-			EntityTransaction trans = em.getTransaction();
-			trans.begin();
-			em.persist(t);
-			trans.commit();
-		} catch (RollbackException ex) {
-        	throw new WebApplicationException(Response.Status.CONFLICT);
-        }
-		em.close();
-	    factory.close();
-		final ResponseBuilder response = Response.status(Status.OK);
-	    return response.build();
+			savedTask = daoTask.create(task);
+        } catch (SQLException e) {
+        	throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
+		return savedTask;
 	}
 	
-	@PUT
-    @Consumes({"application/xml", "application/json"})
-	public Response put(final Task t,
-            @Context final UriInfo uriInfo) {
+	/**
+	 * Open tasks list. Uses page and max parameters for paginator.
+	 * @param page
+	 * @param max
+	 * @return open tasks list
+	 */
+	@GET
+	@Path("open")
+	public List<Task> openTasks(@QueryParam("page") int page, @QueryParam("max") int max) {
+		DAOTask daoTask = new DAOTask();
+		List<Task> openTasksList;
 		
-
-		EntityManagerFactory factory =   Persistence.createEntityManagerFactory("mock");
-		EntityManager em = factory.createEntityManager();
-		try {
-			TypedQuery<Task> q = em.createQuery("select t from Task t WHERE t.id = :id", Task.class);
-	    	q.setParameter("id", t.getId());
-	    	Task t1 = q.getSingleResult();
-		} catch (NoResultException ex) {
-        	throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
-		EntityTransaction trans = em.getTransaction();
-		trans.begin();
-		em.merge(t);
-		trans.commit();
-	    if (t.getAnswer()!=null && !(t.getAnswer().equals(""))){
-	    	if (t.getUser()!=null &&!(t.getUser().equals(""))){
-	    		if (t.getCallbackLink()!=null &&!(t.getCallbackLink().equals(""))){
-	    			String url = t.getCallbackLink() + "?id=" + t.getId() + "&answer=" + t.getAnswer() + "&user=" + t.getUser();
-	    			sendToServer(url, "");
-	    		}
-	    	}
-	    }
-	    em.close();
-	    factory.close();
-		final ResponseBuilder response = Response.status(Status.OK);
-	    return response.build();
+		if(max > 0) {
+			int offset = 0;
+			if(page < 1) {
+				page= 1;
+			}
+			offset = (page-1)*max;
+			openTasksList = daoTask.listOpenTasks(offset, max);
+		} else {
+			openTasksList = daoTask.listOpenTasks();
+		}
+		
+		return openTasksList;
 	}
 	
-	@DELETE
-	public Response delete(@QueryParam("id") String sid,
-                           @Context final UriInfo uriInfo) {
+	@POST
+	@Path("submitTask")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Answer submitTask(final Answer answer) {
+		DAOAnswer daoAnswer = new DAOAnswer();
+		DAOTask daoTask = new DAOTask();
 		
-		int id = Integer.parseInt(sid);
-		EntityManagerFactory factory =   Persistence.createEntityManagerFactory("mock");
-		EntityManager em = factory.createEntityManager();
-		Task t = null;
+		Task loadTask = null;
 		try {
-			TypedQuery<Task> q = em.createQuery("select t from Task t WHERE t.id = :id", Task.class);
-	    	q.setParameter("id", id);
-	    	t = q.getSingleResult();
-		} catch (NoResultException ex) {
-        	throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
-		EntityTransaction trans = em.getTransaction();
-		trans.begin();
-		em.remove(t);
-		trans.commit();
-		em.close();
-	    factory.close();
-		final ResponseBuilder response = Response.status(Status.OK);
-	    return response.build();
+			loadTask = daoTask.findByID(answer.getTask());
+		} catch (SQLException e1) {
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
+		if(loadTask == null) {
+			throw new WebApplicationException(Response.Status.CONFLICT);
+		}
+		
+		Answer savedAnswer = null;
+
+		answer.setTask(loadTask);
+		
+		Answer answerResponse = postToWebService(answer.getTask().getCallbackUrl(), answer);
+		// TODO on error 
+		
+		loadTask.setWorkerCounter(loadTask.getWorkerCounter()-1);
+		try {
+			daoTask.update(loadTask);
+			savedAnswer = daoAnswer.create(answer);
+		} catch (SQLException e) {
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
+		return savedAnswer;
 	}
 	
-	private int sendToServer (String sUrl, String data) {
-        BufferedReader URLinput;
-        try {
-            URL url = new URL(sUrl);
-            HttpURLConnection httpcon = (HttpURLConnection)url.openConnection();
-            httpcon.setUseCaches(false);
-            httpcon.setRequestMethod("GET");
-            httpcon.setDoInput (true);
-            httpcon.setDoOutput (false);
-            httpcon.setRequestProperty("Content-Type", "application/xml");
-            httpcon.setRequestProperty("Accept-Encoding", "gzip,deflate");
-            //DataOutputStream printout = new DataOutputStream (httpcon.getOutputStream ());
-            //printout.writeBytes (data);
-            //printout.flush ();
-            //printout.close ();
-            URLinput = new BufferedReader(new InputStreamReader(httpcon.getInputStream()));
-            if (httpcon.getResponseCode() != HttpURLConnection.HTTP_OK) {
-               System.out.println(httpcon.getResponseMessage());
-               return httpcon.getResponseCode();
-            }
-            return (httpcon.getResponseCode());
-        } catch (Exception ex) {
-          System.out.println("Could not connect to " + sUrl);
-          ex.printStackTrace();
-          return -1;
-        }
-    } 
+	private Answer postToWebService(String callbackUrl, Answer answer) {
+		ClientConfig clientConfig = new DefaultClientConfig();
+		clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+		Client client = Client.create(clientConfig);
+		
+		WebResource webResource = client.resource(callbackUrl);
+		
+		Answer answerResponse = webResource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(Answer.class, answer);
+		return answerResponse;
+	}
 	
-	
-
 }

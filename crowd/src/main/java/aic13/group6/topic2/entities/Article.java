@@ -1,55 +1,39 @@
 package aic13.group6.topic2.entities;
-import javax.persistence.*;
-
-import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
-@XmlRootElement(name="article")
 @Entity
+@XmlRootElement(name="article")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Article {
 	
-//	@Id
-//	@GeneratedValue(strategy=GenerationType.AUTO)
-//	private Long id;
-	
 	@Id
-//	@GeneratedValue(strategy=GenerationType.TABLE)
 	private String url;
 	private long date;
 	private String title;
+	@XmlTransient
 	private String text;
-	private Boolean usable;
-	@ManyToMany(mappedBy = "articles", targetEntity=Tag.class, cascade = CascadeType.PERSIST)
-//	@JoinTable(
-//			   name = "TAG_ARTICLE", 
-//			   joinColumns = @JoinColumn(name = "article_URL"), 
-//			   inverseJoinColumns = @JoinColumn(name = "tag_NAME")
-//			 )
-	private List<Tag> tags;
+	@XmlTransient
+	@ManyToMany(mappedBy = "articles", targetEntity=Job.class, cascade = CascadeType.PERSIST)
+	private List<Job> jobs;
+	@XmlAnyAttribute
+	@OneToMany(targetEntity=Rating.class, mappedBy = "article")
+	private List<Rating> ratings;
+	private int workerCounter;
 	
-	public Article () {
-		tags = new LinkedList<Tag>();
-	}
-//	
-//	@XmlElement
-//	public Long getId() {
-//		return id;
-//	}
-//
-//	public void setId(Long id) {
-//		this.id = id;
-//	}
-
 	/**
 	 * @return the url
 	 */
-	@XmlElement
 	public String getUrl() {
 		return url;
 	}
@@ -64,7 +48,6 @@ public class Article {
 	/**
 	 * @return the date
 	 */
-	@XmlElement
 	public long getDate() {
 		return date;
 	}
@@ -79,7 +62,6 @@ public class Article {
 	/**
 	 * @return the title
 	 */
-	@XmlElement
 	public String getTitle() {
 		return title;
 	}
@@ -94,7 +76,6 @@ public class Article {
 	/**
 	 * @return the text
 	 */
-	@XmlElement
 	public String getText() {
 		return text;
 	}
@@ -105,36 +86,30 @@ public class Article {
 	public void setText(String text) {
 		this.text = text;
 	}
-
-	/**
-	 * @return the tags
-	 * @throws SQLException 
-	 */
-	@XmlElement
-	public List<Tag> getTags() throws SQLException {
-		return tags;
+	
+	public List<Job> getJobs() {
+		return jobs;
 	}
 
-	/**
-	 * @param tags the tags to set
-	 */
-	public void setTags(List<Tag> tags) {
-		this.tags = tags;
+	public void setJobs(List<Job> jobs) {
+		this.jobs = jobs;
 	}
 
-	/**
-	 * @return the usable
-	 */
-	@XmlElement
-	public Boolean getUsable() {
-		return usable;
+	public List<Rating> getRatings() {
+		return ratings;
 	}
 
-	/**
-	 * @param usable the usable to set
-	 */
-	public void setUsable(Boolean usable) {
-		this.usable = usable;
+	public void setRatings(List<Rating> ratings) {
+		this.ratings = ratings;
 	}
 
+	public int getWorkerCounter() {
+		return workerCounter;
+	}
+
+	public void setWorkerCounter(int workerCounter) {
+		this.workerCounter = workerCounter;
+	}
+
+	
 }
