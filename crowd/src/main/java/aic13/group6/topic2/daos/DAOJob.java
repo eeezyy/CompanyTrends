@@ -9,7 +9,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
 import aic13.group6.topic2.entities.Job;
@@ -19,32 +18,36 @@ public class DAOJob implements DAO<Job> {
 	
 	@Override
 	public Job create(Job obj) throws SQLException {
-		obj.setDate((new Date()).getTime());
-		obj.setState(State.CREATED);
-		
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-    	EntityManager em = emf.createEntityManager();
-    	
-    	em.getTransaction().begin();
-		em.persist(obj);
-		em.getTransaction().commit();
-		
-		em.close();
-		emf.close();
+		synchronized(DAO.SYNC) {
+			obj.setDate((new Date()).getTime());
+			obj.setState(State.CREATED);
+			
+			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+	    	EntityManager em = emf.createEntityManager();
+	    	
+	    	em.getTransaction().begin();
+			em.persist(obj);
+			em.getTransaction().commit();
+			
+			em.close();
+			emf.close();
+		}
 		
 		return obj;
 	}
 	
 	public Job update(Job obj) throws SQLException {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-    	EntityManager em = emf.createEntityManager();
-    	
-    	em.getTransaction().begin();
-		em.merge(obj);
-		em.getTransaction().commit();
-		
-		em.close();
-		emf.close();
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+	    	EntityManager em = emf.createEntityManager();
+	    	
+	    	em.getTransaction().begin();
+			em.merge(obj);
+			em.getTransaction().commit();
+			
+			em.close();
+			emf.close();
+		}
 		
 		return obj;
 	}

@@ -1,0 +1,59 @@
+<div class="jumbotron">
+	<div class="container">
+		<h1>Trends for <strong>{{job.name}}</strong></h1>
+		Created: {{formatDate(job.date)}}
+	</div>
+</div>
+
+<div class="container">
+	<div class="btn-group" style="padding-bottom: 10px">
+		<button type="button" class="btn btn-default btn-sm" onclick="location.href='#'">
+			<span class="glyphicon glyphicon-plus"></span> create new job
+		</button>
+		<button type="button" class="btn btn-default btn-sm" onclick="location.href='#/job/list'">
+			<span class="glyphicon glyphicon-list"></span> show job list
+		</button>
+	</div>
+	<div class="btn-group" style="padding-bottom: 10px">
+		<button type="button" class="btn btn-default btn-sm" ng-click="loadJob()">
+			<span class="glyphicon glyphicon-refresh"></span> reload
+		</button>
+	</div>
+	<div class="alert alert-warning alert-dismissable" ng-show="noArticlesFound()">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		<strong>Info:</strong> No articles found to analyze!
+	</div>
+	<div class="alert alert-danger alert-dismissable" ng-show="errorMessageRequest">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		<strong>Error:</strong> {{errorMessageRequest}}
+	</div>
+	<div class="alert alert-info alert-dismissable" ng-show="showState()">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		<strong>Info:</strong> {{stateInfo}}
+	</div>
+	<div class="loadingArea" ng-show="showLoading()"><div class="fill"></div></div>
+	<div ng-repeat="article in job.articles" ng-show="job.articles && !showLoading()">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><a href="{{article.url}}" target="_blank">{{article.title}}</a></h3>
+			</div>
+			<table class="table" ng-show="article.ratings">
+				<thead>
+					<tr>
+						<th class="col-sm-2">#</th>
+						<th class="col-sm-4">User ID</th>
+						<th class="col-sm-4">Rating</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="rating in article.ratings">
+						<td>{{rating.id}}</td>
+						<td>{{rating.userId}}</td>
+						<td>{{rating.value}}</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="panel-footer">{{formatDate(article.date)}}</div>
+		</div>
+	</div>
+</div>

@@ -16,15 +16,17 @@ public class DAOArticle implements DAO<Article> {
 			throw new SQLException("No key!");
 		}
 		
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-    	EntityManager em = emf.createEntityManager();
-    	
-		em.getTransaction().begin();
-		em.persist(obj);
-		em.getTransaction().commit();
-		
-		em.close();
-		emf.close();
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+	    	EntityManager em = emf.createEntityManager();
+	    	
+			em.getTransaction().begin();
+			em.persist(obj);
+			em.getTransaction().commit();
+			
+			em.close();
+			emf.close();
+		}
 		
 		return obj;
 	}
@@ -47,29 +49,19 @@ public class DAOArticle implements DAO<Article> {
 	}
 
 	public Article update(Article obj) throws SQLException {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-    	EntityManager em = emf.createEntityManager();
-    	
-		em.getTransaction().begin();
-		obj = em.merge(obj);
-		em.getTransaction().commit();
-		
-		em.close();
-		emf.close();
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+	    	EntityManager em = emf.createEntityManager();
+	    	
+			em.getTransaction().begin();
+			obj = em.merge(obj);
+			em.getTransaction().commit();
+			
+			em.close();
+			emf.close();
+		}
 		
 		return obj;
 	}
 	
-//	public List<Article> findAllNew() {
-//		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-//    	EntityManager em = emf.createEntityManager();
-//		
-//		List<Article> ret = em.createQuery("SELECT a FROM articles a WHERE a.url NOT IN (SELECT a.url FROM tasks t LEFT JOIN t.article a))").getResultList();
-//		
-//		em.close();
-//		emf.close();
-//		
-//		return ret;
-//	}
-
 }
