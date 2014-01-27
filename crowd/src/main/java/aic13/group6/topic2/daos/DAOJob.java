@@ -2,10 +2,15 @@ package aic13.group6.topic2.daos;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
 
 import aic13.group6.topic2.entities.Job;
 import aic13.group6.topic2.entities.State;
@@ -55,6 +60,42 @@ public class DAOJob implements DAO<Job> {
 		emf.close();
 		
 		return obj;
+	}
+	
+	/**
+	 * Job list for paginator
+	 * @param offset
+	 * @param max
+	 * @return
+	 */
+	public List<Job> list(final int offset, final int max) {
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+		EntityManager em = emf.createEntityManager();
+		
+		CriteriaBuilder builder = emf.getCriteriaBuilder();
+		CriteriaQuery<Job> criteria = builder.createQuery(Job.class);
+		
+		Root<Job> taskRoot = criteria.from(Job.class);
+		criteria.select(taskRoot);
+		criteria.orderBy(builder.desc(taskRoot.get("date")));
+		List<Job> list = em.createQuery(criteria).setFirstResult(offset).setMaxResults(max).getResultList();
+		
+		return list;
+	}
+
+	public List<Job> list() {
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+		EntityManager em = emf.createEntityManager();
+		
+		CriteriaBuilder builder = emf.getCriteriaBuilder();
+		CriteriaQuery<Job> criteria = builder.createQuery(Job.class);
+		
+		Root<Job> taskRoot = criteria.from(Job.class);
+		criteria.select(taskRoot);
+		criteria.orderBy(builder.desc(taskRoot.get("date")));
+		List<Job> list = em.createQuery(criteria).getResultList();
+		
+		return list;
 	}
 
 }

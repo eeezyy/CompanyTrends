@@ -44,90 +44,24 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
-            <li><a href="../mock/">Crowdsourcing-Platform</a></li>
+            <li><a href="#/job/list">Job List</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
+            <li><a href="../mock/">Crowdsourcing-Platform</a></li>
           </ul>
         </div><!--/.navbar-collapse -->
       </div>
     </div>
 
-    <div class="jumbotron">
-      <div class="container">
-        <h1>Trends for companies and products</h1>
-        <p>Is there a company or product you want to know the current opinion about? Search for the name and request the result. Real people in the <a href="../mock/">Mock Crowdsourcing-Platform</a> will be assigned to read the recent Yahoo! Finance News about your topic and determine the sentiment. You will be notified about the progress and the result.</p>
-        <form>
-            <div class="input-group input-group-lg">
-	            <div class="input-group-btn">
-			        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-model="action" ng-init="action='Company'">{{action}} <span class="caret"></span></button>
-			        <ul class="dropdown-menu">
-			            <li><a href="#" ng-click="action='Company'">Company</a></li>
-			            <li><a href="#" ng-click="action='Organisation'">Organisation</a></li>
-			            <li><a href="#" ng-click="action='Product'">Product</a></li>
-			        </ul>
-			    </div><!-- /btn-group -->
-                <input type="text" placeholder="{{action}} name" class="form-control" ng-model="job.name">
-                <span class="input-group-btn">
-					<button class="btn btn-default" ng-click="alertInProgress()" ng-show="requestList"><img src="images/loading.gif" /></button>
-					<button type="submit" class="btn btn-default" ng-click="showSuggestions()" ng-hide="requestList"><span class="glyphicon glyphicon-search"></span></button>
-					<button type="submit" class="btn btn-default" ng-click="createJob()">assign job</button>
-                </span>
-            </div>
-        </form>
-        <div class="list-group" ng-show="suggestions">
-		  <a class="list-group-item" ng-repeat="suggestion in suggestions.results track by $index"
-		  	 ng-class="{ 'active': $index == selectedIndex }" ng-click="selectSuggestion($index)" style="cursor:pointer;">
-		 	<p class="list-group-item-text">{{suggestion.label}}</p>
-		  </a>
-		</div>
-		<div ng-show="suggestionError" class="alert alert-warning">No company or product found! Please try new keyword.</div>
-      </div>
-    </div>
-
-    <div class="container">
-		<div class="alert alert-warning" ng-show="noArticlesFound()"><strong>Info:</strong> No articles found to analyze!</div>
-		<div class="alert alert-danger" ng-show="errorMessageRequest"><strong>Error:</strong> {{errorMessageRequest}}</div>
-		<div class="alert alert-info" ng-show="showState('CREATED')"><strong>Info:</strong> Job for '<em>{{name}}</em>' from {{formatDate(job.date)}} is created!</div>
-		<div class="alert alert-info" ng-show="showState('PREPARED')"><strong>Info:</strong> Job '<em>{{name}}</em>' from {{formatDate(job.date)}} is prepared for workers!</div>
-		<div class="alert alert-info" ng-show="showState('ASSIGNED')"><strong>Info:</strong> Job '<em>{{name}}</em>' from {{formatDate(job.date)}} is assigned to workers!</div>
-		<div class="alert alert-info" ng-show="showState('FINISHED')"><strong>Info:</strong> Job '<em>{{name}}</em>' from {{formatDate(job.date)}} is finished!</div>
-	          
-          <div ng-repeat="article in job.articles" ng-show="job.articles">
-          	<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title"><a href="{{article.url}}" target="_blank">{{article.title}}</a></h3>
-				</div>
-				<table class="table" ng-show="article.ratings">
-					<thead>
-						<tr>
-							<th class="col-sm-2">#</th>
-							<th class="col-sm-4">User ID</th>
-							<th class="col-sm-4">Rating</th>
-						</tr>
-					</thead>
-					<tr ng-repeat="rating in article.ratings">
-						<td>{{rating.id}}</td>
-						<td>{{rating.userId}}</td>
-						<td>{{rating.value}}</td>
-					</tr>
-				</table>
-				<div class="panel-footer">{{formatDate(article.date)}}</div>
-			</div>
-	          
-      	</div>
-      <hr>
-
-      <footer>
-        <p>&copy; AIC WS2013</p>
-      </footer>
-    </div>
-    
-    <!-- not used here -->
 	<div ng-view></div>
-	<!-- line break is nessesary -->
-	<script type="text/ng-template" id="index.html">
-	</script>
-    	
+
+	<div class="container">
+		<hr>
+		<footer>
+			<p>&copy; AIC WS2013</p>
+		</footer>
+	</div>
+
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
     <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.js"><\/script>')</script>
 

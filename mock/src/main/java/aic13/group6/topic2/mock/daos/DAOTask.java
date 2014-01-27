@@ -67,7 +67,7 @@ public class DAOTask implements DAO<Task> {
 	 * @param max
 	 * @return
 	 */
-	public List<Task> getOpenTasks(final int offset, final int max) {
+	public List<Task> listOpenTasks(final int offset, final int max) {
 		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
 		EntityManager em = emf.createEntityManager();
 		
@@ -84,7 +84,7 @@ public class DAOTask implements DAO<Task> {
 		return list;
 	}
 
-	public List<Task> getOpenTasks() {
+	public List<Task> listOpenTasks() {
 		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
 		EntityManager em = emf.createEntityManager();
 		

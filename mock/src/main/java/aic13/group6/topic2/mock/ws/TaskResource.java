@@ -83,9 +83,9 @@ public class TaskResource {
 				page= 1;
 			}
 			offset = (page-1)*max;
-			openTasksList = daoTask.getOpenTasks(offset, max);
+			openTasksList = daoTask.listOpenTasks(offset, max);
 		} else {
-			openTasksList = daoTask.getOpenTasks();
+			openTasksList = daoTask.listOpenTasks();
 		}
 		
 		return openTasksList;
