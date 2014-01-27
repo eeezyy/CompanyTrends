@@ -88,7 +88,9 @@ function SearchCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope,
 		
 		// restangular-post seems broken, doesn't send body
 		$http.post("./rest/job", body).then(function(job) {
-			$scope.job = job;
+			// musst be data property, because its not restangular!
+			$scope.job = job.data;
+			console.log(job);
 			// don't use html5-history, causes endless loop
 			window.location.href="#/"+$scope.job.id;
 			$scope.loading = false;
