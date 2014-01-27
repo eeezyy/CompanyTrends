@@ -10,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -64,12 +65,28 @@ public class TaskResource {
 		return savedTask;
 	}
 	
+	/**
+	 * Open tasks list. Uses page and max parameters for paginator.
+	 * @param page
+	 * @param max
+	 * @return open tasks list
+	 */
 	@GET
 	@Path("open")
-	public List<Task> openTasks() {
+	public List<Task> openTasks(@QueryParam("page") int page, @QueryParam("max") int max) {
 		DAOTask daoTask = new DAOTask();
+		List<Task> openTasksList;
 		
-		List<Task> openTasksList = daoTask.getOpenTasks();
+		if(max > 0) {
+			int offset = 0;
+			if(page < 1) {
+				page= 1;
+			}
+			offset = (page-1)*max;
+			openTasksList = daoTask.getOpenTasks(offset, max);
+		} else {
+			openTasksList = daoTask.getOpenTasks();
+		}
 		
 		return openTasksList;
 	}

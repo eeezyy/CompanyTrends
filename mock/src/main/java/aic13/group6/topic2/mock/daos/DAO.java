@@ -4,6 +4,8 @@ import java.sql.SQLException;
 
 public interface DAO<T> {
 	
+	public static Integer SYNC = 0;
+	
 	/**
 	 * Creates an entry in the database.
 	 * @param obj An object with the fields set to the required values. If the ID is an integer, it is set automatically and the set ID will be ignored.

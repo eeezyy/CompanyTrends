@@ -10,6 +10,7 @@ import aic13.group6.topic2.entities.Job;
 import aic13.group6.topic2.pojos.Task;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
@@ -64,8 +65,11 @@ public class AssignTask implements Runnable {
 		
 		WebResource webResource = client.resource(url);
 		
-		Task answerResponse = webResource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(Task.class, task);
-		return answerResponse;
+		ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, task);
+		
+		Task responseTask = response.getEntity(Task.class);
+		
+		return responseTask;
 	}
 	
 	

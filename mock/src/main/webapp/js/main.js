@@ -38,6 +38,9 @@ function MainCtrl($route, $routeParams, $location) {
 }
 
 function TaskListCtrl(MockRestangular, $scope, $http, $routeParams) {
+//	$scope.page = 0;
+//	$scope.max = 5;
+	
 	MockRestangular.setRequestInterceptor(function(elem, operation, what) {
 		// remove error message if exists
 		$scope.errorMessageRequest = false;
@@ -54,6 +57,8 @@ function TaskListCtrl(MockRestangular, $scope, $http, $routeParams) {
 	
 	$scope.loadOpenTaskList = function() {
 		$scope.requestLoading = true;
+		// pagination
+//		var resource = MockRestangular.all('task/open' + '?page=' + $scope.page + '&max=' + $scope.max);
 		var resource = MockRestangular.all('task/open');
 		resource.getList().then(function(tasks) {
 			$scope.tasks = tasks;
@@ -68,6 +73,17 @@ function TaskListCtrl(MockRestangular, $scope, $http, $routeParams) {
 		var date = new Date(parseInt(timeInMillis, 10));
 		return date.toGMTString();
 	};
+	
+//	$scope.nextPage = function() {
+//		$scope.page++;
+//		$scope.loadOpenTaskList();
+//	};
+//	$scope.prevPage = function() {
+//		if($scope.page > 1) {
+//			$scope.page--;
+//			$scope.loadOpenTaskList();
+//		}
+//	};
 }
 
 function TaskCtrl(MockRestangular, CommonService, $scope, $http, $routeParams) {

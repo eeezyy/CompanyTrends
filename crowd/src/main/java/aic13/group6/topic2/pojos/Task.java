@@ -2,7 +2,6 @@ package aic13.group6.topic2.pojos;
 
 import java.util.List;
 
-import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;

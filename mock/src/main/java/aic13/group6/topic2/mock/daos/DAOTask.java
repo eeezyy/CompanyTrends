@@ -17,15 +17,19 @@ public class DAOTask implements DAO<Task> {
 
 	@Override
 	public Task create(Task obj) throws SQLException {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
-    	EntityManager em = emf.createEntityManager();
-    	
-		em.getTransaction().begin();
-		em.persist(obj);
-		em.getTransaction().commit();
-		
-		em.close();
-		emf.close();
+		// SQLite has problems with multiple connections, throws SQLite_BUSY exception
+		// TODO check how to do it right
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
+	    	EntityManager em = emf.createEntityManager();
+	    	
+			em.getTransaction().begin();
+			em.persist(obj);
+			em.getTransaction().commit();
+			
+			em.close();
+			emf.close();
+		}
 		
 		return obj;
 	}
@@ -55,6 +59,29 @@ public class DAOTask implements DAO<Task> {
 		emf.close();
 		
 		return obj;
+	}
+
+	/**
+	 * Open tasks list for paginator
+	 * @param offset
+	 * @param max
+	 * @return
+	 */
+	public List<Task> getOpenTasks(final int offset, final int max) {
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
+		EntityManager em = emf.createEntityManager();
+		
+		CriteriaBuilder builder = emf.getCriteriaBuilder();
+		CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
+		
+		Root<Task> taskRoot = criteria.from(Task.class);
+		criteria.select(taskRoot);
+		Path<Integer> counter = taskRoot.get("workerCounter");
+		criteria.where(builder.gt(counter, 0));
+		criteria.orderBy(builder.desc(taskRoot.get("date")));
+		List<Task> list = em.createQuery(criteria).setFirstResult(offset).setMaxResults(max).getResultList();
+		
+		return list;
 	}
 
 	public List<Task> getOpenTasks() {

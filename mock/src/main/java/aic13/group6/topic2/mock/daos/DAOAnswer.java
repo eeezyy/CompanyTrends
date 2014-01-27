@@ -7,7 +7,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import aic13.group6.topic2.mock.entities.Answer;
-import aic13.group6.topic2.mock.entities.Task;
 
 public class DAOAnswer implements DAO<Answer> {
 
