@@ -18,36 +18,32 @@ public class DAOJob implements DAO<Job> {
 	
 	@Override
 	public Job create(Job obj) throws SQLException {
-		synchronized(DAO.SYNC) {
-			obj.setDate((new Date()).getTime());
-			obj.setState(State.CREATED);
-			
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-	    	EntityManager em = emf.createEntityManager();
-	    	
-	    	em.getTransaction().begin();
-			em.persist(obj);
-			em.getTransaction().commit();
-			
-			em.close();
-			emf.close();
-		}
+		obj.setDate((new Date()).getTime());
+		obj.setState(State.CREATED);
+		
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+    	EntityManager em = emf.createEntityManager();
+    	
+    	em.getTransaction().begin();
+		em.persist(obj);
+		em.getTransaction().commit();
+		
+		em.close();
+		emf.close();
 		
 		return obj;
 	}
 	
 	public Job update(Job obj) throws SQLException {
-		synchronized(DAO.SYNC) {
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-	    	EntityManager em = emf.createEntityManager();
-	    	
-	    	em.getTransaction().begin();
-			em.merge(obj);
-			em.getTransaction().commit();
-			
-			em.close();
-			emf.close();
-		}
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+    	EntityManager em = emf.createEntityManager();
+    	
+    	em.getTransaction().begin();
+		em.merge(obj);
+		em.getTransaction().commit();
+		
+		em.close();
+		emf.close();
 		
 		return obj;
 	}
@@ -83,6 +79,9 @@ public class DAOJob implements DAO<Job> {
 		criteria.orderBy(builder.desc(taskRoot.get("date")));
 		List<Job> list = em.createQuery(criteria).setFirstResult(offset).setMaxResults(max).getResultList();
 		
+		em.close();
+		emf.close();
+		
 		return list;
 	}
 
@@ -97,6 +96,9 @@ public class DAOJob implements DAO<Job> {
 		criteria.select(taskRoot);
 		criteria.orderBy(builder.desc(taskRoot.get("date")));
 		List<Job> list = em.createQuery(criteria).getResultList();
+		
+		em.close();
+		emf.close();
 		
 		return list;
 	}

@@ -12,17 +12,15 @@ public class DAOAnswer implements DAO<Answer> {
 
 	@Override
 	public Answer create(Answer obj) throws SQLException {
-		synchronized(DAO.SYNC) {
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
-	    	EntityManager em = emf.createEntityManager();
-	    	
-			em.getTransaction().begin();
-			em.persist(obj);
-			em.getTransaction().commit();
-			
-			em.close();
-			emf.close();
-		}
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
+    	EntityManager em = emf.createEntityManager();
+    	
+		em.getTransaction().begin();
+		em.persist(obj);
+		em.getTransaction().commit();
+		
+		em.close();
+		emf.close();
 		
 		return obj;
 	}
