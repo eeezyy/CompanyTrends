@@ -12,7 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import aic13.group6.topic2.entities.Job;
-import aic13.group6.topic2.entities.State;
+import aic13.group6.topic2.pojos.State;
 
 public class DAOJob implements DAO<Job> {
 	

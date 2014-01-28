@@ -10,6 +10,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import aic13.group6.topic2.entities.Article;
+import aic13.group6.topic2.entities.Job;
 import aic13.group6.topic2.entities.Rating;
 import aic13.group6.topic2.pojos.AnswerOptions;
 
@@ -43,6 +45,12 @@ public class DAORating implements DAO<Rating> {
     	return r;
 	}
 	
+	/**
+	 * Rating distance. Calculated by the average of each Article. Taken the distance of user rating to the average of Article. 
+	 * The average of the distance of all article is the result. 
+	 * @return global distance for every user
+	 * @throws SQLException
+	 */
 	public Map<Long, Double> calculateDistance() throws SQLException {
 		Map<Long, Double> map = new TreeMap<Long, Double>();
 
@@ -70,6 +78,11 @@ public class DAORating implements DAO<Rating> {
     	return map;
 	}
 	
+	/**
+	 * Rating tendeny. The average rating value for each user.
+	 * @return rating tendency of every user
+	 * @throws SQLException
+	 */
 	public Map<Long, Double> calculateTendency() throws SQLException {
 		Map<Long, Double> map = new TreeMap<Long, Double>();
 
@@ -84,10 +97,48 @@ public class DAORating implements DAO<Rating> {
     	emf.close();
     	
     	for(Object[] result: resultList) {
-    		map.put((Long)result[0], (Double)result[1]);
+    		map.put(new Long((Integer)result[0]), (Double)result[1]);
     	}
     	
     	return map;
+	}
+	
+	public Double calculateRatingResultForArticle(Article article) {
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+    	EntityManager em = emf.createEntityManager();
+    	
+    	Query query = em.createNativeQuery("select sum(value)*1.0/count(value) average from article a join rating r on a.url=r.article_url where a.url = '" + article.getUrl() + "' group by a.url");
+    	
+    	List<Double> result = query.getResultList(); 
+    	
+    	em.close();
+    	emf.close();
+    	
+    	// should be only zero or one result
+    	Double value = null;
+    	if(result.size() > 0) {
+    		value = result.get(0);
+    	}
+    	return value;
+	}
+	
+	public Double calculateRatingResultForJob(Job job) {
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+    	EntityManager em = emf.createEntityManager();
+    	
+    	Query query = em.createNativeQuery("select sum(r.value)*1.0/count(r.value) average from job j join job_article jb on j.id=jb.jobs_ID join article a on a.url=jb.articles_URL join rating r on r.article_url=a.url where j.id=" + job.getId() + " group by j.id");
+    	
+    	List<Double> result = query.getResultList(); 
+    	
+    	em.close();
+    	emf.close();
+    	
+    	// should be only zero or one result
+    	Double value = null;
+    	if(result.size() > 0) {
+    		value = result.get(0);
+    	}
+    	return value;
 	}
 	
 }

@@ -7,9 +7,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import aic13.group6.topic2.daos.DAORating;
+import aic13.group6.topic2.pojos.State;
 
 @XmlRootElement(name="job")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -63,6 +68,13 @@ public class Job {
 	
 	public void setArticles(List<Article> articles) {
 		this.articles = articles;
+	}
+	
+	@Transient
+	@XmlAttribute
+	public Double getRatingResult() {
+		DAORating daoRating = new DAORating();
+		return daoRating.calculateRatingResultForJob(this);
 	}
 	
 }
