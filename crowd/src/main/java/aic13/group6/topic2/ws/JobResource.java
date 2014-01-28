@@ -23,14 +23,14 @@ import aic13.group6.topic2.entities.Article;
 import aic13.group6.topic2.entities.Job;
 import aic13.group6.topic2.entities.Rating;
 import aic13.group6.topic2.pojos.Answer;
+import aic13.group6.topic2.pojos.AnswerOptions;
+import aic13.group6.topic2.services.Settings;
 import aic13.group6.topic2.workflow.Workflow;
 
 @Path("job")
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 public class JobResource {
 	
-	private final static int WORKER_COUNT = 1;
-
 	@POST
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Job create(final Job job, @Context UriInfo uriInfo) {
@@ -46,7 +46,7 @@ public class JobResource {
 		
 		String baseUrl = uriInfo.getAbsolutePath().toString().replace("crowd/rest/job", "");
 		
-		new Workflow(job, baseUrl, WORKER_COUNT).start();
+		new Workflow(job, baseUrl, Settings.getWorkerPerTask()).start();
 		
 		return job;
 	}
@@ -93,14 +93,14 @@ public class JobResource {
 	public Answer callback(final Answer answer) {
 		String answerString = answer.getAnswer();
 		double ratingValue = 0.0;
-		if(answerString.equals("positive")) {
-			ratingValue = 1.0;
-		} else if (answerString.equals("neutral")) {
-			ratingValue = 0.0;
-		} else if (answerString.equals("negative")) {
-			ratingValue = -1.0;
-		} else if (answerString.equals("irrelevant")) {
-			ratingValue = -10.0;
+		if(answerString.equals(AnswerOptions.POSITIVE.text())) {
+			ratingValue = AnswerOptions.POSITIVE.value();
+		} else if (answerString.equals(AnswerOptions.NEUTRAL.text())) {
+			ratingValue = AnswerOptions.NEUTRAL.value();
+		} else if (answerString.equals(AnswerOptions.NEGATIVE.text())) {
+			ratingValue = AnswerOptions.NEGATIVE.value();
+		} else if (answerString.equals(AnswerOptions.IRRELEVANT.text())) {
+			ratingValue = AnswerOptions.IRRELEVANT.value();
 		}
 		
 		DAOArticle daoArticle = new DAOArticle();
