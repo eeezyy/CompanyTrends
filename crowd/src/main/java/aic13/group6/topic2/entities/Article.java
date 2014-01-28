@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import aic13.group6.topic2.daos.DAOArticle;
 import aic13.group6.topic2.daos.DAORating;
 
 @Entity
@@ -120,6 +121,14 @@ public class Article {
 	public Double getRatingResult() {
 		DAORating daoRating = new DAORating();
 		return daoRating.calculateRatingResultForArticle(this);
+	}
+	
+	@Transient
+	@XmlAttribute
+	public Double getProgress() {
+		DAOArticle daoArticle = new DAOArticle();
+		Double percentage = daoArticle.calculateProgress(this);
+		return percentage;
 	}
 
 	

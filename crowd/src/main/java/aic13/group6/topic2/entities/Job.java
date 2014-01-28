@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import aic13.group6.topic2.daos.DAOJob;
 import aic13.group6.topic2.daos.DAORating;
 import aic13.group6.topic2.pojos.State;
 
@@ -75,6 +76,14 @@ public class Job {
 	public Double getRatingResult() {
 		DAORating daoRating = new DAORating();
 		return daoRating.calculateRatingResultForJob(this);
+	}
+	
+	@Transient
+	@XmlAttribute
+	public Double getProgress() {
+		DAOJob daoJob = new DAOJob();
+		Double percentage = daoJob.calculateProgress(this);
+		return percentage;
 	}
 	
 }

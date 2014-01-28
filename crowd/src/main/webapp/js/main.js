@@ -212,6 +212,10 @@ function JobCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope, $h
 		}
 	};
 	
+	$scope.convertToPercent = function(value) {
+		return parseInt(value * 100);
+	};
+	
 }
 
 function JobListCtrl(CrowdRestangular, CommonService, $scope) {
@@ -244,6 +248,7 @@ function JobListCtrl(CrowdRestangular, CommonService, $scope) {
 		resource.getList().then(function(jobs) {
 			$scope.loading = false;
 			$scope.jobs = jobs;
+			console.log(jobs);
 		}, function(response) {
 			$scope.loading = false;
 			$scope.errorMessageRequest = "Error with status code: " + response.status;

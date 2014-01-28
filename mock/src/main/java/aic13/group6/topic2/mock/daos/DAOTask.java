@@ -17,15 +17,17 @@ public class DAOTask implements DAO<Task> {
 
 	@Override
 	public Task create(Task obj) throws SQLException {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
-    	EntityManager em = emf.createEntityManager();
-    	
-		em.getTransaction().begin();
-		em.persist(obj);
-		em.getTransaction().commit();
-		
-		em.close();
-		emf.close();
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
+	    	EntityManager em = emf.createEntityManager();
+	    	
+			em.getTransaction().begin();
+			em.persist(obj);
+			em.getTransaction().commit();
+			
+			em.close();
+			emf.close();
+		}
 		
 		return obj;
 	}
@@ -44,15 +46,17 @@ public class DAOTask implements DAO<Task> {
 	}
 	
 	public Task update(Task obj) throws SQLException {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
-		EntityManager em = emf.createEntityManager();
-		
-		em.getTransaction().begin();
-		obj = em.merge(obj);
-		em.getTransaction().commit();
-		
-		em.close();
-		emf.close();
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
+			EntityManager em = emf.createEntityManager();
+			
+			em.getTransaction().begin();
+			obj = em.merge(obj);
+			em.getTransaction().commit();
+			
+			em.close();
+			emf.close();
+		}
 		
 		return obj;
 	}

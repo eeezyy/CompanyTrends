@@ -27,32 +27,89 @@
 		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 		<strong>Error:</strong> {{errorMessageRequest}}
 	</div>
-	<div class="alert alert-info alert-dismissable" ng-show="showState()">
+	<div class="alert alert-info alert-dismissable" ng-show="showState() && !showLoading()">
 		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 		<strong>Info:</strong> {{stateInfo}}
 	</div>
 	<div class="loadingArea" ng-show="showLoading()"><div class="fill"></div></div>
-	<div ng-repeat="article in job.articles" ng-show="job.articles && !showLoading()">
+	<div ng-show="job.ratingResult">
+		<h3><strong>Average result:</strong> {{job.ratingResult}}</h3>
+	</div>
+	<div class="row" ng-show="job.articles && !showLoading()">
+		<div class="col-md-1">
+			Progress:
+		</div>
+		<div class="col-md-11">
+			<div class="progress progress-striped">
+				<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{convertToPercent(job.progress)}}" aria-valuemin="0" aria-valuemax="100" ng-style="{width: convertToPercent(job.progress) + '%'}">
+					<span class="sr-only">Tasks {convertToPercent(job.progress)}% Complete</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-success" ng-show="job.articles && !showLoading()">
+		<div class="panel-heading">
+			<div class="row">
+				<a ng-click="job.showArticles=!job.showArticles">
+					<div class="col-md-10">
+						<strong>Articles</strong> <span class="badge">{{job.articles.length}}</span>
+					</div>
+					<div class="col-md-2">
+						<span class="pull-right">
+							<span class="glyphicon glyphicon-chevron-down" ng-show="!job.showArticles"></span>
+							<span class="glyphicon glyphicon-chevron-up" ng-show="job.showArticles"></span>
+						</span>
+					</div>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div ng-repeat="article in job.articles" ng-show="job.articles && !showLoading() && job.showArticles">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title"><a href="{{article.url}}" target="_blank">{{article.title}}</a></h3>
+				<div class="row">
+					<div class="col-md-9">
+						<h3 class="panel-title"><a href="{{article.url}}" target="_blank">{{article.title}}</a></h3>
+					</div>
+					<div class="col-md-2">
+						<div ng-show="article.ratingResult">Rating: <strong>{{article.ratingResult}}</strong></div>
+					</div>
+					<div class="col-md-1">
+						<span class="pull-right" ng-show="article.ratings">
+							<a ng-click="article.showRatings = !article.showRatings">
+								<span class="glyphicon glyphicon-chevron-down" ng-show="!article.showRatings"></span>
+								<span class="glyphicon glyphicon-chevron-up" ng-show="article.showRatings"></span>
+								
+							</a>
+						</span>
+					</div>
+				</div>
 			</div>
-			<table class="table" ng-show="article.ratings">
-				<thead>
-					<tr>
-						<th class="col-sm-2">#</th>
-						<th class="col-sm-4">User ID</th>
-						<th class="col-sm-4">Rating</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="rating in article.ratings">
-						<td>{{rating.id}}</td>
-						<td>{{rating.userId}}</td>
-						<td>{{rating.value}}</td>
-					</tr>
-				</tbody>
-			</table>
+			<div ng-show="article.showRatings">
+				<table class="table" ng-show="article.ratings">
+					<thead>
+						<tr>
+							<th class="col-sm-2">#</th>
+							<th class="col-sm-4">User ID</th>
+							<th class="col-sm-4">Rating</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="rating in article.ratings">
+							<td>{{rating.id}}</td>
+							<td>{{rating.userId}}</td>
+							<td>{{rating.value}}</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>Summary</th>
+							<th>{{article.ratings.length}}</th>
+							<th>{{article.ratingResult}}</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
 			<div class="panel-footer">{{formatDate(article.date)}}</div>
 		</div>
 	</div>
