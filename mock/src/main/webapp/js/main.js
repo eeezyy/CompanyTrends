@@ -63,6 +63,7 @@ function TaskListCtrl(MockRestangular, CommonService, $scope, $http, $routeParam
 		resource.getList().then(function(tasks) {
 			$scope.tasks = tasks;
 			$scope.loading = false;
+			console.log(tasks);
 		}, function(response) {
 			$scope.loading = false;
 			$scope.errorMessageRequest = "Error with status code: " + response.status;
@@ -116,6 +117,10 @@ function TaskCtrl(MockRestangular, CommonService, $scope, $http, $routeParams) {
 					url: $scope.task.url
 				}
 		};
+		
+		// problems with request interceptor, so we put it here
+		$scope.loading = true;
+		$scope.errorMessageRequest = false;
 		
 		// restangular-post seems broken, doesn't send body
 		$http.post("./rest/task/submitTask", body).then(function(job) {

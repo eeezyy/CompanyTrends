@@ -179,7 +179,6 @@ function JobCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope, $h
 		CrowdRestangular.one('job', $routeParams.id).get().then(function(job) {
 			$scope.loading = false;
 			$scope.job = job;
-			console.log(job);
 			$scope.stateInfo = $scope.setStateInfo();
 		}, function(response) {
 			$scope.loading = false;
@@ -248,7 +247,6 @@ function JobListCtrl(CrowdRestangular, CommonService, $scope) {
 		resource.getList().then(function(jobs) {
 			$scope.loading = false;
 			$scope.jobs = jobs;
-			console.log(jobs);
 		}, function(response) {
 			$scope.loading = false;
 			$scope.errorMessageRequest = "Error with status code: " + response.status;
