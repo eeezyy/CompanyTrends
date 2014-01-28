@@ -11,6 +11,9 @@ app.config([ "$routeProvider", "$locationProvider", function($routeProvider, $lo
 	$routeProvider.when('/', { templateUrl: 'templates/search.html', controller: 'SearchCtrl' });
 	$routeProvider.when('/:id', { templateUrl: 'templates/job.html', controller: 'JobCtrl' });
 	$routeProvider.when('/job/list', { templateUrl: 'templates/jobList.html', controller: 'JobListCtrl' });
+	$routeProvider.when('/quality/list', { templateUrl: 'templates/quality.html', controller: 'QualityCtrl' });
+	$routeProvider.when('/info/about', { templateUrl: 'templates/about.html', controller: 'AboutCtrl' });
+	$routeProvider.when('/info/contact', { templateUrl: 'templates/contact.html', controller: 'ContactCtrl' });
 }]);
 
 app.factory('CommonService', function() {
@@ -26,6 +29,14 @@ app.factory('CommonService', function() {
 
 // Configuration for Crowd REST-API
 app.factory('CrowdRestangular', function(Restangular) {
+	return Restangular.withConfig(function(RestangularConfigurer) {
+		RestangularConfigurer.setBaseUrl('rest');
+	});
+	
+});
+
+//Configuration for Crowd REST-API and Quality Resources, because of special Interceptor
+app.factory('QualityRestangular', function(Restangular) {
 	return Restangular.withConfig(function(RestangularConfigurer) {
 		RestangularConfigurer.setBaseUrl('rest');
 	});
@@ -67,7 +78,6 @@ function SearchCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope,
 		// show error panel
 		$scope.errorMessageRequest = elem.data;
 		$scope.loadingSuggestion = false;
-		console.log("error interceptor");
 	});
 
 	$scope.selectSuggestion = function(index) {
@@ -163,13 +173,13 @@ function JobCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope, $h
 		// show error panel
 		$scope.errorMessageRequest = elem.data;
 		$scope.loading = false;
-		console.log("error interceptor");
 	});
 
 	$scope.loadJob = function() {
 		CrowdRestangular.one('job', $routeParams.id).get().then(function(job) {
 			$scope.loading = false;
 			$scope.job = job;
+			console.log(job);
 			$scope.stateInfo = $scope.setStateInfo();
 		}, function(response) {
 			$scope.loading = false;
@@ -223,7 +233,6 @@ function JobListCtrl(CrowdRestangular, CommonService, $scope) {
 		// show error panel
 		$scope.errorMessageRequest = elem.data;
 		$scope.loading = false;
-		console.log("error interceptor");
 	});
 	
 	$scope.length = function(list) {
@@ -235,7 +244,6 @@ function JobListCtrl(CrowdRestangular, CommonService, $scope) {
 		resource.getList().then(function(jobs) {
 			$scope.loading = false;
 			$scope.jobs = jobs;
-			$scope.waitForRequest = false;
 		}, function(response) {
 			$scope.loading = false;
 			$scope.errorMessageRequest = "Error with status code: " + response.status;
@@ -244,5 +252,71 @@ function JobListCtrl(CrowdRestangular, CommonService, $scope) {
 	};
 	
 	$scope.loadJobList();
+}
+
+function QualityCtrl(QualityRestangular, $scope) {
+	
+	$scope.showLoading = function() {
+		return $scope.loading;
+	};
+	
+	// Interceptors
+	QualityRestangular.setRequestInterceptor(function(elem, operation, what) {
+		// reset error
+		$scope.errorMessageRequest = false;
+		$scope.loading = true;
+	});
+	
+	QualityRestangular.setResponseExtractor(function(response, operation, what, url) {
+		// getting map in separate scope by converting it to list
+		var output = [], item;
+
+		for (var type in response) {
+		    item = {};
+		    item.userId = type;
+		    item.value = response[type];
+		    output.push(item);
+		}
+		return output;
+	});
+
+
+	QualityRestangular.setErrorInterceptor(function(elem, operation, what) {
+		// show error panel
+		$scope.errorMessageRequest = elem.data;
+		$scope.loading = false;
+	});
+	
+	$scope.loadDistances = function() {
+		var resource = QualityRestangular.all('quality/distance');
+		resource.getList().then(function(distances) {
+			$scope.loading = false;
+			$scope.distances = distances;
+		}, function(response) {
+			$scope.loading = false;
+			$scope.errorMessageRequest = "Error with status code: " + response.status;
+		});
+		
+	};
+	
+	$scope.loadDistances();
+	
+	$scope.loadTendencies = function() {
+		var resource = QualityRestangular.all('quality/tendency');
+		resource.getList().then(function(tendencies) {
+			$scope.loading = false;
+			$scope.tendencies = tendencies;
+		}, function(response) {
+			$scope.loading = false;
+		});
+		
+	};
+	
+	$scope.loadTendencies();
+	
+	$scope.reload = function() {
+		$scope.loadDistances();
+		$scope.loadTendencies();
+	};
 }
 
