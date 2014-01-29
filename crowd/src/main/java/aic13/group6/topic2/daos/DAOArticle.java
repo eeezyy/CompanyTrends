@@ -4,8 +4,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import aic13.group6.topic2.entities.Article;
@@ -19,7 +17,6 @@ public class DAOArticle implements DAO<Article> {
 		}
 		
 		synchronized(DAO.SYNC) {	
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
 	    	EntityManager em = emf.createEntityManager();
 	    	
 			em.getTransaction().begin();
@@ -27,7 +24,6 @@ public class DAOArticle implements DAO<Article> {
 			em.getTransaction().commit();
 			
 			em.close();
-			emf.close();
 		}
 		
 		return obj;
@@ -39,20 +35,17 @@ public class DAOArticle implements DAO<Article> {
 			throw new SQLException("No key!");
 		}
 		
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
 		
 		obj = em.find(Article.class, obj.getUrl());
 		
 		em.close();
-		emf.close();
 		
 		return obj;
 	}
 
 	public Article update(Article obj) throws SQLException {
 		synchronized(DAO.SYNC) {
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
 	    	EntityManager em = emf.createEntityManager();
 	    	
 			em.getTransaction().begin();
@@ -60,14 +53,12 @@ public class DAOArticle implements DAO<Article> {
 			em.getTransaction().commit();
 			
 			em.close();
-			emf.close();
 		}
 		
 		return obj;
 	}
 	
 	public Double calculateProgress(Article article) {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
     	
     	Query query = em.createNativeQuery("select count(a.url)*1.0/(count(a.url) + sum(a.workercounter)) opentask from article a join rating r on a.url=r.article_url where a.url='" + article.getUrl() + "' group by a.url");
@@ -75,7 +66,6 @@ public class DAOArticle implements DAO<Article> {
     	List<Double> result = query.getResultList(); 
     	
     	em.close();
-    	emf.close();
     	
     	// should be only zero or one result
     	Double value = null;

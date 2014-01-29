@@ -20,7 +20,6 @@ public class DAORating implements DAO<Rating> {
 	@Override
 	public Rating create(Rating obj) throws SQLException {
 		synchronized(DAO.SYNC) {
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
 	    	EntityManager em = emf.createEntityManager();
 	    	
 	    	em.getTransaction().begin();
@@ -28,7 +27,6 @@ public class DAORating implements DAO<Rating> {
 			em.getTransaction().commit();
 			
 			em.close();
-			emf.close();
 		}
 		
 		return obj;
@@ -36,13 +34,11 @@ public class DAORating implements DAO<Rating> {
 
 	@Override
 	public Rating findByID(Rating obj) throws SQLException {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
     	
     	Rating r = em.find(Rating.class, obj.getId());
     	
     	em.close();
-    	emf.close();
     	
     	return r;
 	}
@@ -56,7 +52,6 @@ public class DAORating implements DAO<Rating> {
 	public Map<Long, Double> calculateDistance() throws SQLException {
 		Map<Long, Double> map = new TreeMap<Long, Double>();
 
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
     	
     	// Native query, because JPQL doesn't support nested queries
@@ -71,7 +66,6 @@ public class DAORating implements DAO<Rating> {
     	List<Object[]> resultList = query.getResultList(); 
     	
     	em.close();
-    	emf.close();
     	
     	for(Object[] result: resultList) {
     		map.put(new Long((Integer)result[0]), (Double)result[1]);
@@ -96,7 +90,6 @@ public class DAORating implements DAO<Rating> {
     	List<Object[]> resultList = query.getResultList(); 
     	
     	em.close();
-    	emf.close();
     	
     	for(Object[] result: resultList) {
     		map.put(new Long((Integer)result[0]), (Double)result[1]);
@@ -114,7 +107,6 @@ public class DAORating implements DAO<Rating> {
     	List<Double> result = query.getResultList(); 
     	
     	em.close();
-    	emf.close();
     	
     	// should be only zero or one result
     	Double value = null;
@@ -133,7 +125,6 @@ public class DAORating implements DAO<Rating> {
     	List<Double> result = query.getResultList(); 
     	
     	em.close();
-    	emf.close();
     	
     	// should be only zero or one result
     	Double value = null;

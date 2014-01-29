@@ -13,7 +13,6 @@ public class DAOAnswer implements DAO<Answer> {
 	@Override
 	public Answer create(Answer obj) throws SQLException {
 		synchronized(DAO.SYNC) {
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
 	    	EntityManager em = emf.createEntityManager();
 	    	
 			em.getTransaction().begin();
@@ -21,7 +20,6 @@ public class DAOAnswer implements DAO<Answer> {
 			em.getTransaction().commit();
 			
 			em.close();
-			emf.close();
 		}
 		
 		return obj;
@@ -29,13 +27,11 @@ public class DAOAnswer implements DAO<Answer> {
 
 	@Override
 	public Answer findByID(Answer obj) throws SQLException {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
     	EntityManager em = emf.createEntityManager();
 		
 		obj = em.find(Answer.class, obj.getId());
 		
 		em.close();
-		emf.close();
 		
 		return obj;
 	}

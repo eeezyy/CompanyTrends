@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -25,7 +23,6 @@ public class DAOJob implements DAO<Job> {
 			obj.setDate((new Date()).getTime());
 			obj.setState(State.CREATED);
 			
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
 	    	EntityManager em = emf.createEntityManager();
 	    	
 	    	em.getTransaction().begin();
@@ -33,7 +30,6 @@ public class DAOJob implements DAO<Job> {
 			em.getTransaction().commit();
 			
 			em.close();
-			emf.close();
 		}
 		
 		return obj;
@@ -41,7 +37,6 @@ public class DAOJob implements DAO<Job> {
 	
 	public Job update(Job obj) throws SQLException {
 		synchronized(DAO.SYNC) {
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
 	    	EntityManager em = emf.createEntityManager();
 	    	
 	    	em.getTransaction().begin();
@@ -49,7 +44,6 @@ public class DAOJob implements DAO<Job> {
 			em.getTransaction().commit();
 			
 			em.close();
-			emf.close();
 		}
 		
 		return obj;
@@ -57,13 +51,11 @@ public class DAOJob implements DAO<Job> {
 
 	@Override
 	public Job findByID(Job obj) throws SQLException {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
     	
 		obj = em.find(Job.class, obj.getId());
 		
 		em.close();
-		emf.close();
 		
 		return obj;
 	}
@@ -75,7 +67,6 @@ public class DAOJob implements DAO<Job> {
 	 * @return
 	 */
 	public List<Job> list(final int offset, final int max) {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
 		EntityManager em = emf.createEntityManager();
 		
 		CriteriaBuilder builder = emf.getCriteriaBuilder();
@@ -87,13 +78,11 @@ public class DAOJob implements DAO<Job> {
 		List<Job> list = em.createQuery(criteria).setFirstResult(offset).setMaxResults(max).getResultList();
 		
 		em.close();
-		emf.close();
 		
 		return list;
 	}
 
 	public List<Job> list() {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
 		EntityManager em = emf.createEntityManager();
 		
 		CriteriaBuilder builder = emf.getCriteriaBuilder();
@@ -105,13 +94,11 @@ public class DAOJob implements DAO<Job> {
 		List<Job> list = em.createQuery(criteria).getResultList();
 		
 		em.close();
-		emf.close();
 		
 		return list;
 	}
 	
 	public Double calculateProgress(Job job) {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
     	
     	Query query = em.createNativeQuery("select count(r.id)*1.0/(sum(a.workercounter)+count(r.id)) from job j join job_article ja on j.id=ja.jobs_id join article a on a.url=ja.articles_url left join rating r on r.article_url=a.url where j.id=" + job.getId() + " group by j.id");
@@ -119,7 +106,6 @@ public class DAOJob implements DAO<Job> {
     	List<Double> result = query.getResultList(); 
     	
     	em.close();
-    	emf.close();
     	
     	// should be only zero or one result
     	Double value = null;
@@ -133,7 +119,6 @@ public class DAOJob implements DAO<Job> {
 		Date now = new Date();
 		Date dateBefore = new Date(now.getTime() - Settings.getTaskTimeoutInDays() * 24 * 3600 * 1000 );
 		
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
 		EntityManager em = emf.createEntityManager();
 		
 		CriteriaBuilder builder = emf.getCriteriaBuilder();
@@ -147,7 +132,6 @@ public class DAOJob implements DAO<Job> {
 		List<Job> list = em.createQuery(criteria).getResultList();
 		
 		em.close();
-		emf.close();
 		return list;
 	}
 

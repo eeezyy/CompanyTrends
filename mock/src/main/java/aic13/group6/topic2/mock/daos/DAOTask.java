@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
@@ -18,7 +19,6 @@ public class DAOTask implements DAO<Task> {
 	@Override
 	public Task create(Task obj) throws SQLException {
 		synchronized(DAO.SYNC) {
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
 	    	EntityManager em = emf.createEntityManager();
 	    	
 			em.getTransaction().begin();
@@ -26,7 +26,6 @@ public class DAOTask implements DAO<Task> {
 			em.getTransaction().commit();
 			
 			em.close();
-			emf.close();
 		}
 		
 		return obj;
@@ -34,20 +33,17 @@ public class DAOTask implements DAO<Task> {
 
 	@Override
 	public Task findByID(Task obj) throws SQLException {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
     	EntityManager em = emf.createEntityManager();
 		
 		obj = em.find(Task.class, obj.getId());
 		
 		em.close();
-		emf.close();
 		
 		return obj;
 	}
 	
 	public Task update(Task obj) throws SQLException {
 		synchronized(DAO.SYNC) {
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
 			EntityManager em = emf.createEntityManager();
 			
 			em.getTransaction().begin();
@@ -55,7 +51,6 @@ public class DAOTask implements DAO<Task> {
 			em.getTransaction().commit();
 			
 			em.close();
-			emf.close();
 		}
 		
 		return obj;
@@ -63,7 +58,6 @@ public class DAOTask implements DAO<Task> {
 	
 	public void delete(Task obj) throws SQLException {
 		synchronized (DAO.SYNC) {
-			EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
 			EntityManager em = emf.createEntityManager();
 			
 			em.getTransaction().begin();
@@ -74,7 +68,6 @@ public class DAOTask implements DAO<Task> {
 			em.getTransaction().commit();
 			
 			em.close();
-			emf.close();
 		}
 	}
 
@@ -85,7 +78,6 @@ public class DAOTask implements DAO<Task> {
 	 * @return
 	 */
 	public List<Task> listOpenTasks(final int offset, final int max) {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
 		EntityManager em = emf.createEntityManager();
 		
 		CriteriaBuilder builder = emf.getCriteriaBuilder();
@@ -99,13 +91,11 @@ public class DAOTask implements DAO<Task> {
 		List<Task> list = em.createQuery(criteria).setFirstResult(offset).setMaxResults(max).getResultList();
 		
 		em.close();
-		emf.close();
 		
 		return list;
 	}
 
 	public List<Task> listOpenTasks() {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
 		EntityManager em = emf.createEntityManager();
 		
 		CriteriaBuilder builder = emf.getCriteriaBuilder();
@@ -119,13 +109,11 @@ public class DAOTask implements DAO<Task> {
 		List<Task> list = em.createQuery(criteria).getResultList();
 		
 		em.close();
-		emf.close();
 		
 		return list;
 	}
 	
 	public List<Task> listOpenTaskByUrl(Task task) {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
 		EntityManager em = emf.createEntityManager();
 
 		CriteriaBuilder builder = emf.getCriteriaBuilder();
@@ -140,7 +128,6 @@ public class DAOTask implements DAO<Task> {
 		List<Task> list = em.createQuery(criteria).getResultList();
 		
 		em.close();
-		emf.close();
 		
 		return list;
 	}
