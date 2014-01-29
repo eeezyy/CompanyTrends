@@ -61,7 +61,7 @@ public class DAOArticle implements DAO<Article> {
 	public Double calculateProgress(Article article) {
     	EntityManager em = emf.createEntityManager();
     	
-    	Query query = em.createNativeQuery("select count(a.url)*1.0/(count(a.url) + sum(a.workercounter)) opentask from article a join rating r on a.url=r.article_url where a.url='" + article.getUrl() + "' group by a.url");
+    	Query query = em.createNativeQuery("select count(a.url)*1.0/(count(a.url) + sum(a.workercounter)) opentask from article a join rating r on a.url=r.article_url where a.url=':url' group by a.url").setParameter("url", article.getUrl());
     	
     	List<Double> result = query.getResultList(); 
     	

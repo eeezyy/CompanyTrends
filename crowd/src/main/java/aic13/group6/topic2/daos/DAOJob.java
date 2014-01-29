@@ -101,7 +101,7 @@ public class DAOJob implements DAO<Job> {
 	public Double calculateProgress(Job job) {
     	EntityManager em = emf.createEntityManager();
     	
-    	Query query = em.createNativeQuery("select count(r.id)*1.0/(sum(a.workercounter)+count(r.id)) from job j join job_article ja on j.id=ja.jobs_id join article a on a.url=ja.articles_url left join rating r on r.article_url=a.url where j.id=" + job.getId() + " group by j.id");
+    	Query query = em.createNativeQuery("select count(r.id)*1.0/(sum(a.workercounter)+count(r.id)) from job j join job_article ja on j.id=ja.jobs_id join article a on a.url=ja.articles_url left join rating r on r.article_url=a.url where j.id=:id group by j.id").setParameter("id", job.getId());
     	
     	List<Double> result = query.getResultList(); 
     	
