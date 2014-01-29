@@ -212,7 +212,11 @@ function JobCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope, $h
 	};
 	
 	$scope.convertToPercent = function(value) {
-		return parseInt(value * 100);
+		return Math.round(value * 100);
+	};
+	
+	$scope.formatTwoDecimalsAndRound = function(value) {
+		return Math.round(value * 100)/100;
 	};
 	
 }

@@ -6,7 +6,9 @@ import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import aic13.group6.topic2.daos.DAORating;
 
@@ -23,8 +25,7 @@ public class QualityResource {
 		try {
 			map = daoRating.calculateTendency();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
 		}
 		
 		return map;
@@ -39,8 +40,7 @@ public class QualityResource {
 		try {
 			map = daoRating.calculateDistance();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
 		}
 		
 		return map;

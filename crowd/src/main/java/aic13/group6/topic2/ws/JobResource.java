@@ -25,6 +25,7 @@ import aic13.group6.topic2.entities.Rating;
 import aic13.group6.topic2.pojos.Answer;
 import aic13.group6.topic2.pojos.AnswerOptions;
 import aic13.group6.topic2.services.Settings;
+import aic13.group6.topic2.services.TaskGarbageCollection;
 import aic13.group6.topic2.workflow.Workflow;
 
 @Path("job")
@@ -138,6 +139,12 @@ public class JobResource {
 		}
 		
 		return answer;
+	}
+	
+	@GET
+	@Path("runGarbageCollection")
+	public void runGarbageCollection() {
+		TaskGarbageCollection.runGarbageCollection();
 	}
 	
 }

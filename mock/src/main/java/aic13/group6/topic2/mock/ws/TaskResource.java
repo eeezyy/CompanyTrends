@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -63,6 +64,26 @@ public class TaskResource {
 		}
 		
 		return savedTask;
+	}
+	
+	@DELETE
+	public void delete(@QueryParam("url") String url) {
+		DAOTask daoTask = new DAOTask();
+		
+		Task task = new Task();
+		task.setUrl(url);
+		
+		List<Task> list = daoTask.listOpenTaskByUrl(task);
+		try {
+			if(list.size() > 0) {
+				System.out.println(list.get(0).getUrl());
+				// just remove one task with the same url
+				// other jobs who created them should get results
+				daoTask.delete(list.get(0));
+			}
+		} catch (SQLException e) {
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	/**

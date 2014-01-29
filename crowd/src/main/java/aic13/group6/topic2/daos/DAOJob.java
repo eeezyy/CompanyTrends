@@ -10,10 +10,12 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
 import aic13.group6.topic2.entities.Job;
 import aic13.group6.topic2.pojos.State;
+import aic13.group6.topic2.services.Settings;
 
 public class DAOJob implements DAO<Job> {
 	
@@ -125,6 +127,28 @@ public class DAOJob implements DAO<Job> {
     		value = result.get(0);
     	}
     	return value;
+	}
+
+	public List<Job> getExpiredJobs() {
+		Date now = new Date();
+		Date dateBefore = new Date(now.getTime() - Settings.getTaskTimeoutInDays() * 24 * 3600 * 1000 );
+		
+		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
+		EntityManager em = emf.createEntityManager();
+		
+		CriteriaBuilder builder = emf.getCriteriaBuilder();
+		CriteriaQuery<Job> criteria = builder.createQuery(Job.class);
+		
+		Root<Job> taskRoot = criteria.from(Job.class);
+		criteria.select(taskRoot);
+		Path<Long> date = taskRoot.get("date");
+		criteria.where(builder.lt(date, dateBefore.getTime()));
+		criteria.orderBy(builder.desc(taskRoot.get("date")));
+		List<Job> list = em.createQuery(criteria).getResultList();
+		
+		em.close();
+		emf.close();
+		return list;
 	}
 
 }
