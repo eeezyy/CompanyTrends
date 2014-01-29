@@ -44,8 +44,6 @@ public class AssignTask implements Runnable {
 		task.setPrice(1);
 		task.setCallbackUrl(baseUrl + Settings.getCrowdBaseAPI() + Settings.getCallbackResource());
 		
-		job.setTask(task);
-
 		Task responseTask = TaskAPI.create(baseUrl + Settings.getMockBaseAPI() + Settings.getTaskResource(), task);
 		// TODO on error
 		

@@ -45,9 +45,9 @@ public class Pricing implements Runnable {
 				d = d / 60; // minutes
 				
 				if (d%5 == 0) { // every 5 minutes
-					Task t = j.getTask();
-					t.setPrice(Math.log(d / 5) * 4);
-					postToWebService(Settings.getMockBaseAPI() + Settings.getTaskResource() + "/" + j.getTask().getId(), t);
+//					Task t = j.getTask();
+//					t.setPrice(Math.log(d / 5) * 4);
+//					postToWebService(Settings.getMockBaseAPI() + Settings.getTaskResource() + "/" + j.getTask().getId(), t);
 					
 				}
 			}

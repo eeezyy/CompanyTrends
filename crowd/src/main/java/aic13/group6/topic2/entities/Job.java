@@ -32,8 +32,6 @@ public class Job {
 	@ManyToMany
 	private List<Article> articles;
 	
-	private Task task;
-	
 	public Long getId() {
 		return id;
 	}
@@ -100,12 +98,4 @@ public class Job {
 		return percentage;
 	}
 
-	public Task getTask() {
-		return task;
-	}
-
-	public void setTask(Task task) {
-		this.task = task;
-	}
-	
 }
