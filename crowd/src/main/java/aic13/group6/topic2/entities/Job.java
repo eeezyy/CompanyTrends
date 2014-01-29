@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import aic13.group6.topic2.daos.DAOJob;
 import aic13.group6.topic2.daos.DAORating;
 import aic13.group6.topic2.pojos.State;
+import aic13.group6.topic2.pojos.Task;
 
 @XmlRootElement(name="job")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -30,6 +31,8 @@ public class Job {
 	private State state;
 	@ManyToMany
 	private List<Article> articles;
+	
+	private Task task;
 	
 	public Long getId() {
 		return id;
@@ -84,6 +87,14 @@ public class Job {
 		DAOJob daoJob = new DAOJob();
 		Double percentage = daoJob.calculateProgress(this);
 		return percentage;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
 	}
 	
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -46,6 +47,21 @@ public class TaskResource {
 		
 		return task;
     }
+	
+	@PUT
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Task update(final Task t) {
+		DAOTask daoTask = new DAOTask();
+		
+		Task ret;
+		try {
+			ret = daoTask.update(t);
+		} catch (SQLException e) {
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
+		return ret;
+	}
 	
 	@POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
