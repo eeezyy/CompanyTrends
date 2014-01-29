@@ -20,6 +20,7 @@ public class DAORating implements DAO<Rating> {
 	@Override
 	public Rating create(Rating obj) throws SQLException {
 		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("aic");
 	    	EntityManager em = emf.createEntityManager();
 	    	
 	    	em.getTransaction().begin();
@@ -27,6 +28,7 @@ public class DAORating implements DAO<Rating> {
 			em.getTransaction().commit();
 			
 			em.close();
+			emf.close();
 		}
 		
 		return obj;
@@ -34,11 +36,17 @@ public class DAORating implements DAO<Rating> {
 
 	@Override
 	public Rating findByID(Rating obj) throws SQLException {
-    	EntityManager em = emf.createEntityManager();
-    	
-    	Rating r = em.find(Rating.class, obj.getId());
-    	
-    	em.close();
+		Rating r;
+		
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("aic");
+	    	EntityManager em = emf.createEntityManager();
+	    	
+	    	r = em.find(Rating.class, obj.getId());
+	    	
+	    	em.close();
+	    	emf.close();
+		}
     	
     	return r;
 	}
@@ -51,21 +59,26 @@ public class DAORating implements DAO<Rating> {
 	 */
 	public Map<Long, Double> calculateDistance() throws SQLException {
 		Map<Long, Double> map = new TreeMap<Long, Double>();
+		List<Object[]> resultList;
 
-    	EntityManager em = emf.createEntityManager();
-    	
-    	// Native query, because JPQL doesn't support nested queries
-    	Query query = em.createNativeQuery("select userid, sum(abstand)/count(abstand) abstand_global from ("
-    			+ "select userid, abs(user_durchschn-durchschnitt) abstand, url from ("
-    			+ "select sum(value)*1.0/count(value) durchschnitt, url from rating join article where rating.article_url=article.url and value<>:irrelevantValue group by url"
-    			+ ") join ("
-    			+ "select userid, sum(value)*1.0/count(value) user_durchschn, url url_user from rating join article where rating.article_url=article.url and  value<>:irrelevantValue group by userid, url"
-    			+ ") where url=url_user order by userid"
-    			+ ") group by userid;").setParameter("irrelevantValue", AnswerOptions.IRRELEVANT.value());
-    	
-    	List<Object[]> resultList = query.getResultList(); 
-    	
-    	em.close();
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("aic");
+	    	EntityManager em = emf.createEntityManager();
+	    	
+	    	// Native query, because JPQL doesn't support nested queries
+	    	Query query = em.createNativeQuery("select userid, sum(abstand)/count(abstand) abstand_global from ("
+	    			+ "select userid, abs(user_durchschn-durchschnitt) abstand, url from ("
+	    			+ "select sum(value)*1.0/count(value) durchschnitt, url from rating join article where rating.article_url=article.url and value<>:irrelevantValue group by url"
+	    			+ ") join ("
+	    			+ "select userid, sum(value)*1.0/count(value) user_durchschn, url url_user from rating join article where rating.article_url=article.url and  value<>:irrelevantValue group by userid, url"
+	    			+ ") where url=url_user order by userid"
+	    			+ ") group by userid;").setParameter("irrelevantValue", AnswerOptions.IRRELEVANT.value());
+	    	
+	    	resultList = query.getResultList(); 
+	    	
+	    	em.close();
+	    	emf.close();
+		}
     	
     	for(Object[] result: resultList) {
     		map.put(new Long((Integer)result[0]), (Double)result[1]);
@@ -81,16 +94,20 @@ public class DAORating implements DAO<Rating> {
 	 */
 	public Map<Long, Double> calculateTendency() throws SQLException {
 		Map<Long, Double> map = new TreeMap<Long, Double>();
+		List<Object[]> resultList;
 
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-    	EntityManager em = emf.createEntityManager();
-    	
-    	Query query = em.createNativeQuery("select userid, sum(value)*1.0/sum(userid) from rating where value<>:irrelevantValue group by userid").setParameter("irrelevantValue", AnswerOptions.IRRELEVANT.value());
-    	
-    	List<Object[]> resultList = query.getResultList(); 
-    	
-    	em.close();
-    	
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("aic");
+	    	EntityManager em = emf.createEntityManager();
+	    	
+	    	Query query = em.createNativeQuery("select userid, sum(value)*1.0/sum(userid) from rating where value<>:irrelevantValue group by userid").setParameter("irrelevantValue", AnswerOptions.IRRELEVANT.value());
+	    	
+	    	resultList = query.getResultList(); 
+	    	
+	    	em.close();
+	    	emf.close();
+		}
+	    	
     	for(Object[] result: resultList) {
     		map.put(new Long((Integer)result[0]), (Double)result[1]);
     	}
@@ -99,14 +116,19 @@ public class DAORating implements DAO<Rating> {
 	}
 	
 	public Double calculateRatingResultForArticle(Article article) {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-    	EntityManager em = emf.createEntityManager();
-    	
-    	Query query = em.createNativeQuery("select sum(value)*1.0/count(value) average from article a join rating r on a.url=r.article_url where a.url = ':url' group by a.url").setParameter("url", article.getUrl());
-    	
-    	List<Double> result = query.getResultList(); 
-    	
-    	em.close();
+		List<Double> result;
+		
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("aic");
+	    	EntityManager em = emf.createEntityManager();
+	    	
+	    	Query query = em.createNativeQuery("select sum(value)*1.0/count(value) average from article a join rating r on a.url=r.article_url where a.url = ':url' group by a.url").setParameter("url", article.getUrl());
+	    	
+	    	result = query.getResultList(); 
+	    	
+	    	em.close();
+	    	emf.close();
+		}
     	
     	// should be only zero or one result
     	Double value = null;
@@ -117,14 +139,19 @@ public class DAORating implements DAO<Rating> {
 	}
 	
 	public Double calculateRatingResultForJob(Job job) {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-    	EntityManager em = emf.createEntityManager();
-    	
-    	Query query = em.createNativeQuery("select sum(r.value)*1.0/count(r.value) average from job j join job_article jb on j.id=jb.jobs_ID join article a on a.url=jb.articles_URL join rating r on r.article_url=a.url where j.id=:id group by j.id").setParameter("id", job.getId());
-    	
-    	List<Double> result = query.getResultList(); 
-    	
-    	em.close();
+		List<Double> result;
+		
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("aic");
+	    	EntityManager em = emf.createEntityManager();
+	    	
+	    	Query query = em.createNativeQuery("select sum(r.value)*1.0/count(r.value) average from job j join job_article jb on j.id=jb.jobs_ID join article a on a.url=jb.articles_URL join rating r on r.article_url=a.url where j.id=:id group by j.id").setParameter("id", job.getId());
+	    	
+	    	result = query.getResultList(); 
+	    	
+	    	em.close();
+	    	emf.close();
+		}
     	
     	// should be only zero or one result
     	Double value = null;

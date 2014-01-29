@@ -8,7 +8,7 @@ import javax.persistence.Persistence;
 public interface DAO<T> {
 	
 	public static final Integer SYNC = 0;
-	public static final EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
+//	public static final EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
 	
 	/**
 	 * Creates an entry in the database.

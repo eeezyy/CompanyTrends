@@ -19,6 +19,7 @@ public class DAOTask implements DAO<Task> {
 	@Override
 	public Task create(Task obj) throws SQLException {
 		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("mock");
 	    	EntityManager em = emf.createEntityManager();
 	    	
 			em.getTransaction().begin();
@@ -26,6 +27,7 @@ public class DAOTask implements DAO<Task> {
 			em.getTransaction().commit();
 			
 			em.close();
+			emf.close();
 		}
 		
 		return obj;
@@ -33,17 +35,22 @@ public class DAOTask implements DAO<Task> {
 
 	@Override
 	public Task findByID(Task obj) throws SQLException {
-    	EntityManager em = emf.createEntityManager();
-		
-		obj = em.find(Task.class, obj.getId());
-		
-		em.close();
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("mock");
+	    	EntityManager em = emf.createEntityManager();
+			
+			obj = em.find(Task.class, obj.getId());
+			
+			em.close();
+			emf.close();
+		}
 		
 		return obj;
 	}
 	
 	public Task update(Task obj) throws SQLException {
 		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("mock");
 			EntityManager em = emf.createEntityManager();
 			
 			em.getTransaction().begin();
@@ -51,6 +58,7 @@ public class DAOTask implements DAO<Task> {
 			em.getTransaction().commit();
 			
 			em.close();
+			emf.close();
 		}
 		
 		return obj;
@@ -58,6 +66,7 @@ public class DAOTask implements DAO<Task> {
 	
 	public void delete(Task obj) throws SQLException {
 		synchronized (DAO.SYNC) {
+			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("mock");
 			EntityManager em = emf.createEntityManager();
 			
 			em.getTransaction().begin();
@@ -68,6 +77,7 @@ public class DAOTask implements DAO<Task> {
 			em.getTransaction().commit();
 			
 			em.close();
+			emf.close();
 		}
 	}
 
@@ -78,56 +88,74 @@ public class DAOTask implements DAO<Task> {
 	 * @return
 	 */
 	public List<Task> listOpenTasks(final int offset, final int max) {
-		EntityManager em = emf.createEntityManager();
+		List<Task> list;
 		
-		CriteriaBuilder builder = emf.getCriteriaBuilder();
-		CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
-		
-		Root<Task> taskRoot = criteria.from(Task.class);
-		criteria.select(taskRoot);
-		Path<Integer> counter = taskRoot.get("workerCounter");
-		criteria.where(builder.gt(counter, 0));
-		criteria.orderBy(builder.desc(taskRoot.get("date")));
-		List<Task> list = em.createQuery(criteria).setFirstResult(offset).setMaxResults(max).getResultList();
-		
-		em.close();
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("mock");
+			EntityManager em = emf.createEntityManager();
+			
+			CriteriaBuilder builder = emf.getCriteriaBuilder();
+			CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
+			
+			Root<Task> taskRoot = criteria.from(Task.class);
+			criteria.select(taskRoot);
+			Path<Integer> counter = taskRoot.get("workerCounter");
+			criteria.where(builder.gt(counter, 0));
+			criteria.orderBy(builder.desc(taskRoot.get("date")));
+			list = em.createQuery(criteria).setFirstResult(offset).setMaxResults(max).getResultList();
+			
+			em.close();
+			emf.close();
+		}
 		
 		return list;
 	}
 
 	public List<Task> listOpenTasks() {
-		EntityManager em = emf.createEntityManager();
+		List<Task> list;
 		
-		CriteriaBuilder builder = emf.getCriteriaBuilder();
-		CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
-		
-		Root<Task> taskRoot = criteria.from(Task.class);
-		criteria.select(taskRoot);
-		Path<Integer> counter = taskRoot.get("workerCounter");
-		criteria.where(builder.gt(counter, 0));
-		criteria.orderBy(builder.desc(taskRoot.get("date")));
-		List<Task> list = em.createQuery(criteria).getResultList();
-		
-		em.close();
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("mock");
+			EntityManager em = emf.createEntityManager();
+			
+			CriteriaBuilder builder = emf.getCriteriaBuilder();
+			CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
+			
+			Root<Task> taskRoot = criteria.from(Task.class);
+			criteria.select(taskRoot);
+			Path<Integer> counter = taskRoot.get("workerCounter");
+			criteria.where(builder.gt(counter, 0));
+			criteria.orderBy(builder.desc(taskRoot.get("date")));
+			list = em.createQuery(criteria).getResultList();
+			
+			em.close();
+			emf.close();
+		}
 		
 		return list;
 	}
 	
 	public List<Task> listOpenTaskByUrl(Task task) {
-		EntityManager em = emf.createEntityManager();
-
-		CriteriaBuilder builder = emf.getCriteriaBuilder();
-		CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
+		List<Task> list;
 		
-		Root<Task> taskRoot = criteria.from(Task.class);
-		criteria.select(taskRoot);
-		Path<String> url = taskRoot.get("url");
-		Path<Integer> counter = taskRoot.get("workerCounter");
-		criteria.where(builder.and(builder.equal(url, task.getUrl())), builder.gt(counter, 0));
-		criteria.orderBy(builder.desc(taskRoot.get("date")));
-		List<Task> list = em.createQuery(criteria).getResultList();
-		
-		em.close();
+		synchronized(DAO.SYNC) {
+			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("mock");
+			EntityManager em = emf.createEntityManager();
+	
+			CriteriaBuilder builder = emf.getCriteriaBuilder();
+			CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
+			
+			Root<Task> taskRoot = criteria.from(Task.class);
+			criteria.select(taskRoot);
+			Path<String> url = taskRoot.get("url");
+			Path<Integer> counter = taskRoot.get("workerCounter");
+			criteria.where(builder.and(builder.equal(url, task.getUrl())), builder.gt(counter, 0));
+			criteria.orderBy(builder.desc(taskRoot.get("date")));
+			list = em.createQuery(criteria).getResultList();
+			
+			em.close();
+			emf.close();
+		}
 		
 		return list;
 	}

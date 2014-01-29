@@ -9,7 +9,7 @@ public interface DAO<T> {
 	
 	public final static Integer SYNC = 0;
 	
-	public final static EntityManagerFactory emf =	Persistence.createEntityManagerFactory("aic");
+//	public final static EntityManagerFactory emf =	Persistence.createEntityManagerFactory("aic");
 	
 	/**
 	 * Creates an entry in the database.
