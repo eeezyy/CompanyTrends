@@ -1,0 +1,46 @@
+<div class="jumbotron">
+	<div class="container">
+		<h1>
+			Job List</strong>
+		</h1>
+	</div>
+</div>
+<div class="container">
+	<div class="btn-group" style="padding-bottom: 10px">
+		<button type="button" class="btn btn-default btn-sm"
+			onclick="location.href='#'">
+			<span class="glyphicon glyphicon-plus"></span> create new job
+		</button>
+	</div>
+	<div class="btn-group" style="padding-bottom: 10px">
+		<button type="button" class="btn btn-default btn-sm"
+			ng-click="loadJobList()">
+			<span class="glyphicon glyphicon-refresh"></span> reload
+		</button>
+	</div>
+	<div class="alert alert-danger alert-dismissable" ng-show="errorMessageRequest">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		<strong>Error:</strong> {{errorMessageRequest}}
+	</div>
+	<div class="loadingArea" ng-show="showLoading()"><div class="fill"></div></div>
+	<table class="table" ng-show="jobs && !showLoading()">
+		<thead>
+			<tr>
+				<th class="col-sm-1">#</th>
+				<th class="col-sm-4">Name</th>
+				<th class="col-sm-3">Date</th>
+				<th class="col-sm-3">State</th>
+				<th class="col-sm-1">#Articles</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="job in jobs">
+				<td>{{job.id}}</td>
+				<td><a href="#/{{job.id}}">{{job.name}}</a></td>
+				<td>{{formatDate(job.date)}}</td>
+				<td>{{job.state}}</td>
+				<td>{{length(job.articles)}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

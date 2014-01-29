@@ -6,11 +6,16 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import aic13.group6.topic2.daos.DAOArticle;
+import aic13.group6.topic2.daos.DAORating;
 
 @Entity
 @XmlRootElement(name="article")
@@ -29,6 +34,7 @@ public class Article {
 	@XmlAnyAttribute
 	@OneToMany(targetEntity=Rating.class, mappedBy = "article")
 	private List<Rating> ratings;
+	// how many tasks are left to finish
 	private int workerCounter;
 	
 	/**
@@ -109,6 +115,32 @@ public class Article {
 
 	public void setWorkerCounter(int workerCounter) {
 		this.workerCounter = workerCounter;
+	}
+	
+	@Transient
+	@XmlAttribute
+	public Double getRatingResult() {
+		DAORating daoRating = new DAORating();
+		return daoRating.calculateRatingResultForArticle(this);
+	}
+	
+	@Transient
+	@XmlAttribute
+	/**
+	 * Get progress of finished tasks.
+	 * @return progress in percent
+	 */
+	public double getProgress() {
+//		DAOArticle daoArticle = new DAOArticle();
+//		Double percentage = daoArticle.calculateProgress(this);
+		
+		// available ratings + workercounter is sum of all tasks
+		int allTasks = (ratings.size() + getWorkerCounter());
+		double percentage = 1.0;
+		if(allTasks != 0) {
+			percentage = ratings.size() / (ratings.size() + getWorkerCounter());
+		}
+		return percentage;
 	}
 
 	

@@ -7,9 +7,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import aic13.group6.topic2.daos.DAOJob;
+import aic13.group6.topic2.daos.DAORating;
+import aic13.group6.topic2.pojos.State;
+import aic13.group6.topic2.pojos.Task;
 
 @XmlRootElement(name="job")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -65,4 +72,30 @@ public class Job {
 		this.articles = articles;
 	}
 	
+	@Transient
+	@XmlAttribute
+	public Double getRatingResult() {
+		DAORating daoRating = new DAORating();
+		return daoRating.calculateRatingResultForJob(this);
+	}
+	
+	@Transient
+	@XmlAttribute
+	public Double getProgress() {
+//		DAOJob daoJob = new DAOJob();
+//		Double percentage = daoJob.calculateProgress(this);
+		
+		double percentage = 1.0;
+		int sumOfTasks = 0;
+		int sumOfRatings = 0;
+		for(Article article: articles) {
+			sumOfTasks += article.getRatings().size() + article.getWorkerCounter();
+			sumOfRatings += article.getRatings().size();
+		}
+		if(sumOfTasks != 0) {
+			percentage = ((double)sumOfRatings) / sumOfTasks;
+		}
+		return percentage;
+	}
+
 }

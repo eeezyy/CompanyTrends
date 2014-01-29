@@ -1,8 +1,22 @@
-<div ng-repeat="task in tasks">
+<div class="btn-group" style="padding-bottom: 10px">
+	<button type="button" class="btn btn-default btn-sm"
+		ng-click="loadOpenTaskList()">
+		<span class="glyphicon glyphicon-refresh"></span> reload
+	</button>
+</div>
+<div class="alert alert-danger alert-dismissable" ng-show="errorMessageRequest">
+	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	<strong>Error:</strong> {{errorMessageRequest}}
+</div>
+<div class="loadingArea" ng-show="showLoading()"><div class="fill"></div></div>
+<div ng-repeat="task in tasks" ng-show="tasks && !showLoading()">
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">
-				<a href="#/{{task.id}}">{{task.title}}</a>
+				<span class="badge">{{task.workerCounter}}</span>			
+				<a href="#/{{task.id}}">
+					{{task.title}} 
+				</a>
 			</h3>
 		</div>
 	</div>

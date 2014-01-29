@@ -2,9 +2,13 @@ package aic13.group6.topic2.mock.daos;
 
 import java.sql.SQLException;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 public interface DAO<T> {
 	
-	public static Integer SYNC = 0;
+	public static final Integer SYNC = 0;
+	public static final EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
 	
 	/**
 	 * Creates an entry in the database.

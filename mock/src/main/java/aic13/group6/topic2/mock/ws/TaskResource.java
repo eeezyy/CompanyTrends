@@ -5,8 +5,10 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -47,6 +49,21 @@ public class TaskResource {
 		return task;
     }
 	
+	@PUT
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Task update(final Task t) {
+		DAOTask daoTask = new DAOTask();
+		
+		Task ret;
+		try {
+			ret = daoTask.update(t);
+		} catch (SQLException e) {
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
+		return ret;
+	}
+	
 	@POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Task create(final Task task) {
@@ -63,6 +80,26 @@ public class TaskResource {
 		}
 		
 		return savedTask;
+	}
+	
+	@DELETE
+	public void delete(@QueryParam("url") String url) {
+		DAOTask daoTask = new DAOTask();
+		
+		Task task = new Task();
+		task.setUrl(url);
+		
+		List<Task> list = daoTask.listOpenTaskByUrl(task);
+		try {
+			if(list.size() > 0) {
+				System.out.println(list.get(0).getUrl());
+				// just remove one task with the same url
+				// other jobs who created them should get results
+				daoTask.delete(list.get(0));
+			}
+		} catch (SQLException e) {
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	/**

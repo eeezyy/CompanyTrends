@@ -12,28 +12,26 @@ public class DAOAnswer implements DAO<Answer> {
 
 	@Override
 	public Answer create(Answer obj) throws SQLException {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
-    	EntityManager em = emf.createEntityManager();
-    	
-		em.getTransaction().begin();
-		em.persist(obj);
-		em.getTransaction().commit();
-		
-		em.close();
-		emf.close();
+		synchronized(DAO.SYNC) {
+	    	EntityManager em = emf.createEntityManager();
+	    	
+			em.getTransaction().begin();
+			em.persist(obj);
+			em.getTransaction().commit();
+			
+			em.close();
+		}
 		
 		return obj;
 	}
 
 	@Override
 	public Answer findByID(Answer obj) throws SQLException {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("mock");
     	EntityManager em = emf.createEntityManager();
 		
 		obj = em.find(Answer.class, obj.getId());
 		
 		em.close();
-		emf.close();
 		
 		return obj;
 	}

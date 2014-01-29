@@ -45,7 +45,7 @@ public class Workflow extends Thread {
 		}
 		
 		synchronized(job) {
-			job.setState(aic13.group6.topic2.entities.State.PREPARED);
+			job.setState(aic13.group6.topic2.pojos.State.PREPARED);
 			try {
 				daoJob.update(job);
 			} catch (SQLException e1) {
@@ -74,7 +74,7 @@ public class Workflow extends Thread {
 		
 		
 		synchronized(job) {
-			job.setState(aic13.group6.topic2.entities.State.ASSIGNED);
+			job.setState(aic13.group6.topic2.pojos.State.ASSIGNED);
 			try {
 				daoJob.update(job);
 			} catch (SQLException e1) {

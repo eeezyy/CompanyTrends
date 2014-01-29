@@ -11,6 +11,9 @@ app.config([ "$routeProvider", "$locationProvider", function($routeProvider, $lo
 	$routeProvider.when('/', { templateUrl: 'templates/search.html', controller: 'SearchCtrl' });
 	$routeProvider.when('/:id', { templateUrl: 'templates/job.html', controller: 'JobCtrl' });
 	$routeProvider.when('/job/list', { templateUrl: 'templates/jobList.html', controller: 'JobListCtrl' });
+	$routeProvider.when('/quality/list', { templateUrl: 'templates/quality.html', controller: 'QualityCtrl' });
+	$routeProvider.when('/info/about', { templateUrl: 'templates/about.html', controller: 'AboutCtrl' });
+	$routeProvider.when('/info/contact', { templateUrl: 'templates/contact.html', controller: 'ContactCtrl' });
 }]);
 
 app.factory('CommonService', function() {
@@ -20,7 +23,7 @@ app.factory('CommonService', function() {
 	};
 	
 	return {
-		formatDate: formatDate
+		formatDate: formatDate,
 	};
 });
 
@@ -32,11 +35,18 @@ app.factory('CrowdRestangular', function(Restangular) {
 	
 });
 
+//Configuration for Crowd REST-API and Quality Resources, because of special Interceptor
+app.factory('QualityRestangular', function(Restangular) {
+	return Restangular.withConfig(function(RestangularConfigurer) {
+		RestangularConfigurer.setBaseUrl('rest');
+	});
+	
+});
+
 // Configuraiton for DBPedia API
 app.factory('DBPediaRestangular', function(Restangular) {
 	return Restangular.withConfig(function(RestangularConfigurer) {
-		RestangularConfigurer
-				.setBaseUrl('http://lookup.dbpedia.org/api/search.asmx');
+		RestangularConfigurer.setBaseUrl('http://lookup.dbpedia.org/api/search.asmx');
 	});
 });
 
@@ -47,98 +57,68 @@ function MainCtrl($route, $routeParams, $location) {
 }
 
 function SearchCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope, $http, $routeParams, $route) {
-	// functions
+	// init common functions
 	$scope.formatDate = CommonService.formatDate;
 	
-	// preset variables
-	$scope.selectedIndex = -1;
+	$scope.showLoading = function() {
+		return $scope.loading;
+	};
 	
-	$scope.errorMessageRequest = false;
+	$scope.showSuggestionLoading = function() {
+		return $scope.loadingSuggestion;
+	};
 	
-	if($routeParams.id) {
-		$scope.loadJob($routeParams.id);
-	} else {
-		if($scope.job) {
-			$scope.job.name = undefined;
-			$scope.job.articles = undefined;
-			$scope.job.state = undefined;
-			$scope.searchName = undefined;
-		}
-	}
-
-	// Interceptors
-	CrowdRestangular.setRequestInterceptor(function(elem, operation, what) {
-		// remove error message if exists
+	DBPediaRestangular.setRequestInterceptor(function(elem, operation, what) {
+		// reset error
 		$scope.errorMessageRequest = false;
-//		$scope.noArticlesFound = false;
-		// to show loading icon
-		$scope.requestList = true;
+		$scope.loadingSuggestion = true;
 	});
 
-	CrowdRestangular.setErrorInterceptor(function(elem, operation, what) {
+	DBPediaRestangular.setErrorInterceptor(function(elem, operation, what) {
 		// show error panel
 		$scope.errorMessageRequest = elem.data;
-		$scope.requestList = false;
+		$scope.loadingSuggestion = false;
 	});
 
 	$scope.selectSuggestion = function(index) {
-		$scope.job.name = $scope.suggestions.results[index].label;
+		$scope.name = $scope.suggestions.results[index].label;
+		// remove suggestion-list
 		$scope.suggestions = false;
-//		var resource = CrowdRestangular.one('article', $scope.searchName);
-//		resource.getList().then(function(articles) {
-//			$scope.articles = articles;
-//		});
 	};
 	
 	$scope.createJob = function() {
-		$scope.requestList = true;
+		// check if name is empty
+		if($scope.name == undefined || $scope.name.replace(/^\s+|\s+$/g, '') == '') {
+			alert('Name is empty!');
+			$scope.name = undefined;
+			return;
+		}
+		
+		// json post-body
 		var body = {
-				name: $scope.job.name
+				name: $scope.name
 		};
+		
+		// problems with request interceptor, so we put it here
+		$scope.loading = true;
+		$scope.errorMessageRequest = false;
 		
 		// restangular-post seems broken, doesn't send body
 		$http.post("./rest/job", body).then(function(job) {
+			// must be data property, because its not restangular!
 			$scope.job = job.data;
 			// don't use html5-history, causes endless loop
 			window.location.href="#/"+$scope.job.id;
-			$scope.requestList = false;
+			$scope.loading = false;
 		}, function(response) {
+			$scope.loading = false;
 			$scope.errorMessageRequest = "Error with status code: " + response.status;
-			$scope.requestList = false;
 		});
 		
 	};
 	
-//	$scope.loadJob = function(id) {
-//		$scope.requestList = true;
-//		$scope.errorMessageRequest = false;
-////		$scope.noArticlesFound = false;
-//		CrowdRestangular.one('job', id).get().then(function(job) {
-//			$scope.requestList = false;
-//			$scope.job = job;
-//			console.log(job);
-//			// to prevent changing view while changing search input
-//			$scope.name = $scope.job.name; 
-//		}, function(response) {
-//			$scope.errorMessageRequest = "Error with status code: " + response.status;
-//			$scope.requestList = false;
-//		});
-//	};
-	
-	$scope.showState = function(state) {
-		return $scope.job && ($scope.job.state == state && !$scope.noArticlesFound());
-	};
-	
-	$scope.noArticlesFound = function() {
-		return $scope.job && (($scope.job.articles &&$scope.job.articles.length == 0) && $scope.job.state != 'CREATED');
-	};
-
 	$scope.alertInProgress = function() {
 		alert('search is still in progress');
-	};
-
-	$scope.showLoading = function(index) {
-		return $scope.requestList && (index == $scope.selectedIndex);
 	};
 
 	// DBPedia Suggestions
@@ -154,7 +134,7 @@ function SearchCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope,
 		 
 		var resource = DBPediaRestangular.all(
 				'KeywordSearch?QueryClass=' + searchItem + 
-				'&QueryString=' + $scope.job.name
+				'&QueryString=' + $scope.name
 				);
 		
 		resource.getList().then(function(results) {
@@ -164,6 +144,10 @@ function SearchCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope,
 			} else {
 				$scope.suggestionError = true;
 			}
+			$scope.loadingSuggestion = false;
+		}, function(response) {
+			$scope.loadingSuggestion = false;
+			$scope.errorMessageRequest = "Error with status code: " + response.status;
 		});
 	};
 	
@@ -171,86 +155,38 @@ function SearchCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope,
 
 
 function JobCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope, $http, $routeParams, $route) {
-	// functions
+	// init common functions
 	$scope.formatDate = CommonService.formatDate;
 	
-	// preset variables
-	$scope.selectedIndex = -1;
+	$scope.showLoading = function() {
+		return $scope.loading;
+	};
 	
-	$scope.errorMessageRequest = false;
-	
-//	if($routeParams.id) {
-//		$scope.loadJob($routeParams.id);
-//	} else {
-//		if($scope.job) {
-//			$scope.job.name = undefined;
-//			$scope.job.articles = undefined;
-//			$scope.job.state = undefined;
-//			$scope.searchName = undefined;
-//		}
-//	}
-
 	// Interceptors
 	CrowdRestangular.setRequestInterceptor(function(elem, operation, what) {
-		// remove error message if exists
+		// reset error
 		$scope.errorMessageRequest = false;
-//		$scope.noArticlesFound = false;
-		// to show loading icon
-		$scope.requestList = true;
+		$scope.loading = true;
 	});
 
 	CrowdRestangular.setErrorInterceptor(function(elem, operation, what) {
 		// show error panel
 		$scope.errorMessageRequest = elem.data;
-		$scope.requestList = false;
+		$scope.loading = false;
 	});
 
-	$scope.selectSuggestion = function(index) {
-		$scope.job.name = $scope.suggestions.results[index].label;
-		$scope.suggestions = false;
-//		var resource = CrowdRestangular.one('article', $scope.searchName);
-//		resource.getList().then(function(articles) {
-//			$scope.articles = articles;
-//		});
-	};
-	
-//	$scope.createJob = function() {
-//		$scope.requestList = true;
-//		var body = {
-//				name: $scope.job.name
-//		};
-//		
-//		// restangular-post seems broken, doesn't send body
-//		$http.post("./rest/job", body).then(function(job) {
-//			$scope.job = job.data;
-//			// don't use html5-history, causes endless loop
-//			window.location.href="#/"+$scope.job.id;
-//			$scope.requestList = false;
-//		}, function(response) {
-//			$scope.errorMessageRequest = "Error with status code: " + response.status;
-//			$scope.requestList = false;
-//		});
-//		
-//	};
-	
-	$scope.loadJob = function(id) {
-		$scope.requestList = true;
-		$scope.errorMessageRequest = false;
-//		$scope.noArticlesFound = false;
-		CrowdRestangular.one('job', id).get().then(function(job) {
-			$scope.requestList = false;
+	$scope.loadJob = function() {
+		CrowdRestangular.one('job', $routeParams.id).get().then(function(job) {
+			$scope.loading = false;
 			$scope.job = job;
-			console.log(job);
-			// to prevent changing view while changing search input
-			$scope.name = $scope.job.name; 
 			$scope.stateInfo = $scope.setStateInfo();
 		}, function(response) {
+			$scope.loading = false;
 			$scope.errorMessageRequest = "Error with status code: " + response.status;
-			$scope.requestList = false;
 		});
 	};
 	
-	$scope.loadJob($routeParams.id);
+	$scope.loadJob();
 	
 	$scope.noArticlesFound = function() {
 		return $scope.job && (($scope.job.articles &&$scope.job.articles.length == 0) && $scope.job.state != 'CREATED');
@@ -275,60 +211,119 @@ function JobCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope, $h
 		}
 	};
 	
-	$scope.alertInProgress = function() {
-		alert('search is still in progress');
+	$scope.convertToPercent = function(value) {
+		return Math.round(value * 100);
 	};
-
-	$scope.showLoading = function(index) {
-		return $scope.requestList && (index == $scope.selectedIndex);
-	};
-
-	// DBPedia Suggestions
-	$scope.showSuggestions = function() {
-
-		$scope.selectedIndex = -1;
-		var searchItem = 'Thing';
-		if ($scope.action == 'Company') {
-			searchItem = 'Company';
-		} else if ($scope.action == 'Organisation') {
-			searchItem = 'Organisation';
-		}
-		 
-		var resource = DBPediaRestangular.all(
-				'KeywordSearch?QueryClass=' + searchItem + 
-				'&QueryString=' + $scope.job.name
-				);
-		
-		resource.getList().then(function(results) {
-			$scope.suggestions = results;
-			if (results.results.length > 0) {
-				$scope.suggestionError = undefined;
-			} else {
-				$scope.suggestionError = true;
-			}
-		});
+	
+	$scope.formatTwoDecimalsAndRound = function(value) {
+		return Math.round(value * 100)/100;
 	};
 	
 }
 
 function JobListCtrl(CrowdRestangular, CommonService, $scope) {
+	// init common functions
+	$scope.formatDate = CommonService.formatDate;
+
+	$scope.showLoading = function() {
+		return $scope.loading;
+	};
+	
+	// Interceptors
+	CrowdRestangular.setRequestInterceptor(function(elem, operation, what) {
+		// reset error
+		$scope.errorMessageRequest = false;
+		$scope.loading = true;
+	});
+
+	CrowdRestangular.setErrorInterceptor(function(elem, operation, what) {
+		// show error panel
+		$scope.errorMessageRequest = elem.data;
+		$scope.loading = false;
+	});
 	
 	$scope.length = function(list) {
 		return list.length;
 	};
 	
 	$scope.loadJobList = function() {
-		$scope.requestLoading = true;
 		var resource = CrowdRestangular.all('job/list');
 		resource.getList().then(function(jobs) {
+			$scope.loading = false;
 			$scope.jobs = jobs;
-			$scope.waitForRequest = false;
+		}, function(response) {
+			$scope.loading = false;
+			$scope.errorMessageRequest = "Error with status code: " + response.status;
 		});
 		
 	};
 	
 	$scope.loadJobList();
+}
+
+function QualityCtrl(QualityRestangular, $scope) {
 	
-	$scope.formatDate = CommonService.formatDate;
+	$scope.showLoading = function() {
+		return $scope.loading;
+	};
+	
+	// Interceptors
+	QualityRestangular.setRequestInterceptor(function(elem, operation, what) {
+		// reset error
+		$scope.errorMessageRequest = false;
+		$scope.loading = true;
+	});
+	
+	QualityRestangular.setResponseExtractor(function(response, operation, what, url) {
+		// getting map in separate scope by converting it to list
+		var output = [], item;
+
+		for (var type in response) {
+		    item = {};
+		    item.userId = type;
+		    item.value = response[type];
+		    output.push(item);
+		}
+		return output;
+	});
+
+
+	QualityRestangular.setErrorInterceptor(function(elem, operation, what) {
+		// show error panel
+		$scope.errorMessageRequest = elem.data;
+		$scope.loading = false;
+	});
+	
+	$scope.loadDistances = function() {
+		var resource = QualityRestangular.all('quality/distance');
+		resource.getList().then(function(distances) {
+			$scope.loading = false;
+			$scope.distances = distances;
+		}, function(response) {
+			$scope.loading = false;
+			$scope.errorMessageRequest = "Error with status code: " + response.status;
+		});
+		
+	};
+	
+	$scope.loadDistances();
+	
+	$scope.loadTendencies = function() {
+		var resource = QualityRestangular.all('quality/tendency');
+		resource.getList().then(function(tendencies) {
+			$scope.loading = false;
+			$scope.tendencies = tendencies;
+		}, function(response) {
+			$scope.loading = false;
+		});
+		
+	};
+	
+	$scope.loadTendencies();
+	
+	$scope.reload = function() {
+		$scope.loadDistances();
+		$scope.loadTendencies();
+	};
 }
 

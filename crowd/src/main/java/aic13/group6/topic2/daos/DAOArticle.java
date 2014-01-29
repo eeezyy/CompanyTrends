@@ -1,10 +1,10 @@
 package aic13.group6.topic2.daos;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 import aic13.group6.topic2.entities.Article;
 
@@ -16,15 +16,15 @@ public class DAOArticle implements DAO<Article> {
 			throw new SQLException("No key!");
 		}
 		
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-    	EntityManager em = emf.createEntityManager();
-    	
-		em.getTransaction().begin();
-		em.persist(obj);
-		em.getTransaction().commit();
-		
-		em.close();
-		emf.close();
+		synchronized(DAO.SYNC) {	
+	    	EntityManager em = emf.createEntityManager();
+	    	
+			em.getTransaction().begin();
+			em.persist(obj);
+			em.getTransaction().commit();
+			
+			em.close();
+		}
 		
 		return obj;
 	}
@@ -35,41 +35,44 @@ public class DAOArticle implements DAO<Article> {
 			throw new SQLException("No key!");
 		}
 		
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
     	EntityManager em = emf.createEntityManager();
 		
 		obj = em.find(Article.class, obj.getUrl());
 		
 		em.close();
-		emf.close();
 		
 		return obj;
 	}
 
 	public Article update(Article obj) throws SQLException {
-		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-    	EntityManager em = emf.createEntityManager();
-    	
-		em.getTransaction().begin();
-		obj = em.merge(obj);
-		em.getTransaction().commit();
-		
-		em.close();
-		emf.close();
+		synchronized(DAO.SYNC) {
+	    	EntityManager em = emf.createEntityManager();
+	    	
+			em.getTransaction().begin();
+			obj = em.merge(obj);
+			em.getTransaction().commit();
+			
+			em.close();
+		}
 		
 		return obj;
 	}
 	
-//	public List<Article> findAllNew() {
-//		EntityManagerFactory emf =   Persistence.createEntityManagerFactory("aic");
-//    	EntityManager em = emf.createEntityManager();
-//		
-//		List<Article> ret = em.createQuery("SELECT a FROM articles a WHERE a.url NOT IN (SELECT a.url FROM tasks t LEFT JOIN t.article a))").getResultList();
-//		
-//		em.close();
-//		emf.close();
-//		
-//		return ret;
-//	}
-
+	public Double calculateProgress(Article article) {
+    	EntityManager em = emf.createEntityManager();
+    	
+    	Query query = em.createNativeQuery("select count(a.url)*1.0/(count(a.url) + sum(a.workercounter)) opentask from article a join rating r on a.url=r.article_url where a.url=':url' group by a.url").setParameter("url", article.getUrl());
+    	
+    	List<Double> result = query.getResultList(); 
+    	
+    	em.close();
+    	
+    	// should be only zero or one result
+    	Double value = null;
+    	if(result.size() > 0) {
+    		value = result.get(0);
+    	}
+    	return value;
+	}
+	
 }
