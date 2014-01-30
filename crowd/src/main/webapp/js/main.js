@@ -18,8 +18,13 @@ app.config([ "$routeProvider", "$locationProvider", function($routeProvider, $lo
 
 app.factory('CommonService', function() {
 	var formatDate = function(timeInMillis) {
-		var date = new Date(parseInt(timeInMillis, 10));
-		return date.toGMTString();
+		var dateText = ""; 
+		
+		if(timeInMillis != undefined  && timeInMillis != null) {
+			var date = new Date(parseInt(timeInMillis, 10));
+			dateText = date.toGMTString();
+		}
+		return dateText;
 	};
 	
 	return {
@@ -179,6 +184,7 @@ function JobCtrl(CrowdRestangular, DBPediaRestangular, CommonService, $scope, $h
 		CrowdRestangular.one('job', $routeParams.id).get().then(function(job) {
 			$scope.loading = false;
 			$scope.job = job;
+			console.log(job);
 			$scope.stateInfo = $scope.setStateInfo();
 		}, function(response) {
 			$scope.loading = false;

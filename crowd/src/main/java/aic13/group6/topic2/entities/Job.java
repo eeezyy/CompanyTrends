@@ -75,8 +75,26 @@ public class Job {
 	@Transient
 	@XmlAttribute
 	public Double getRatingResult() {
-		DAORating daoRating = new DAORating();
-		return daoRating.calculateRatingResultForJob(this);
+//		DAORating daoRating = new DAORating();
+//		return daoRating.calculateRatingResultForJob(this);
+		
+		Double ratingResult = null;
+		int countArticles = 0;
+		double sumOfValues = 0.0;
+		for(Article article: articles) {
+			Double ratingResultArticle = article.getRatingResult(); 
+			if(ratingResultArticle != null) {
+				countArticles++;
+				sumOfValues += ratingResultArticle;
+			}
+		}
+		
+		if(countArticles != 0) {
+			ratingResult = sumOfValues/countArticles;
+		}
+		 
+		
+		return ratingResult;
 	}
 	
 	@Transient

@@ -120,8 +120,24 @@ public class Article {
 	@Transient
 	@XmlAttribute
 	public Double getRatingResult() {
-		DAORating daoRating = new DAORating();
-		return daoRating.calculateRatingResultForArticle(this);
+//		DAORating daoRating = new DAORating();
+//		return daoRating.calculateRatingResultForArticle(this);
+		
+		Double ratingResult = null;
+		int countRatings = ratings.size();
+		double sumOfValues = 0.0;
+		
+		List<Rating> ratings = getRatings();
+		for(Rating rating: ratings) {
+			sumOfValues += rating.getValue();
+		}
+		
+		if(countRatings != 0) {
+			ratingResult = sumOfValues/countRatings;
+		}
+		 
+		
+		return ratingResult;
 	}
 	
 	@Transient
