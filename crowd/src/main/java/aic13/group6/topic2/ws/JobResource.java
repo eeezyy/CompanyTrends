@@ -120,12 +120,6 @@ public class JobResource {
 		
 		article.setWorkerCounter(article.getWorkerCounter() - 1);
 		
-		try {
-			daoArticle.update(article);
-		} catch (SQLException e) {
-			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-		}
-		
 		Rating rating = new Rating();
 		rating.setValue(ratingValue);
 		rating.setArticle(article);
@@ -134,6 +128,14 @@ public class JobResource {
 		DAORating daoRating = new DAORating();
 		try {
 			daoRating.create(rating);
+		} catch (SQLException e) {
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+		}
+		
+		article.getRatings().add(rating);
+		
+		try {
+			daoArticle.update(article);
 		} catch (SQLException e) {
 			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
 		}
