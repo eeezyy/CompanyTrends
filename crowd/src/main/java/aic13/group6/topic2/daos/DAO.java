@@ -2,9 +2,14 @@ package aic13.group6.topic2.daos;
 
 import java.sql.SQLException;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 public interface DAO<T> {
 	
 	public final static Integer SYNC = 0;
+	
+	public final static EntityManagerFactory emf =	Persistence.createEntityManagerFactory("aic");
 	
 	/**
 	 * Creates an entry in the database.

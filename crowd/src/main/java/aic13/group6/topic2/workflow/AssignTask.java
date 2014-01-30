@@ -3,20 +3,12 @@ package aic13.group6.topic2.workflow;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.MediaType;
-
 import aic13.group6.topic2.entities.Article;
 import aic13.group6.topic2.entities.Job;
 import aic13.group6.topic2.pojos.AnswerOptions;
 import aic13.group6.topic2.pojos.Task;
 import aic13.group6.topic2.services.Settings;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
+import aic13.group6.topic2.services.TaskAPI;
 
 public class AssignTask implements Runnable {
 	
@@ -52,27 +44,9 @@ public class AssignTask implements Runnable {
 		task.setPrice(1);
 		task.setCallbackUrl(baseUrl + Settings.getCrowdBaseAPI() + Settings.getCallbackResource());
 		
-		job.setTask(task);
-
-		Task responseTask = postToWebService(baseUrl + Settings.getMockBaseAPI() + Settings.getTaskResource(), task);
+		Task responseTask = TaskAPI.create(baseUrl + Settings.getMockBaseAPI() + Settings.getTaskResource(), task);
 		// TODO on error
 		
 	}
 	
-	private Task postToWebService(String url, Task task) {
-		ClientConfig clientConfig = new DefaultClientConfig();
-		clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
-		Client client = Client.create(clientConfig);
-		
-		WebResource webResource = client.resource(url);
-		
-		ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, task);
-		
-		Task responseTask = response.getEntity(Task.class);
-		
-		return responseTask;
-	}
-	
-	
-
 }

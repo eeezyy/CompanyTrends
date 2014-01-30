@@ -33,7 +33,7 @@
 	</div>
 	<div class="loadingArea" ng-show="showLoading()"><div class="fill"></div></div>
 	<div ng-show="job.ratingResult">
-		<h3><strong>Average result:</strong> {{job.ratingResult}}</h3>
+		<h3><strong>Average result:</strong> {{formatTwoDecimalsAndRound(job.ratingResult)}}</h3>
 	</div>
 	<div class="row" ng-show="job.articles && !showLoading()">
 		<div class="col-md-1">
@@ -42,7 +42,7 @@
 		<div class="col-md-11">
 			<div class="progress progress-striped">
 				<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{convertToPercent(job.progress)}}" aria-valuemin="0" aria-valuemax="100" ng-style="{width: convertToPercent(job.progress) + '%'}">
-					<span class="sr-only">Tasks {convertToPercent(job.progress)}% Complete</span>
+					<span class="sr-only">Tasks {{convertToPercent(job.progress)}}% Complete</span>
 				</div>
 			</div>
 		</div>
@@ -72,7 +72,7 @@
 						<h3 class="panel-title"><a href="{{article.url}}" target="_blank">{{article.title}}</a></h3>
 					</div>
 					<div class="col-md-2">
-						<div ng-show="article.ratingResult">Rating: <strong>{{article.ratingResult}}</strong></div>
+						<div ng-show="article.ratingResult">Rating: <strong>{{formatTwoDecimalsAndRound(article.ratingResult)}}</strong></div>
 					</div>
 					<div class="col-md-1">
 						<span class="pull-right" ng-show="article.ratings">

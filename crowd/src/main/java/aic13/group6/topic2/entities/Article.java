@@ -34,6 +34,7 @@ public class Article {
 	@XmlAnyAttribute
 	@OneToMany(targetEntity=Rating.class, mappedBy = "article")
 	private List<Rating> ratings;
+	// how many tasks are left to finish
 	private int workerCounter;
 	
 	/**
@@ -125,9 +126,20 @@ public class Article {
 	
 	@Transient
 	@XmlAttribute
-	public Double getProgress() {
-		DAOArticle daoArticle = new DAOArticle();
-		Double percentage = daoArticle.calculateProgress(this);
+	/**
+	 * Get progress of finished tasks.
+	 * @return progress in percent
+	 */
+	public double getProgress() {
+//		DAOArticle daoArticle = new DAOArticle();
+//		Double percentage = daoArticle.calculateProgress(this);
+		
+		// available ratings + workercounter is sum of all tasks
+		int allTasks = (ratings.size() + getWorkerCounter());
+		double percentage = 1.0;
+		if(allTasks != 0) {
+			percentage = ratings.size() / (ratings.size() + getWorkerCounter());
+		}
 		return percentage;
 	}
 

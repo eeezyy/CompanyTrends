@@ -10,9 +10,10 @@ public class Settings {
 	private final static String CALLBACK_RESOURCE = "job/callback";
 	private final static String MOCK_BASE_API = "mock/rest/";
 	private final static String TASK_RESOURCE = "task";
-	private final static String DESCRIPTION = "Please read the article and rate the following topic with the options below: ";
 	
+	private final static String DESCRIPTION = "Please read the article and rate the following topic with the options below: ";
 	private final static int WORKER_PER_TASK = 5;
+	private final static int TASK_TIMEOUT_IN_DAYS = 7;
 	// TODO
 	//private final static Map ANSWER_OPTIONS = ...;
 	
@@ -22,9 +23,10 @@ public class Settings {
 	private final static String CALLBACK_RESOURCE_KEY = "callback-resource";
 	private final static String MOCK_BASE_API_KEY = "mock-base-api";
 	private final static String TASK_RESOURCE_KEY = "task-resource";
-	private final static String DESCRIPTION_KEY = "description";
 	
+	private final static String DESCRIPTION_KEY = "description";
 	private final static String WORKER_PER_TASK_KEY = "workers-per-task";
+	private final static String TASK_TIMEOUT_IN_DAYS_KEY = "task-timout-in-days";
 	//private final static String ANSWER_OPTIONS_KEY = "answer-options";
 	
 	
@@ -84,6 +86,14 @@ public class Settings {
 	
 	public static int getWorkerPerTask() {
 		return prefs.getInt(WORKER_PER_TASK_KEY, WORKER_PER_TASK);
+	}
+	
+	public static void setTaskTimeoutInDays(int value) {
+		prefs.putInt(TASK_TIMEOUT_IN_DAYS_KEY, value);
+	}
+	
+	public static int getTaskTimeoutInDays() {
+		return prefs.getInt(TASK_TIMEOUT_IN_DAYS_KEY, TASK_TIMEOUT_IN_DAYS);
 	}
 
 }

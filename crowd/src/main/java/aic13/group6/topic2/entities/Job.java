@@ -32,8 +32,6 @@ public class Job {
 	@ManyToMany
 	private List<Article> articles;
 	
-	private Task task;
-	
 	public Long getId() {
 		return id;
 	}
@@ -84,17 +82,20 @@ public class Job {
 	@Transient
 	@XmlAttribute
 	public Double getProgress() {
-		DAOJob daoJob = new DAOJob();
-		Double percentage = daoJob.calculateProgress(this);
+//		DAOJob daoJob = new DAOJob();
+//		Double percentage = daoJob.calculateProgress(this);
+		
+		double percentage = 1.0;
+		int sumOfTasks = 0;
+		int sumOfRatings = 0;
+		for(Article article: articles) {
+			sumOfTasks += article.getRatings().size() + article.getWorkerCounter();
+			sumOfRatings += article.getRatings().size();
+		}
+		if(sumOfTasks != 0) {
+			percentage = ((double)sumOfRatings) / sumOfTasks;
+		}
 		return percentage;
 	}
 
-	public Task getTask() {
-		return task;
-	}
-
-	public void setTask(Task task) {
-		this.task = task;
-	}
-	
 }
