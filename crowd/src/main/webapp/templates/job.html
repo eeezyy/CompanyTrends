@@ -32,8 +32,13 @@
 		<strong>Info:</strong> {{stateInfo}}
 	</div>
 	<div class="loadingArea" ng-show="showLoading()"><div class="fill"></div></div>
-	<div ng-show="job.ratingResult">
-		<h3><strong>Average result:</strong> {{formatTwoDecimalsAndRound(job.ratingResult)}}</h3>
+	<div ng-show="job.ratingResult || job.ratingResult==0" style="width:100%">
+		<h3>
+			<div style="float:left; position:relative"><strong>Average result:</strong> </div> 
+			<div style="float:left; margin-left:5px; margin-right:5px"> {{formatTwoDecimalsAndRound(job.ratingResult)}}</div>
+			<div style="height:18px; width:18px; float:left; position:relative; margin:4px; border:1px grey solid" ng-style="{'background-color': numberToColorHsl(job.ratingResult)}"></div>
+			<div style="clear:both"></div>
+		</h3>
 	</div>
 	<div class="row" ng-show="job.articles && !showLoading()">
 		<div class="col-md-1">
@@ -104,8 +109,8 @@
 					<tfoot>
 						<tr>
 							<th>Summary</th>
-							<th>{{formatTwoDecimalsAndRound(article.ratings.length)}}</th>
-							<th>{{article.ratingResult}}</th>
+							<th>{{article.ratings.length}}</th>
+							<th>{{formatTwoDecimalsAndRound(article.ratingResult)}}</th>
 						</tr>
 					</tfoot>
 				</table>
