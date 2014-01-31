@@ -88,7 +88,7 @@ public class DAORating implements DAO<Rating> {
 	}
 	
 	/**
-	 * Rating tendeny. The average rating value for each user.
+	 * Rating tendency. The average rating value for each user.
 	 * @return rating tendency of every user
 	 * @throws SQLException
 	 */
@@ -100,7 +100,7 @@ public class DAORating implements DAO<Rating> {
 			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("aic");
 	    	EntityManager em = emf.createEntityManager();
 	    	
-	    	Query query = em.createNativeQuery("select userid, sum(value)*1.0/sum(userid) from rating where value>=-1 group by userid");
+	    	Query query = em.createNativeQuery("select userid, sum(value)*1.0/count(userid) from rating where value>=-1 group by userid");
 	    	resultList = query.getResultList(); 
 	    	
 	    	em.close();
