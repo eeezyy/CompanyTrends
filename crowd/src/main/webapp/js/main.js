@@ -322,7 +322,7 @@ function QualityCtrl(QualityRestangular, CommonService, $scope) {
 	$scope.numberToColorHsl = CommonService.numberToColorHsl;
 	
 	$scope.distanceColor = function(value) {
-		return $scope.numberToColorHsl((value * (-2)) + 1);
+		return $scope.numberToColorHsl((value * (-1)) + 1);
 	};
 	
 	$scope.showLoading = function() {
