@@ -29,8 +29,9 @@
 				<th class="col-sm-1">#</th>
 				<th class="col-sm-4">Name</th>
 				<th class="col-sm-3">Date</th>
-				<th class="col-sm-3">State</th>
+				<th class="col-sm-2">State</th>
 				<th class="col-sm-1">#Articles</th>
+				<th class="col-sm-1">Rating</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -40,6 +41,10 @@
 				<td>{{formatDate(job.date)}}</td>
 				<td>{{job.state}}</td>
 				<td>{{length(job.articles)}}</td>
+				<td>
+				<span ng-show="job.ratingResult || job.ratingResult == 0">
+				<div style="height:15px; width:15px; float:left; position:relative; margin-right:5px; margin-top:3px; border:1px grey solid" ng-style="{'background-color': numberToColorHsl(job.ratingResult)}"></div>
+				{{formatTwoDecimalsAndRound(job.ratingResult)}}</td>
 			</tr>
 		</tbody>
 	</table>
