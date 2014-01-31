@@ -33,7 +33,10 @@
 					<tbody>
 						<tr ng-repeat="distance in distances">
 							<td>{{distance.userId}}</td>
-							<td>{{distance.value}}</td>
+							<td>
+								<div style="height:15px; width:15px; float:left; position:relative; margin-right:5px; margin-top:3px; border:1px grey solid" ng-style="{'background-color': distanceColor(distance.value)}"></div>
+								{{formatTwoDecimalsAndRound(distance.value)}}
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -54,7 +57,10 @@
 					<tbody>
 						<tr ng-repeat="tendency in tendencies">
 							<td>{{tendency.userId}}</td>
-							<td>{{tendency.value}}</td>
+							<td>
+								<div style="height:15px; width:15px; float:left; position:relative; margin-right:5px; margin-top:3px; border:1px grey solid" ng-style="{'background-color': numberToColorHsl(tendency.value)}"></div>
+								{{formatTwoDecimalsAndRound(tendency.value)}}
+							</td>
 						</tr>
 					</tbody>
 				</table>

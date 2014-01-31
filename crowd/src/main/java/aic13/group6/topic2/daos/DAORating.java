@@ -68,11 +68,11 @@ public class DAORating implements DAO<Rating> {
 	    	// Native query, because JPQL doesn't support nested queries
 	    	Query query = em.createNativeQuery("select userid, sum(abstand)/count(abstand) abstand_global from ("
 	    			+ "select userid, abs(user_durchschn-durchschnitt) abstand, url from ("
-	    			+ "select sum(value)*1.0/count(value) durchschnitt, url from rating join article where rating.article_url=article.url and value<>:irrelevantValue group by url"
+	    			+ "select sum(value)*1.0/count(value) durchschnitt, url from rating join article where rating.article_url=article.url and value>=-1 group by url"
 	    			+ ") join ("
-	    			+ "select userid, sum(value)*1.0/count(value) user_durchschn, url url_user from rating join article where rating.article_url=article.url and  value<>:irrelevantValue group by userid, url"
+	    			+ "select userid, sum(value)*1.0/count(value) user_durchschn, url url_user from rating join article where rating.article_url=article.url and  value>=-1 group by userid, url"
 	    			+ ") where url=url_user order by userid"
-	    			+ ") group by userid;").setParameter("irrelevantValue", AnswerOptions.IRRELEVANT.value());
+	    			+ ") group by userid;");
 	    	
 	    	resultList = query.getResultList(); 
 	    	
@@ -100,8 +100,7 @@ public class DAORating implements DAO<Rating> {
 			EntityManagerFactory emf =	Persistence.createEntityManagerFactory("aic");
 	    	EntityManager em = emf.createEntityManager();
 	    	
-	    	Query query = em.createNativeQuery("select userid, sum(value)*1.0/sum(userid) from rating where value<>:irrelevantValue group by userid").setParameter("irrelevantValue", AnswerOptions.IRRELEVANT.value());
-	    	
+	    	Query query = em.createNativeQuery("select userid, sum(value)*1.0/sum(userid) from rating where value>=-1 group by userid");
 	    	resultList = query.getResultList(); 
 	    	
 	    	em.close();

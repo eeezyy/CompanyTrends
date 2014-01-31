@@ -316,7 +316,14 @@ function JobListCtrl(CrowdRestangular, CommonService, $scope) {
 	$scope.loadJobList();
 }
 
-function QualityCtrl(QualityRestangular, $scope) {
+function QualityCtrl(QualityRestangular, CommonService, $scope) {
+	
+	$scope.formatTwoDecimalsAndRound = CommonService.formatTwoDecimalsAndRound;
+	$scope.numberToColorHsl = CommonService.numberToColorHsl;
+	
+	$scope.distanceColor = function(value) {
+		return $scope.numberToColorHsl((value * (-2)) + 1);
+	};
 	
 	$scope.showLoading = function() {
 		return $scope.loading;
