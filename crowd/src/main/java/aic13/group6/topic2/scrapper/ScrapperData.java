@@ -11,7 +11,7 @@ public class ScrapperData {
 	
 	// XPath
 	public final static String xpathUrlNews = "//div[contains(concat(' ', normalize-space(@class), ' '), 'type_stream')]/*//a";
-	public final static String xpathUrlSearch = "//div[@id='web']//a[contains(concat(' ', normalize-space(@class), ' '), 'yschttl') and contains(concat(' ', normalize-space(@class), ' '), 'spt')]";
+	public final static String xpathUrlSearch = "//div[contains(concat(' ', normalize-space(@class), ' '), ' compTitle')]/*//a";
 	public final static String xpathDate = "string(//meta[contains(@itemprop,'datePublished')]/@content)";
 	public final static String xpathTitle = "//h1[contains(concat(' ', normalize-space(@class), ' '), 'headline')]/text()";
 	public final static String xpathContent = "//div[contains(concat(' ', normalize-space(@itemtype), ' '), 'http://schema.org/Article')]";
