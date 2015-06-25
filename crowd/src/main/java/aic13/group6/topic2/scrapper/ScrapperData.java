@@ -10,7 +10,7 @@ public class ScrapperData {
 	public final static String pageBaseUrl = "http://finance.yahoo.com/blogs/";
 	
 	// XPath
-	public final static String xpathUrlNews = "//*/li[contains(concat(' ', normalize-space(@class), ' '), 'content') and not(contains(concat(' ', normalize-space(@class), ' '), 'rmx-ad'))]/div[1]/div[1]/div[1]/h3[1]/a[1]";
+	public final static String xpathUrlNews = "//div[contains(concat(' ', normalize-space(@class), ' '), 'type_stream')]/*//a";
 	public final static String xpathUrlSearch = "//div[@id='web']//a[contains(concat(' ', normalize-space(@class), ' '), 'yschttl') and contains(concat(' ', normalize-space(@class), ' '), 'spt')]";
 	public final static String xpathDate = "string(//meta[contains(@itemprop,'datePublished')]/@content)";
 	public final static String xpathTitle = "//h1[contains(concat(' ', normalize-space(@class), ' '), 'headline')]/text()";
